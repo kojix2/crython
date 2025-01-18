@@ -7,4 +7,34 @@ describe Crython do
     Crython.finalize
     Crython.initialized?.should be_false
   end
+
+  it "embeds Python" do
+    Crython.embed_python do
+      Crython.initialized?.should be_true
+    end
+    Crython.initialized?.should be_false
+  end
+
+  it "gets Python version" do
+    Crython.embed_python do
+      Crython.python_version.should be_a(String)
+    end
+  end
+
+  it "gets Python build info" do
+    Crython.embed_python do
+      Crython.python_build_info.should be_a(String)
+    end
+  end
+
+  it "gets Python compiler" do
+    Crython.embed_python do
+      Crython.python_compiler.should be_a(String)
+    end
+  end
+
+  it "raises error" do
+    Crython.embed_python do
+    end
+  end
 end
