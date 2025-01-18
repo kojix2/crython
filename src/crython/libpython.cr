@@ -4,6 +4,7 @@ lib LibPython
   alias Int = LibC::Int
   alias Long = LibC::Long
   alias Char = LibC::Char
+  alias FILE = Void*
 
   fun init = Py_Initialize
   fun init_ex = Py_InitializeEx(initsigs : Int)
@@ -25,8 +26,8 @@ lib LibPython
   fun obj_get_attr_string = PyObject_GetAttrString(o : PyObject, attr : Char*) : PyObject
   fun obj_set_attr_string = PyObject_SetAttrString(o : PyObject, attr : Char*, val : PyObject) : Int
   fun obj_del_attr_string = PyObject_DelAttrString(o : PyObject, attr : Char*) : Int
-  fun obj_call_function = PyObject_CallFunctionObjArgs(callable : PyObject, params : PyObject, ...)
-  fun obj_print = PyObject_Print(o : PyObject, fd : Int, flags : Int) : Int
+  fun obj_call_function = PyObject_CallFunctionObjArgs(callable : PyObject, params : PyObject, ...) : PyObject
+  fun obj_print = PyObject_Print(o : PyObject, fd : FILE, flags : Int) : Int
   fun obj_callable? = PyCallable_Check(o : PyObject) : Int
   fun obj_cmp = PyObject_Cmp(a : PyObject, b : PyObject, res : Int*) : Int
 
