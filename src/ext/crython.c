@@ -1,15 +1,5 @@
-#ifdef __APPLE__
-    #include <AvailabilityMacros.h>
-    #if MAC_OS_X_VERSION_MAX_ALLOWED < 101300
-        #include <Python/Python.h>
-    #else
-        #include <Python2.7/Python.h>
-    #endif
-#else
-    #include <python2.7/Python.h>
-#endif
+#include <Python.h>
 
-/* Expose reference counting macros */
 
 extern void py_incref(PyObject *o) {
   Py_INCREF(o);
@@ -40,7 +30,7 @@ extern PyObject* py_none() {
 extern PyObject *load_module(char *module_name) {
   PyObject *pName, *pModule;
 
-  pName = PyString_FromString(module_name);
+  pName = PyUnicode_FromString(module_name);
   /* Error checking of pName left out */
 
   pModule = PyImport_Import(pName);

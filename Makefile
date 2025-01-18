@@ -6,10 +6,10 @@ no-debug ?= ## No symbolic debug info
 verbose ?= ## Run specs in verbose mode
 link-flags ?= ## Additional flags to pass to the linker
 
-OS := $(shell uname -s | tr '[:upper:@]' '[:lower:]')
+OS := $(LC_CTYPE=C $(shell uname -s | tr '[:upper:]' '[:lower:]'))
 
 O := build
-FLAGS := $(if $(release),--release )$(if $(stats),--stats )$(if $(threads),--threads $(threads) )$(if $(debug),-d )$(if $(no-debug),--no-debug )$(if $(link-flags),--link-flags "$(link-flags)" )
+FLAGS := $(if $(release),--release )$(if $(stats),--stats )$(if $(threads),--threads $(threads) )$(if $(debug),-d )$(if $(no-debug),--no-debug )
 VERBOSE := $(if $(verbose),-v )
 
 #CFLAGS += -fPIC
@@ -22,8 +22,17 @@ LIB_CRYTHON_TARGET = src/ext/libcrython.a
 
 DEPS = $(LIB_CRYTHON_TARGET)
 
-EXAMPLES_SOURCES := $(shell find examples -name '*.cr')
+EXAMPLES_SOURCES := $(shell find examples -type f -name '*.cr')
 EXAMPLES_TARGETS := $(subst examples, $(O), $(patsubst %.cr, %, $(EXAMPLES_SOURCES)))
+
+PYTHON_CFLAGS := $(shell python3-config --cflags)
+PYTHON_LDFLAGS := $(shell python3-config --ldflags)
+
+PYTHON_VERSION := $(shell python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+PYTHON_LIB := -lpython$(PYTHON_VERSION)
+
+CFLAGS += $(PYTHON_CFLAGS)
+LDFLAGS += $(PYTHON_LDFLAGS) $(PYTHON_LIB)
 
 .PHONY: all
 all: deps
@@ -42,7 +51,11 @@ $(LIB_CRYTHON_TARGET): $(LIB_CRYTHON_OBJ)
 
 $(EXAMPLES_TARGETS):
 	@mkdir -p $(O)
-	$(BUILD_PATH) crystal build $(FLAGS) $(addsuffix .cr, $(subst build, examples, $@)) -o $@
+	$(BUILD_PATH) crystal build $(FLAGS) $(addsuffix .cr, $(subst build, examples, $@)) --link-flags "$(LDFLAGS)" -o $@
+
+.PHONY: test
+test: deps ## Run tests
+	$(BUILD_PATH) crystal spec $(VERBOSE) --link-flags "$(LDFLAGS)"
 
 .PHONY: examples
 examples: $(DEPS) $(EXAMPLES_TARGETS)

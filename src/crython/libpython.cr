@@ -1,4 +1,4 @@
-@[Link("python")]
+@[Link("python3")]
 lib LibPython
   alias PyObject = Void*
   alias Int = LibC::Int
@@ -17,7 +17,7 @@ lib LibPython
 
   fun error_clear = PyErr_Clear
   fun error_occurred = PyErr_Occurred : PyObject
-  fun error_print = PyErr_print
+  fun error_print = PyErr_Print
 
   fun import_module = PyImport_ImportModule(Char*) : PyObject
 
@@ -35,6 +35,9 @@ lib LibPython
   fun string_size = PyString_Size(o : PyObject) : Int
   fun string_as_cstring = PyString_AsString(str : PyObject) : Char*
   fun string_from_cstring = PyString_FromStringAndSize(str : Char*, size : Int)
+  fun string_size = PyUnicode_GetLength(o : PyObject) : Int
+  fun string_as_cstring = PyUnicode_AsUTF8(str : PyObject) : Char*
+  fun string_from_cstring = PyUnicode_FromStringAndSize(str : Char*, size : Int)
 
   fun list_new = PyList_New(size : Int) : PyObject
   fun list_size = PyList_Size(list : PyObject) : Int
@@ -43,5 +46,5 @@ lib LibPython
 
   fun tuple_get = PyTuple_GetItem(t : PyObject, i : Int) : PyObject
 
-  fun int_as_long = PyInt_AsLong(i : PyObject) : Long
+  fun int_as_long = PyLong_AsLong(i : PyObject) : Long
 end
