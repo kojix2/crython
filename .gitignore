@@ -7,3 +7,13 @@
 # Libraries don't need dependency lock
 # Dependencies will be locked in application that uses them
 /shard.lock
+
+/build/
+
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+*.dll
+
