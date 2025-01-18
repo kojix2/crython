@@ -1,0 +1,40 @@
+name: test
+
+on:
+  push:
+  pull_request:
+  # workflow_dispatch:
+  # schedule:
+  #   - cron: "51 3 * * 6" # Runs at 03:51, only on Saturday
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu", "macos"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+      - name: Ubuntu - Install Python3 with apt
+        if: matrix.os == 'ubuntu'
+        run: sudo apt-get update && sudo apt-get install -y libpython3-dev
+      - name: MacOS - Install Python3 with Homebrew
+        if: matrix.os == 'macos'
+        run: brew install python3
+      - name: Install dependencies
+        run: shards install --without-development --release
+      - name: Build
+        run: make
+      - name: Run tests
+        run: make test
+      - name: Run executable
+        run: |
+          make examples
+          chmod +x ./build/test
+          ./build/test
