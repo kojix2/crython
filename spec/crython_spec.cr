@@ -42,4 +42,10 @@ describe Crython do
       Crython.error_occurred?.should be_false
     end
   end
+  it "imports a Python module" do
+    Crython.embed_python do
+      mod = Crython.import_module("math")
+      mod.should be_a(Crython::PyObject)
+    end
+  end
 end

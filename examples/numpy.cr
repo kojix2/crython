@@ -11,8 +11,7 @@ stdout_fp = LibC.fdopen(STDOUT.fd, "w")
 
 Crython.init
 
-mod = LibPython.import_module("numpy")
-np = Crython::PyObject.new(mod)
+np = Crython.import_module("numpy")
 
 attr = np.get_attr("array")
 
