@@ -1,7 +1,7 @@
 module Crython
   # Whether the Python interpreter raised an error.
   def self.error_occurred? : Bool
-    LibPython.error_occurred != 0
+    !LibPython.error_occurred.null?
   end
 
   def self.clear_error

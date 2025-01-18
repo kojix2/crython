@@ -1,6 +1,7 @@
 require "./crython/libpython"
 require "./crython/libcrython"
 require "./crython/env"
+require "./crython/err"
 require "./crython/object"
 require "./crython/list"
 
