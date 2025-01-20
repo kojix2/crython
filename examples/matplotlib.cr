@@ -19,7 +19,6 @@ require "../src/crython"
 
 Crython.init
 
-LibPython.set_python_home("/Users/kojix2/micromamba/envs/bio")
 puts String.new(LibPython.get_python_home)
 puts String.new(LibPython.pysys_getpath)
 
