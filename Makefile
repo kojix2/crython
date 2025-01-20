@@ -9,7 +9,11 @@ link-flags ?= ## Additional flags to pass to the linker
 OS := $(LC_CTYPE=C $(shell uname -s | tr '[:upper:]' '[:lower:]'))
 
 O := build
-FLAGS := $(if $(release),--release )$(if $(stats),--stats )$(if $(threads),--threads $(threads) )$(if $(debug),-d )$(if $(no-debug),--no-debug )
+FLAGS := $(if $(release),--release) \
+         $(if $(stats),--stats) \
+         $(if $(threads),--threads $(threads)) \
+         $(if $(debug),-d) \
+         $(if $(no-debug),--no-debug)
 VERBOSE := $(if $(verbose),-v )
 
 #CFLAGS += -fPIC
@@ -22,8 +26,8 @@ LIB_CRYTHON_TARGET = src/ext/libcrython.a
 
 DEPS = $(LIB_CRYTHON_TARGET)
 
-EXAMPLES_SOURCES := $(shell find examples -type f -name '*.cr')
-EXAMPLES_TARGETS := $(subst examples, $(O), $(patsubst %.cr, %, $(EXAMPLES_SOURCES)))
+EXAMPLES_SOURCES := $(wildcard examples/*.cr)
+EXAMPLES_TARGETS := $(patsubst examples/%.cr, $(O)/%, $(EXAMPLES_SOURCES))
 
 PYTHON_CFLAGS := $(shell python3-config --cflags)
 PYTHON_LDFLAGS := $(shell python3-config --ldflags)
@@ -34,12 +38,11 @@ PYTHON_LIB := -lpython$(PYTHON_VERSION)
 CFLAGS += $(PYTHON_CFLAGS)
 LDFLAGS += $(PYTHON_LDFLAGS) $(PYTHON_LIB)
 
-.PHONY: all
+.PHONY: all deps libcrython test examples doc clean
+
 all: deps
 
-.PHONY: deps libcrython
-
-deps: $(DEPS) ## Build dependencies
+deps: libcrython ## Build dependencies
 
 libcrython: $(LIB_CRYTHON_TARGET)
 
@@ -49,25 +52,23 @@ $(LIB_CRYTHON_OBJ): $(LIB_CRYTHON)
 $(LIB_CRYTHON_TARGET): $(LIB_CRYTHON_OBJ)
 	$(AR) -rcs $@ $^
 
-$(EXAMPLES_TARGETS):
+$(EXAMPLES_TARGETS): $(O)/%: examples/%.cr
 	@mkdir -p $(O)
-	$(BUILD_PATH) crystal build $(FLAGS) $(addsuffix .cr, $(subst build, examples, $@)) --link-flags "$(LDFLAGS)" -o $@
+	$(BUILD_PATH) crystal build $(FLAGS) $< --link-flags "$(LDFLAGS)" -o $@
 
-.PHONY: test
 test: deps ## Run tests
 	$(BUILD_PATH) crystal spec $(VERBOSE) --link-flags "$(LDFLAGS)"
 
-.PHONY: examples
 examples: $(DEPS) $(EXAMPLES_TARGETS)
 
-.PHONY: doc
 doc: deps ## Generate crython library documentation
 	@echo "Building documentation..."
 	$(BUILD_PATH) crystal doc src/crython.cr
 
-.PHONY: clean
 clean: ## Clean up built directories and files
 	@echo "Cleaning..."
 	rm -rf $(O)
 	rm -rf ./doc
-	rm -rf $(LIB_CRYTHON_OBJ) $(LIB_CRYTHON_TARGET)
+	rm -rf $(LIB_CRYTHON_OBJ)
+	rm -rf $(LIB_CRYTHON_TARGET)
+	rm -rf $(EXAMPLES_TARGETS)
