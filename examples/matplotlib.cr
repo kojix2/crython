@@ -19,9 +19,6 @@ require "../src/crython"
 
 Crython.init
 
-puts String.new(LibPython.get_python_home)
-puts String.new(LibPython.pysys_getpath)
-
 plt = Crython.import_module("matplotlib")
 
 attr = plt.get_attr("subplots")
