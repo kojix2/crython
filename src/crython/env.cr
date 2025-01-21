@@ -8,7 +8,7 @@ module Crython
 
   # Whether the Python interpreter has been initialized.
   def self.initialized? : Bool
-    LibPython.initialized? != 0
+    LibPython.is_initialized != 0
   end
 
   # Finalize embedded Python interpreter.
@@ -25,14 +25,14 @@ module Crython
   end
 
   def self.python_version : String
-    String.new(LibPython.version)
+    String.new(LibPython.get_version)
   end
 
   def self.python_build_info : String
-    String.new(LibPython.build_info)
+    String.new(LibPython.get_build_info)
   end
 
   def self.python_compiler : String
-    String.new(LibPython.compiler)
+    String.new(LibPython.get_compiler)
   end
 end

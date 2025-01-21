@@ -16,18 +16,18 @@ np = Crython.import_module("numpy")
 attr = np.get_attr("array")
 
 arg1 = LibPython.build_value("[i,i,i]", 1, 2, 3)
-x1 = LibPython.obj_call_function(attr, arg1, nil)
+x1 = LibPython.object_call_function(attr, arg1, nil)
 
 arg2 = LibPython.build_value("[i,i,i]", 4, 5, 6)
-x2 = LibPython.obj_call_function(attr, arg2, nil)
+x2 = LibPython.object_call_function(attr, arg2, nil)
 
 attr = np.get_attr("add")
-result = LibPython.obj_call_function(attr, x1, x2, nil)
-LibPython.error_print
-LibPython.obj_print(x1, stdout_fp, 0)
-LibPython.obj_print(LibPython.build_value("s", " + "), stdout_fp, 0)
-LibPython.obj_print(x2, stdout_fp, 0)
-LibPython.obj_print(LibPython.build_value("s", " = "), stdout_fp, 0)
-LibPython.obj_print(result, stdout_fp, 0)
+result = LibPython.object_call_function(attr, x1, x2, nil)
+LibPython.err_print
+LibPython.object_print(x1, stdout_fp, 0)
+LibPython.object_print(LibPython.build_value("s", " + "), stdout_fp, 0)
+LibPython.object_print(x2, stdout_fp, 0)
+LibPython.object_print(LibPython.build_value("s", " = "), stdout_fp, 0)
+LibPython.object_print(result, stdout_fp, 0)
 
 Crython.finalize

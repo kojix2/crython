@@ -10,9 +10,9 @@ module Crython
 
   def self.import_module(name : String) : PyObject
     mod = PyObject.new(LibPython.import_module(name))
-    e = LibPython.error_occurred
+    e = LibPython.err_occurred
     if !e.null?
-      LibPython.error_print
+      LibPython.err_print
       raise "Error importing module: #{name}"
     end
     mod

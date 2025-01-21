@@ -35,11 +35,11 @@ describe Crython do
 
   it "raises error" do
     Crython.embed_python do
-      Crython.error_occurred?.should be_false
+      Crython.err_occurred?.should be_false
       LibPython.import_module("nonexistent")
-      Crython.error_occurred?.should be_true
+      Crython.err_occurred?.should be_true
       Crython.clear_error
-      Crython.error_occurred?.should be_false
+      Crython.err_occurred?.should be_false
     end
   end
   it "imports a Python module" do
