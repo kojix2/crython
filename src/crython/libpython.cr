@@ -40,11 +40,14 @@ lib LibPython
   fun object_is_callable = PyCallable_Check(o : PyObject) : Int
   fun object_cmp = PyObject_Cmp(a : PyObject, b : PyObject, res : Int*) : Int
 
+  fun object_string = PyObject_Str(o : PyObject) : PyObject
+  fun object_repr = PyObject_Repr(o : PyObject) : PyObject
+
   fun build_value = Py_BuildValue(format : Char*, ...) : PyObject
 
   fun unicode_get_length = PyUnicode_GetLength(o : PyObject) : Int
   fun unicode_as_utf8 = PyUnicode_AsUTF8(str : PyObject) : Char*
-  fun unicode_from_string_and_size = PyUnicode_FromStringAndSize(str : Char*, size : Int)
+  fun unicode_from_string_and_size = PyUnicode_FromStringAndSize(str : Char*, size : Int) : PyObject
 
   # List
   fun list_new = PyList_New(size : Int) : PyObject

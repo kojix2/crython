@@ -44,5 +44,50 @@ module Crython
 
     def initialize(@raw : LibPython::PyObject)
     end
+
+    macro method_missing(call)
+      def {{ call.name }}(
+        {% for arg in call.args %}
+        {{arg}},
+      {% end %}
+      {% if call.named_args %}
+        {% for narg in call.named_args %}
+          {{narg.name}} = {{narg.value}},
+        {% end %}
+      {% end %}
+    )
+        attr = get_attr({{ call.name.stringify }})
+        {% if call.named_args %}
+          args_tuple = LibPython.build_value("O" * {{ call.args.size }}, {{ call.args.splat }})
+          kwargs_dict = LibPython.dict_new
+          {% for narg in call.named_args %}
+            str = {{ narg.name.stringify }}
+            cstr = str.to_unsafe
+            k = LibPython.unicode_from_string_and_size(cstr, str.size)
+            LibPython.dict_set_item(kwargs_dict, k, {{ narg.name }})
+          {% end %}
+          ret = LibPython.object_call(attr, args_tuple, kwargs_dict)
+        {% else %}
+          {% if call.args.size > 0 %}
+            ret = LibPython.object_call_function(attr, {{ call.args.splat }}, nil)
+          {% else %}
+            ret = LibPython.object_call_function(attr, nil)
+          {% end %}
+        {% end %}
+        PyObject.new(ret)
+      end
+    end
+
+    def to_s(io) : Nil
+      s = LibPython.object_string(@raw)
+      ptr = LibPython.unicode_as_utf8(s)
+      io.print String.new(ptr)
+    end
+
+    def inspect(io) : Nil
+      s = LibPython.object_repr(@raw)
+      ptr = LibPython.unicode_as_utf8(s)
+      io.print String.new(ptr)
+    end
   end
 end
