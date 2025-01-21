@@ -23,14 +23,16 @@ jobs:
           crystal: latest
       - name: Ubuntu - Install Python3 with apt
         if: matrix.os == 'ubuntu'
-        run: sudo apt-get update && sudo apt-get install -y libpython3-dev
+        run: |
+          sudo apt-get update && sudo apt-get install -y libpython3-dev
+          pip3 install matplotlib
       - name: MacOS - Install Python3 with Homebrew
         if: matrix.os == 'macos'
-        run: brew install python3
-      - name: Install dependencies
         run: |
-          pip3 install matplotlib
-          shards install --without-development --release
+          brew install python3
+          brew install python-matplotlib
+      - name: Install dependencies
+        run: shards install --without-development --release
       - name: Build
         run: make
       - name: Run tests
