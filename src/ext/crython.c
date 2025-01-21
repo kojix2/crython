@@ -1,33 +1,39 @@
 #include <Python.h>
 
-
-extern void py_incref(PyObject *o) {
+extern void py_incref(PyObject *o)
+{
   Py_INCREF(o);
 }
 
-extern void py_xincref(PyObject *o) {
+extern void py_xincref(PyObject *o)
+{
   Py_XINCREF(o);
 }
 
-extern void py_decref(PyObject *o) {
+extern void py_decref(PyObject *o)
+{
   Py_DECREF(o);
 }
 
-extern void py_xdecref(PyObject *o) {
+extern void py_xdecref(PyObject *o)
+{
   Py_XDECREF(o);
 }
 
-extern void py_clear(PyObject *o) {
+extern void py_clear(PyObject *o)
+{
   Py_CLEAR(o);
 }
 
 /* End reference counting macros */
 
-extern PyObject* py_none() {
+extern PyObject *py_none()
+{
   return Py_None;
 }
 
-extern PyObject *load_module(char *module_name) {
+extern PyObject *load_module(char *module_name)
+{
   PyObject *pName, *pModule;
 
   pName = PyUnicode_FromString(module_name);
@@ -39,19 +45,23 @@ extern PyObject *load_module(char *module_name) {
   return pModule;
 }
 
-extern size_t list_item_count(PyObject *list) {
+extern size_t list_item_count(PyObject *list)
+{
   return PyList_Size(list);
 }
 
-extern PyObject *instantiate_python_class(PyObject *class) {
+extern PyObject *instantiate_python_class(PyObject *class)
+{
   return PyObject_CallFunctionObjArgs(class, NULL);
 }
 
-extern PyObject *get_name(PyObject *pObject) {
+extern PyObject *get_name(PyObject *pObject)
+{
   PyObject *pFunc, *pValue = NULL;
 
   pFunc = PyObject_GetAttrString(pObject, "name");
-  if (pFunc != NULL) {
+  if (pFunc != NULL)
+  {
     pValue = PyObject_CallFunctionObjArgs(pFunc, NULL);
     Py_DECREF(pFunc);
   }
@@ -64,7 +74,7 @@ extern long key_hash(PyObject *key)
   return PyObject_Hash(key);
 }
 
-extern int key_eq(PyObject *key, PyObject* other)
+extern int key_eq(PyObject *key, PyObject *other)
 {
   return PyObject_RichCompareBool(key, other, Py_EQ);
 }

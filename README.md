@@ -10,7 +10,7 @@ Current status: PoC
 A Python interpreter is required as a dependency.
 Ensure `python-config --ldflags` works.
 
-Since Python's C API expose some constants or functions using preprocessor macros, `crython` uses a thin *static* library written in C (see `src/ext/crython.c`) that re-exports them with a fixed C API.
+Since Python's C API expose some constants or functions using preprocessor macros, `crython` uses a thin _static_ library written in C (see `src/ext/crython.c`) that re-exports them with a fixed C API.
 
 Use `make` with the optional variables `release=1` or `debug=1` to build the static library. Note that `make release=1` is automatically executed by `shards` as a postinstall script.
 
