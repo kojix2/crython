@@ -42,9 +42,6 @@ lib LibPython
 
   fun build_value = Py_BuildValue(format : Char*, ...) : PyObject
 
-  fun string_size = PyString_Size(o : PyObject) : Int
-  fun string_as_cstring = PyString_AsString(str : PyObject) : Char*
-  fun string_from_cstring = PyString_FromStringAndSize(str : Char*, size : Int)
   fun unicode_get_length = PyUnicode_GetLength(o : PyObject) : Int
   fun unicode_as_utf8 = PyUnicode_AsUTF8(str : PyObject) : Char*
   fun unicode_from_string_and_size = PyUnicode_FromStringAndSize(str : Char*, size : Int)
