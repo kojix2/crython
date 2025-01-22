@@ -1,16 +1,13 @@
 require "../src/crython"
+require "../src/crython/string"
 
 Crython.embed_python do
   sns = Crython.import_module("seaborn")
-  ticks = LibPython.build_value("s", "ticks")
-  sns.set_theme(style: ticks)
+  sns.set_theme(style: "ticks".to_py)
 
-  penguins = LibPython.build_value("s", "penguins")
-  df = sns.load_dataset(penguins)
-  species = LibPython.build_value("s", "species")
-  plot = sns.pairplot(df, hue: species)
+  df = sns.load_dataset("penguins".to_py)
+  plot = sns.pairplot(df, hue: "species".to_py)
 
   plt = Crython.import_module("matplotlib.pyplot")
   plt.show
 end
-
