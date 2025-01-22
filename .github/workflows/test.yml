@@ -25,12 +25,11 @@ jobs:
         if: matrix.os == 'ubuntu'
         run: |
           sudo apt-get update && sudo apt-get install -y libpython3-dev
-          pip3 install matplotlib
+          pip3 install matplotlib seaborn
       - name: MacOS - Install Python3 with Homebrew
         if: matrix.os == 'macos'
         run: |
-          brew install python3
-          brew install python-matplotlib
+          brew install python-seaborn
       - name: Install dependencies
         run: shards install --without-development --release
       - name: Build

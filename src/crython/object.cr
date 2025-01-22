@@ -52,13 +52,19 @@ module Crython
       {% end %}
       {% if call.named_args %}
         {% for narg in call.named_args %}
-          {{narg.name}} = {{narg.value}},
+          {{narg.name}},
         {% end %}
       {% end %}
     )
-        attr = get_attr({{ call.name.stringify }})
+        attr = LibPython.object_get_attr_string(@raw, {{ call.name.stringify }}.to_unsafe)
         {% if call.named_args %}
-          args_tuple = LibPython.build_value("O" * {{ call.args.size }}, {{ call.args.splat }})
+          {% if call.args.size == 0 %}
+            args_tuple = LibPython.tuple_new(0)
+          {% elsif call.args.size == 1 %}
+            args_tuple = LibPython.build_value("(O)", {{ call.args.splat }})
+          {% elsif call.args.size > 1 %}
+            args_tuple = LibPython.build_value("O" * {{ call.args.size }}, {{ call.args.splat }})
+          {% end %}
           kwargs_dict = LibPython.dict_new
           {% for narg in call.named_args %}
             str = {{ narg.name.stringify }}
