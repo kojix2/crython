@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.14.0">
+<meta name="crystal_docs.project_version" content="dev">
+<meta name="crystal_docs.project_name" content="crython">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="crython">
+  <title>Crython::PyList - crython dev</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          crython
+        </a>
+      </h1>
+
+      <span class="project-version">
+        dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="crython/Crython" data-name="crython">
+      <a href="../Crython.html">Crython</a>
+      
+        <ul>
+  
+  <li class=" current" data-id="crython/Crython/PyList" data-name="crython::pylist">
+      <a href="../Crython/PyList.html">PyList</a>
+      
+    </li>
+  
+  <li class=" " data-id="crython/Crython/PyObject" data-name="crython::pyobject">
+      <a href="../Crython/PyObject.html">PyObject</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="crython/String" data-name="string">
+      <a href="../String.html">String</a>
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">struct</span> Crython::<wbr>PyList
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Crython/PyList.html">Crython::PyList</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type">Crython::ObjectProtocol</li>
+    
+      <li class="other-type">Indexable(<a href="../Crython/PyObject.html">Crython::PyObject</a>)</li>
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/kojix2/crython/blob/21d14bdaea83e8eb8ff45ee87de7eaa0b80ab280/src/crython/list.cr#L2" target="_blank">
+        crython/list.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28size%3AInt32%3D0%29-class-method" class="signature"><strong>.new</strong>(size : Int32 = <span class="n">0</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new%28raw%3ALibPython%3A%3APyObject%29-class-method" class="signature"><strong>.new</strong>(raw : LibPython::PyObject)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%3D%28index%3AInt32%2Cvalue%3AT%29forallT-instance-method" class="signature"><strong>#[]=</strong>(index : Int32, value : T) forall T</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#size%3AInt32-instance-method" class="signature"><strong>#size</strong> : Int32</a>
+        
+          <div class="summary"><p>Returns the number of elements in this container.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#unsafe_fetch%28index%3AInt%29-instance-method" class="signature"><strong>#unsafe_fetch</strong>(index : Int)</a>
+        
+          <div class="summary"><p>Returns the element at the given <em>index</em>, without doing any bounds check.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+  <h3>Instance methods inherited from module <code>Crython::ObjectProtocol</code></h3>
+  
+  
+    <a href="../Crython/ObjectProtocol.html#%3C%3D%3E%28other%3AObjectProtocol%29-instance-method" class="tooltip">
+      <span><=>(other : ObjectProtocol)</span>
+    <=></a>, 
+    
+  
+    <a href="../Crython/ObjectProtocol.html#callable%3F%3ABool-instance-method" class="tooltip">
+      <span>callable? : Bool</span>
+    callable?</a>, 
+    
+  
+    <a href="../Crython/ObjectProtocol.html#del_attr%28attr%3AString%29%3ABool-instance-method" class="tooltip">
+      <span>del_attr(attr : String) : Bool</span>
+    del_attr</a>, 
+    
+  
+    <a href="../Crython/ObjectProtocol.html#get_attr%28attr%3AString%29%3APyObject-instance-method" class="tooltip">
+      <span>get_attr(attr : String) : PyObject</span>
+    get_attr</a>, 
+    
+  
+    <a href="../Crython/ObjectProtocol.html#has_attr%3F%28attr%3AString%29%3ABool-instance-method" class="tooltip">
+      <span>has_attr?(attr : String) : Bool</span>
+    has_attr?</a>, 
+    
+  
+    <a href="../Crython/ObjectProtocol.html#none%3F-instance-method" class="tooltip">
+      <span>none?</span>
+    none?</a>, 
+    
+  
+    <a href="../Crython/ObjectProtocol.html#set_attr%28attr%3AString%2Cobj%3AObjectMethods%29-instance-method" class="tooltip">
+      <span>set_attr(attr : String, obj : ObjectMethods)</span>
+    set_attr</a>, 
+    
+  
+    <a href="../Crython/ObjectProtocol.html#to_unsafe-instance-method" class="tooltip">
+      <span>to_unsafe</span>
+    to_unsafe</a>
+    
+  
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(size:Int32=0)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(size : Int32 = <span class="n">0</span>)
+
+        <a class="method-permalink" href="#new%28size%3AInt32%3D0%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/21d14bdaea83e8eb8ff45ee87de7eaa0b80ab280/src/crython/list.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(raw:LibPython::PyObject)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(raw : LibPython::PyObject)
+
+        <a class="method-permalink" href="#new%28raw%3ALibPython%3A%3APyObject%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/21d14bdaea83e8eb8ff45ee87de7eaa0b80ab280/src/crython/list.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="[]=(index:Int32,value:T)forallT-instance-method">
+      <div class="signature">
+        
+        def <strong>[]=</strong>(index : Int32, value : <a href="../Crython/PyObject.html">T</a>) forall T
+
+        <a class="method-permalink" href="#%5B%5D%3D%28index%3AInt32%2Cvalue%3AT%29forallT-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/21d14bdaea83e8eb8ff45ee87de7eaa0b80ab280/src/crython/list.cr#L21" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="size:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>size</strong> : Int32
+
+        <a class="method-permalink" href="#size%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from module Indexable(<a href="../Crython/PyObject.html">Crython::PyObject</a>)
+            </div>
+          
+          <p>Returns the number of elements in this container.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/21d14bdaea83e8eb8ff45ee87de7eaa0b80ab280/src/crython/list.cr#L13" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="unsafe_fetch(index:Int)-instance-method">
+      <div class="signature">
+        
+        def <strong>unsafe_fetch</strong>(index : Int)
+
+        <a class="method-permalink" href="#unsafe_fetch%28index%3AInt%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from module Indexable(<a href="../Crython/PyObject.html">Crython::PyObject</a>)
+            </div>
+          
+          <p>Returns the element at the given <em>index</em>, without doing any bounds check.</p>
+<p><code>Indexable</code> makes sure to invoke this method with <em>index</em> in <code>0...size</code>,
+so converting negative indices to positive ones is not needed here.</p>
+<p>Clients never invoke this method directly. Instead, they access
+elements with <code>#[](index)</code> and <code>#[]?(index)</code>.</p>
+<p>This method should only be directly invoked if you are absolutely
+sure the index is in bounds, to avoid a bounds check for a small boost
+of performance.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/21d14bdaea83e8eb8ff45ee87de7eaa0b80ab280/src/crython/list.cr#L17" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+</div>
+
+</body>
+</html>
