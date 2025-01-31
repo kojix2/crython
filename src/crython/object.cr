@@ -84,6 +84,20 @@ module Crython
       end
     end
 
+    def [](key : String) : PyObject
+      PyObject.new(LibPython.dict_get_item(@raw, key.to_unsafe))
+    end
+
+    def [](index : Int) : PyObject
+      if LibPython.list_check(@raw) != 0
+        PyObject.new(LibPython.list_get_item(@raw, index))
+      elsif LibPython.tuple_check(@raw) != 0
+        PyObject.new(LibPython.tuple_get_item(@raw, index))
+      else
+        raise "Object is neither a list nor a tuple"
+      end
+    end
+
     def to_s(io) : Nil
       s = LibPython.object_string(@raw)
       ptr = LibPython.unicode_as_utf8(s)

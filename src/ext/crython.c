@@ -1,95 +1,100 @@
 #include <Python.h>
 
+/* ---- Reference Counting Functions ---- */
 extern void py_incref(PyObject *o)
 {
-  Py_INCREF(o);
+  Py_INCREF(o); // Increment reference count
 }
 
 extern void py_xincref(PyObject *o)
 {
-  Py_XINCREF(o);
+  Py_XINCREF(o); // Increment reference count if not NULL
 }
 
 extern void py_decref(PyObject *o)
 {
-  Py_DECREF(o);
+  Py_DECREF(o); // Decrement reference count
 }
 
 extern void py_xdecref(PyObject *o)
 {
-  Py_XDECREF(o);
+  Py_XDECREF(o); // Decrement reference count if not NULL
 }
 
 extern void py_clear(PyObject *o)
 {
-  Py_CLEAR(o);
+  Py_CLEAR(o); // Decrement reference count and set to NULL
 }
 
-/* End reference counting macros */
-
-extern PyObject *py_none()
+/* ---- Basic Object Checks ---- */
+extern int py_bool_check(PyObject *b)
 {
-  return Py_None;
+  return PyBool_Check(b); // Check if object is a boolean
 }
 
-extern PyObject *load_module(char *module_name)
+extern int is_py_none(PyObject *o)
 {
-  PyObject *pName, *pModule;
+  return o == Py_None; // Check if object is None
+}
 
-  pName = PyUnicode_FromString(module_name);
-  /* Error checking of pName left out */
+/* ---- List Type Checks & Operations ---- */
+extern int py_list_check(PyObject *l)
+{
+  return PyList_Check(l); // Check if object is a list or its subclass
+}
 
-  pModule = PyImport_Import(pName);
-  Py_DECREF(pName);
-
-  return pModule;
+extern int py_list_check_exact(PyObject *l)
+{
+  return PyList_CheckExact(l); // Check if object is exactly a list (not subclass)
 }
 
 extern size_t list_item_count(PyObject *list)
 {
-  return PyList_Size(list);
+  return PyList_Size(list); // Get number of items in a list
 }
 
+/* ---- Hash & Comparison ---- */
+extern long key_hash(PyObject *key)
+{
+  return PyObject_Hash(key); // Get hash value of an object
+}
+
+extern int key_eq(PyObject *key, PyObject *other)
+{
+  return PyObject_RichCompareBool(key, other, Py_EQ); // Compare two objects for equality
+}
+
+/* ---- Module Handling ---- */
+extern PyObject *load_module(char *module_name)
+{
+  PyObject *pName, *pModule;
+  pName = PyUnicode_FromString(module_name);
+  pModule = PyImport_Import(pName); // Import a Python module by name
+  Py_DECREF(pName);
+  return pModule;
+}
+
+/* ---- Class Instantiation ---- */
 extern PyObject *instantiate_python_class(PyObject *class)
 {
-  return PyObject_CallFunctionObjArgs(class, NULL);
+  return PyObject_CallFunctionObjArgs(class, NULL); // Instantiate a Python class (no arguments)
 }
 
+/* ---- Attribute Access ---- */
 extern PyObject *get_name(PyObject *pObject)
 {
   PyObject *pFunc, *pValue = NULL;
-
-  pFunc = PyObject_GetAttrString(pObject, "name");
+  pFunc = PyObject_GetAttrString(pObject, "name"); // Get the "name" attribute
   if (pFunc != NULL)
   {
     pValue = PyObject_CallFunctionObjArgs(pFunc, NULL);
     Py_DECREF(pFunc);
   }
-
   return pValue;
 }
 
-extern long key_hash(PyObject *key)
+/* ---- Singleton Object Access ---- */
+extern PyObject *py_none()
 {
-  return PyObject_Hash(key);
-}
-
-extern int key_eq(PyObject *key, PyObject *other)
-{
-  return PyObject_RichCompareBool(key, other, Py_EQ);
-}
-
-extern int py_bool_check(PyObject *b)
-{
-  return PyBool_Check(b);
-}
-
-extern int is_py_none(PyObject *o)
-{
-  return o == Py_None;
-}
-
-extern int py_list_check(PyObject *l)
-{
-  return PyList_Check(l);
+  return Py_None; // Return Py_None singleton
 }
