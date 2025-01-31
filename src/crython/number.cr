@@ -69,9 +69,3 @@ struct Float64
     LibPython.build_value("d", self)
   end
 end
-
-struct Bool
-  def to_py
-    LibPython.build_value("O", self ? LibPython.Py_True : LibPython.Py_False)
-  end
-end

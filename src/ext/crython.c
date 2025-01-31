@@ -114,3 +114,14 @@ extern PyObject *py_none()
 {
   return Py_None; // Return Py_None singleton
 }
+
+/* ---- Boolean Object Access ---- */
+extern PyObject *py_true()
+{
+  return Py_True; // Return Py_True singleton
+}
+
+extern PyObject *py_false()
+{
+  return Py_False; // Return Py_False singleton
+}

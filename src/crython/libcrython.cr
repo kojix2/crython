@@ -17,6 +17,10 @@ lib LibCrython
   # Singleton Object Access
   fun none = py_none : PyObject
 
+  # Boolean Object Access
+  fun py_true = py_true : PyObject
+  fun py_false = py_false : PyObject
+
   # List Type Checks & Operations
   fun list? = py_list_check(l : PyObject) : LibC::Int
   fun list_exact? = py_list_check_exact(l : PyObject) : LibC::Int
