@@ -96,6 +96,12 @@
 <p><a href="https://github.com/kojix2/crython/actions/workflows/test.yml"><img src="https://github.com/kojix2/crython/actions/workflows/test.yml/badge.svg" alt="test" /></a></p>
 <p>:gem: :snake:　
 Crystal meets Python!</p>
+<h2><a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Overview</h2>
+<p>Crython allows the use of Python libraries within Crystal applications.</p>
 <h2><a id="installation" class="anchor" href="#installation">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -108,14 +114,51 @@ Crystal meets Python!</p>
 <pre><code class="language-yaml">dependencies:
   crython:
     github: kojix2/crython</code></pre>
+<h3><a id="prerequisites" class="anchor" href="#prerequisites">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Prerequisites</h3>
+<ul>
+<li>Python 3.x installed on your system.</li>
+<li>Ensure that the <code>python3-config</code> command is available and correctly configured.</li>
+</ul>
+<h3><a id="troubleshooting" class="anchor" href="#troubleshooting">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Troubleshooting</h3>
+<ul>
+<li>If you encounter issues with <code>python3-config</code>, ensure that the Python development headers are installed on your system.</li>
+</ul>
 <h2><a id="usage" class="anchor" href="#usage">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>Usage</h2>
+<p>To use Crython in your Crystal project, simply require the library:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;crython&quot;</span></code></pre>
-<p>See <a href="examples">examples</a> folder.
-Use <code>make examples</code> to build all examples.</p>
+<h3><a id="examples" class="anchor" href="#examples">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Examples</h3>
+<p>Crython allows you to import and use Python modules directly in Crystal. Here are some basic examples:</p>
+<h4><a id="importing-a-python-module" class="anchor" href="#importing-a-python-module">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Importing a Python Module</h4>
+<pre><code class="language-crystal">mod <span class="o">=</span> <span class="t">Crython</span>.import_module(<span class="s">&quot;math&quot;</span>)</code></pre>
+<h4><a id="embedding-python-code" class="anchor" href="#embedding-python-code">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Embedding Python Code</h4>
+<pre><code class="language-crystal"><span class="t">Crython</span>.embed_python <span class="k">do</span>
+  <span class="c"># Your Python code here</span>
+<span class="k">end</span></code></pre>
+<p>For more examples, see the <a href="examples">examples</a> folder. Use <code>make examples</code> to build all examples.</p>
 <h2><a id="development" class="anchor" href="#development">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
