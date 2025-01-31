@@ -7,7 +7,7 @@ on:
   # schedule:
   #   - cron: "51 3 * * 6" # Runs at 03:51, only on Saturday
 jobs:
-  build:
+  test:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
     strategy:
