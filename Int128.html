@@ -14,9 +14,9 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="crython">
-  <title>crython dev</title>
+  <title>Int128 - crython dev</title>
   <script type="text/javascript">
-  CrystalDocs.base_path = "";
+    CrystalDocs.base_path = "";
   </script>
 </head>
 <body>
@@ -92,7 +92,7 @@
       
     </li>
   
-  <li class=" " data-id="crython/Int128" data-name="int128">
+  <li class=" current" data-id="crython/Int128" data-name="int128">
       <a href="Int128.html">Int128</a>
       
     </li>
@@ -154,96 +154,194 @@
 
 
 <div class="main-content">
-<h1><a id="crython" class="anchor" href="#crython">  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>crython</h1>
-<p><a href="https://github.com/kojix2/crython/actions/workflows/test.yml"><img src="https://github.com/kojix2/crython/actions/workflows/test.yml/badge.svg" alt="test" /></a></p>
-<p>:gem: :snake:　
-Crystal meets Python!</p>
-<h2><a id="overview" class="anchor" href="#overview">
+<h1 class="type-name">
+
+  <span class="kind">struct</span> Int128
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="Int128.html">Int128</a></li><li class="superclass">Int</li><li class="superclass">Number</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Overview</h2>
-<p>Crython allows the use of Python libraries within Crystal applications.</p>
-<h2><a id="installation" class="anchor" href="#installation">
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/kojix2/crython/blob/de2b9fd901a9166c08ed7f6038ab54566db6143d/src/crython/number.cr#L55" target="_blank">
+        crython/number.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Installation</h2>
-<ul>
-<li>A Python interpreter is required as a dependency.</li>
-<li>Ensure <code>python3-config --ldflags</code> works.</li>
-</ul>
-<pre><code class="language-yaml">dependencies:
-  crython:
-    github: kojix2/crython</code></pre>
-<h3><a id="prerequisites" class="anchor" href="#prerequisites">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Prerequisites</h3>
-<ul>
-<li>Python 3.x installed on your system.</li>
-<li>Ensure that the <code>python3-config</code> command is available and correctly configured.</li>
-</ul>
-<h3><a id="troubleshooting" class="anchor" href="#troubleshooting">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Troubleshooting</h3>
-<ul>
-<li>If you encounter issues with <code>python3-config</code>, ensure that the Python development headers are installed on your system.</li>
-</ul>
-<h2><a id="usage" class="anchor" href="#usage">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Usage</h2>
-<p>To use Crython in your Crystal project, simply require the library:</p>
-<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;crython&quot;</span></code></pre>
-<h3><a id="examples" class="anchor" href="#examples">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Examples</h3>
-<p>Crython allows you to import and use Python modules directly in Crystal. Here are some basic examples:</p>
-<h4><a id="importing-a-python-module" class="anchor" href="#importing-a-python-module">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Importing a Python Module</h4>
-<pre><code class="language-crystal">mod <span class="o">=</span> <span class="t">Crython</span>.import_module(<span class="s">&quot;math&quot;</span>)</code></pre>
-<h4><a id="embedding-python-code" class="anchor" href="#embedding-python-code">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Embedding Python Code</h4>
-<pre><code class="language-crystal"><span class="t">Crython</span>.embed_python <span class="k">do</span>
-  <span class="c"># Your Python code here</span>
-<span class="k">end</span></code></pre>
-<p>For more examples, see the <a href="examples">examples</a> folder. Use <code>make examples</code> to build all examples.</p>
-<h2><a id="development" class="anchor" href="#development">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Development</h2>
-<p>Some constants and functions in Python's C API are provided as preprocessor macros.
-To make them easier to use, Crython uses a small static library (see src/ext/crython.c) that turns them into a fixed C API.</p>
-<h2><a id="contributing" class="anchor" href="#contributing">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Contributing</h2>
-<p>Fork ➔ Edit ➔ Commmit ➔ Pull Request</p>
-<h2><a id="license" class="anchor" href="#license">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>LICENSE</h2>
-<p><a href="LICENSE">MIT</a></p>
-<p><a href="https://github.com/RomainFranceschini">Romain Franceschini</a> - The original creator of the crython project</p>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#to_py-instance-method" class="signature"><strong>#to_py</strong></a>
+        
+      </li>
+    
+  </ul>
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
 </div>
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="to_py-instance-method">
+      <div class="signature">
+        
+        def <strong>to_py</strong>
+
+        <a class="method-permalink" href="#to_py-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/de2b9fd901a9166c08ed7f6038ab54566db6143d/src/crython/number.cr#L56" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+</div>
+
 </body>
 </html>
