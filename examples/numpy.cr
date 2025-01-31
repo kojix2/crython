@@ -9,5 +9,5 @@ Crython.embed_python do
   x2 = np.array([4, 5, 6].to_py)
 
   y = x1 + x2
-  print x1, " + ", x2, " = ", y
+  print "#{x1} + #{x2} = #{y}"
 end

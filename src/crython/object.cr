@@ -108,8 +108,36 @@ module Crython
       __floordiv__(other)
     end
 
+    def %(other : PyObject) : PyObject
+      __mod__(other)
+    end
+
     def **(other : PyObject) : PyObject
       __pow__(other)
+    end
+
+    def <(other : PyObject) : Bool
+      __lt__(other)
+    end
+
+    def <=(other : PyObject) : Bool
+      __le__(other)
+    end
+
+    def >(other : PyObject) : Bool
+      __gt__(other)
+    end
+
+    def >=(other : PyObject) : Bool
+      __ge__(other)
+    end
+
+    def ==(other : PyObject) : Bool
+      __eq__(other)
+    end
+
+    def !=(other : PyObject) : Bool
+      __ne__(other)
     end
 
     def to_s(io) : Nil
