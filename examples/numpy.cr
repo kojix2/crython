@@ -8,6 +8,6 @@ Crython.embed_python do
   x1 = np.array([1, 2, 3].to_py)
   x2 = np.array([4, 5, 6].to_py)
 
-  y = np.add(x1, x2)
+  y = x1 + x2
   print x1, " + ", x2, " = ", y
 end
