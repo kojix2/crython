@@ -1,13 +1,12 @@
 require "../src/crython"
+require "../src/crython/array"
+require "../src/crython/number"
 
 Crython.embed_python do
   np = Crython.import_module("numpy")
 
-  arg1 = LibPython.build_value("[i,i,i]", 1, 2, 3)
-  x1 = np.array(arg1)
-
-  arg2 = LibPython.build_value("[i,i,i]", 4, 5, 6)
-  x2 = np.array(arg2)
+  x1 = np.array([1, 2, 3].to_py)
+  x2 = np.array([4, 5, 6].to_py)
 
   y = np.add(x1, x2)
   print x1, " + ", x2, " = ", y
