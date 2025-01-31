@@ -22,6 +22,11 @@ lib LibCrython
   fun list_exact? = py_list_check_exact(l : PyObject) : LibC::Int
   fun list_size = list_item_count(list : PyObject) : LibC::SizeT
 
+  # Tuple Type Checks & Operations
+  fun tuple? = py_tuple_check(t : PyObject) : LibC::Int
+  fun tuple_exact? = py_tuple_check_exact(t : PyObject) : LibC::Int
+  fun tuple_size = tuple_item_count(tuple : PyObject) : LibC::SizeT
+
   # Hash & Comparison
   fun hash = key_hash(key : PyObject) : LibC::Long
   fun eq? = key_eq(key : PyObject, other : PyObject) : LibC::Int

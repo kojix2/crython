@@ -89,9 +89,9 @@ module Crython
     end
 
     def [](index : Int) : PyObject
-      if LibPython.list_check(@raw) != 0
+      if LibCrython.list?(@raw) != 0
         PyObject.new(LibPython.list_get_item(@raw, index))
-      elsif LibPython.tuple_check(@raw) != 0
+      elsif LibCrython.tuple?(@raw) != 0
         PyObject.new(LibPython.tuple_get_item(@raw, index))
       else
         raise "Object is neither a list nor a tuple"

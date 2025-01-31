@@ -53,6 +53,22 @@ extern size_t list_item_count(PyObject *list)
   return PyList_Size(list); // Get number of items in a list
 }
 
+/* ---- Tuple Type Checks & Operations ---- */
+extern int py_tuple_check(PyObject *t)
+{
+  return PyTuple_Check(t); // Check if object is a tuple or its subclass
+}
+
+extern int py_tuple_check_exact(PyObject *t)
+{
+  return PyTuple_CheckExact(t); // Check if object is exactly a tuple (not subclass)
+}
+
+extern size_t tuple_item_count(PyObject *tuple)
+{
+  return PyTuple_Size(tuple); // Get number of items in a tuple
+}
+
 /* ---- Hash & Comparison ---- */
 extern long key_hash(PyObject *key)
 {
