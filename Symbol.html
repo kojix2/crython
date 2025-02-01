@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="crython">
-  <title>UInt16 - crython dev</title>
+  <title>Symbol - crython dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -137,7 +137,7 @@
       
     </li>
   
-  <li class=" " data-id="crython/Symbol" data-name="symbol">
+  <li class=" current" data-id="crython/Symbol" data-name="symbol">
       <a href="Symbol.html">Symbol</a>
       
     </li>
@@ -152,7 +152,7 @@
       
     </li>
   
-  <li class=" current" data-id="crython/UInt16" data-name="uint16">
+  <li class=" " data-id="crython/UInt16" data-name="uint16">
       <a href="UInt16.html">UInt16</a>
       
     </li>
@@ -181,19 +181,53 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">struct</span> UInt16
+  <span class="kind">struct</span> Symbol
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="UInt16.html">UInt16</a></li><li class="superclass">Int</li><li class="superclass">Number</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="Symbol.html">Symbol</a></li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>A symbol is a constant that is identified by a name without you having to give
+it a numeric value.</p>
+<pre><code class="language-crystal"><span class="n">:hello</span>
+<span class="n">:welcome</span>
+<span class="n">:&quot;123&quot;</span>
+<span class="n">:&quot;symbol with spaces&quot;</span></code></pre>
+<p>See <a href="https://crystal-lang.org/reference/syntax_and_semantics/literals/symbol.html"><code>Symbol</code> literals</a> in the language reference.</p>
+<p>Internally a symbol is represented as an <code><a href="Int32.html">Int32</a></code>, so it's very efficient.</p>
+<p>You can't dynamically create symbols. When you compile your program, each symbol
+gets assigned a unique number.</p>
 
 
 
 
 
-
-
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type">Comparable(<a href="Symbol.html">Symbol</a>)</li>
+    
+  </ul>
 
 
 
@@ -214,8 +248,8 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/016f45c7a273d61c31208cd5acd4b201dc1ddc32/src/crython/number.cr#L15" target="_blank">
-        crython/number.cr
+      <a href="https://github.com/kojix2/crython/blob/016f45c7a273d61c31208cd5acd4b201dc1ddc32/src/crython/symbol.cr#L1" target="_blank">
+        crython/symbol.cr
       </a>
     
     <br/>
@@ -244,6 +278,8 @@
       <li class="entry-summary">
         <a href="#to_py%3ACrython%3A%3APyObject-instance-method" class="signature"><strong>#to_py</strong> : Crython::PyObject</a>
         
+          <div class="summary"><p>Currently, just convert the symbol to a string</p></div>
+        
       </li>
     
   </ul>
@@ -251,45 +287,6 @@
 
 
 <div class="methods-inherited">
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
   
     
 
@@ -356,10 +353,15 @@
         <a class="method-permalink" href="#to_py%3ACrython%3A%3APyObject-instance-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Currently, just convert the symbol to a string</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/016f45c7a273d61c31208cd5acd4b201dc1ddc32/src/crython/number.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/016f45c7a273d61c31208cd5acd4b201dc1ddc32/src/crython/symbol.cr#L3" target="_blank">View source</a>]
         
       </div>
     </div>

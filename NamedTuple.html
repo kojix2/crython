@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="crython">
-  <title>UInt16 - crython dev</title>
+  <title>NamedTuple(**T) - crython dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -122,7 +122,7 @@
       
     </li>
   
-  <li class=" " data-id="crython/NamedTuple" data-name="namedtuple(**t)">
+  <li class=" current" data-id="crython/NamedTuple" data-name="namedtuple(**t)">
       <a href="NamedTuple.html">NamedTuple</a>
       
     </li>
@@ -152,7 +152,7 @@
       
     </li>
   
-  <li class=" current" data-id="crython/UInt16" data-name="uint16">
+  <li class=" " data-id="crython/UInt16" data-name="uint16">
       <a href="UInt16.html">UInt16</a>
       
     </li>
@@ -181,15 +181,55 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">struct</span> UInt16
+  <span class="kind">struct</span> NamedTuple(**T)
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="UInt16.html">UInt16</a></li><li class="superclass">Int</li><li class="superclass">Number</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="NamedTuple.html">NamedTuple(**T)</a></li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>A named tuple is a fixed-size, immutable, stack-allocated mapping
+of a fixed set of keys to values.</p>
+<p>You can think of a <code><a href="NamedTuple.html">NamedTuple</a></code> as an immutable <code><a href="Hash.html">Hash</a></code> whose keys (which
+are of type <code><a href="Symbol.html">Symbol</a></code>), and the types for each key, are known at compile time.</p>
+<p>A named tuple can be created with a named tuple literal:</p>
+<pre><code class="language-crystal">language <span class="o">=</span> {name: <span class="s">&quot;Crystal&quot;</span>, year: <span class="n">2011</span>} <span class="c"># NamedTuple(name: String, year: Int32)</span>
+
+language[<span class="n">:name</span>]  <span class="c"># =&gt; &quot;Crystal&quot;</span>
+language[<span class="n">:year</span>]  <span class="c"># =&gt; 2011</span>
+language[<span class="n">:other</span>] <span class="c"># compile time error</span></code></pre>
+<p>See <a href="https://crystal-lang.org/reference/syntax_and_semantics/literals/named_tuple.html"><code>NamedTuple</code> literals</a> in the language reference.</p>
+<p>The compiler knows what types are in each key, so when indexing a named tuple
+with a symbol or string literal the compiler will return the value for that
+key and with the expected type, like in the above snippet. Indexing with a
+symbol or string literal for which there's no key will give a compile-time
+error.</p>
+<p>Indexing with a symbol or string that is only known at runtime will return
+a value whose type is the union of all the types in the named tuple,
+and might raise <code>KeyError</code>.</p>
+<p>Indexing with <code>#[]?</code> does not make the return value nilable if the key is
+known to exist:</p>
+<pre><code class="language-crystal">language <span class="o">=</span> {name: <span class="s">&quot;Crystal&quot;</span>, year: <span class="n">2011</span>}
+language[<span class="n">:name</span>]?         <span class="c"># =&gt; &quot;Crystal&quot;</span>
+<span class="k">typeof</span>(language[<span class="n">:name</span>]?) <span class="c"># =&gt; String</span></code></pre>
+<p><code><a href="NamedTuple.html">NamedTuple</a></code>'s own instance classes may also be indexed in a similar manner,
+returning their value types instead:</p>
+<pre><code class="language-crystal">tuple <span class="o">=</span> <span class="t">NamedTuple</span>(name: <span class="t">String</span>, year: <span class="t">Int32</span>)
+tuple[<span class="n">:name</span>]   <span class="c"># =&gt; String</span>
+tuple[<span class="s">&quot;year&quot;</span>]  <span class="c"># =&gt; Int32</span>
+tuple[<span class="n">:other</span>]? <span class="c"># =&gt; nil</span></code></pre>
 
 
 
@@ -214,8 +254,8 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/016f45c7a273d61c31208cd5acd4b201dc1ddc32/src/crython/number.cr#L15" target="_blank">
-        crython/number.cr
+      <a href="https://github.com/kojix2/crython/blob/016f45c7a273d61c31208cd5acd4b201dc1ddc32/src/crython/named_tuple.cr#L1" target="_blank">
+        crython/named_tuple.cr
       </a>
     
     <br/>
@@ -278,58 +318,6 @@
 
 
   
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
 </div>
 
 
@@ -359,7 +347,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/016f45c7a273d61c31208cd5acd4b201dc1ddc32/src/crython/number.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/016f45c7a273d61c31208cd5acd4b201dc1ddc32/src/crython/named_tuple.cr#L2" target="_blank">View source</a>]
         
       </div>
     </div>
