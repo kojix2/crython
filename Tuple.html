@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="crython">
-  <title>Array(T) - crython dev</title>
+  <title>Tuple(*T) - crython dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -57,7 +57,7 @@
   <div class="types-list">
     <ul>
   
-  <li class=" current" data-id="crython/Array" data-name="array(t)">
+  <li class=" " data-id="crython/Array" data-name="array(t)">
       <a href="Array.html">Array</a>
       
     </li>
@@ -122,7 +122,7 @@
       
     </li>
   
-  <li class=" " data-id="crython/Tuple" data-name="tuple(*t)">
+  <li class=" current" data-id="crython/Tuple" data-name="tuple(*t)">
       <a href="Tuple.html">Tuple</a>
       
     </li>
@@ -161,12 +161,12 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">class</span> Array(T)
+  <span class="kind">struct</span> Tuple(*T)
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="Array.html">Array(T)</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="Tuple.html">Tuple(*T)</a></li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
@@ -180,33 +180,67 @@
     Overview
   </h2>
 
-  <p>An <code><a href="Array.html">Array</a></code> is an ordered, integer-indexed collection of objects of type T.</p>
-<p>Array indexing starts at 0. A negative index is assumed to be
-relative to the end of the array: -1 indicates the last element,
--2 is the next to last element, and so on.</p>
-<p>An <code><a href="Array.html">Array</a></code> can be created using the usual <code>new</code> method (several are provided), or with an array literal:</p>
-<pre><code class="language-crystal"><span class="t">Array</span>(<span class="t">Int32</span>).new  <span class="c"># =&gt; []</span>
-[<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]         <span class="c"># Array(Int32)</span>
-[<span class="n">1</span>, <span class="s">&quot;hello&quot;</span>, <span class="s">&#39;x&#39;</span>] <span class="c"># Array(Int32 | String | Char)</span></code></pre>
-<p>See <a href="https://crystal-lang.org/reference/syntax_and_semantics/literals/array.html"><code>Array</code> literals</a> in the language reference.</p>
-<p>An <code><a href="Array.html">Array</a></code> can have mixed types, meaning T will be a union of types, but these are determined
-when the array is created, either by specifying T or by using an array literal. In the latter
-case, T will be set to the union of the array literal elements' types.</p>
-<p>When creating an empty array you must always specify T:</p>
-<pre><code class="language-crystal"><span class="o">[]</span> <span class="k">of</span> <span class="t">Int32</span> <span class="c"># same as Array(Int32)</span>
-<span class="o">[]</span>          <span class="c"># syntax error</span></code></pre>
-<p>An <code><a href="Array.html">Array</a></code> is implemented using an internal buffer of some capacity
-and is reallocated when elements are pushed to it when more capacity
-is needed. This is normally known as a <a href="http://en.wikipedia.org/wiki/Dynamic_array">dynamic array</a>.</p>
-<p>You can use a special array literal syntax with other types too, as long as they define an argless
-<code>new</code> method and a <code>&lt;&lt;</code> method. <code>Set</code> is one such type:</p>
-<pre><code class="language-crystal">set <span class="o">=</span> <span class="t">Set</span>{<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>} <span class="c"># =&gt; Set{1, 2, 3}</span>
-set.<span class="k">class</span>          <span class="c"># =&gt; Set(Int32)</span></code></pre>
-<p>The above is the same as this:</p>
-<pre><code class="language-crystal">set <span class="o">=</span> <span class="t">Set</span>(<span class="k">typeof</span>(<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>)).new
-set <span class="o">&lt;&lt;</span> <span class="n">1</span>
-set <span class="o">&lt;&lt;</span> <span class="n">2</span>
-set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
+  <p>A tuple is a fixed-size, immutable, stack-allocated sequence of values
+of possibly different types.</p>
+<p>You can think of a <code><a href="Tuple.html">Tuple</a></code> as an immutable <code><a href="Array.html">Array</a></code> whose types for each position
+are known at compile time.</p>
+<p>A tuple can be created with the usual <code>new</code> method or with a tuple literal:</p>
+<pre><code class="language-crystal">tuple <span class="o">=</span> {<span class="n">1</span>, <span class="s">&quot;hello&quot;</span>, <span class="s">&#39;x&#39;</span>} <span class="c"># Tuple(Int32, String, Char)</span>
+tuple[<span class="n">0</span>]                  <span class="c"># =&gt; 1</span>
+tuple[<span class="n">1</span>]                  <span class="c"># =&gt; &quot;hello&quot;</span>
+tuple[<span class="n">2</span>]                  <span class="c"># =&gt; &#39;x&#39;</span></code></pre>
+<p>See <a href="https://crystal-lang.org/reference/syntax_and_semantics/literals/tuple.html"><code>Tuple</code> literals</a> in the language reference.</p>
+<p>The compiler knows what types are in each position, so when indexing
+a tuple with an integer literal the compiler will return
+the value in that index and with the expected type, like in the above
+snippet. Indexing with an integer literal outside the bounds of the tuple
+will give a compile-time error.</p>
+<p>Indexing with an integer value that is only known at runtime will return
+a value whose type is the union of all the types in the tuple, and might raise
+<code>IndexError</code>.</p>
+<p>Indexing with <code>#[]?</code> does not make the return value nilable if the index is
+known to be within bounds:</p>
+<pre><code class="language-crystal">tuple <span class="o">=</span> {<span class="n">1</span>, <span class="s">&quot;hello&quot;</span>, <span class="s">&#39;x&#39;</span>}
+tuple[<span class="n">0</span>]?         <span class="c"># =&gt; 1</span>
+<span class="k">typeof</span>(tuple[<span class="n">0</span>]?) <span class="c"># =&gt; Int32</span></code></pre>
+<p>Indexing with a range literal known at compile-time is also allowed, and the
+returned value will have the correct sub-tuple type:</p>
+<pre><code class="language-crystal">tuple <span class="o">=</span> {<span class="n">1</span>, <span class="s">&quot;hello&quot;</span>, <span class="s">&#39;x&#39;</span>} <span class="c"># Tuple(Int32, String, Char)</span>
+sub <span class="o">=</span> tuple[<span class="n">0</span>..<span class="n">1</span>]         <span class="c"># =&gt; {1, &quot;hello&quot;}</span>
+<span class="k">typeof</span>(sub)               <span class="c"># =&gt; Tuple(Int32, String)</span></code></pre>
+<p><code><a href="Tuple.html">Tuple</a></code>'s own instance classes may also be indexed in a similar manner,
+returning their element types instead:</p>
+<pre><code class="language-crystal">tuple <span class="o">=</span> <span class="t">Tuple</span>(<span class="t">Int32</span>, <span class="t">String</span>, <span class="t">Char</span>)
+tuple[<span class="n">0</span>]   <span class="c"># =&gt; Int32</span>
+tuple[<span class="n">3</span>]?  <span class="c"># =&gt; nil</span>
+tuple[<span class="n">1</span>..] <span class="c"># =&gt; Tuple(String, Char)</span></code></pre>
+<p>Tuples are the preferred way to return fixed-size multiple return
+values because no memory is needed to be allocated for them:</p>
+<pre><code class="language-crystal"><span class="k">def</span> <span class="m">one_and_hello</span>
+  {<span class="n">1</span>, <span class="s">&quot;hello&quot;</span>}
+<span class="k">end</span>
+
+one, hello <span class="o">=</span> one_and_hello
+one   <span class="c"># =&gt; 1</span>
+hello <span class="c"># =&gt; &quot;hello&quot;</span></code></pre>
+<p>Good examples of the above are <code>Number#divmod</code> and <code>Enumerable#minmax</code>.</p>
+<p>Tuples can be splat with the <code>*</code> operator and passed to methods:</p>
+<pre><code class="language-crystal"><span class="k">def</span> <span class="m">multiply</span>(string, value)
+  string <span class="o">*</span> value
+<span class="k">end</span>
+
+tuple <span class="o">=</span> {<span class="s">&quot;hey&quot;</span>, <span class="n">2</span>}
+value <span class="o">=</span> multiply(<span class="o">*</span>tuple) <span class="c"># same as multiply tuple[0], tuple[1]</span>
+value                    <span class="c"># =&gt; &quot;heyhey&quot;</span></code></pre>
+<p>Finally, when using a splat argument in a method definition its type
+will be a tuple of the call arguments:</p>
+<pre><code class="language-crystal"><span class="k">def</span> <span class="m">splat_test</span>(<span class="o">*</span>args)
+  args
+<span class="k">end</span>
+
+tuple <span class="o">=</span> splat_test <span class="n">1</span>, <span class="s">&quot;hello&quot;</span>, <span class="s">&#39;x&#39;</span>
+tuple.<span class="k">class</span> <span class="c"># =&gt; Tuple(Int32, String, Char)</span>
+tuple       <span class="c"># =&gt; {1, &quot;hello&quot;, &#39;x&#39;}</span></code></pre>
 
 
 
@@ -222,9 +256,9 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
   </h2>
   <ul class="other-types-list">
     
-      <li class="other-type">Comparable(<a href="Array.html">Array(T)</a>)</li>
+      <li class="other-type">Comparable(<a href="Tuple.html">Tuple(*T)</a>)</li>
     
-      <li class="other-type">Indexable::Mutable(T)</li>
+      <li class="other-type">Indexable(Union(*T))</li>
     
   </ul>
 
@@ -247,8 +281,8 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/e2eb94b7acf162f706b598163dff1ec617801296/src/crython/array.cr#L1" target="_blank">
-        crython/array.cr
+      <a href="https://github.com/kojix2/crython/blob/e2eb94b7acf162f706b598163dff1ec617801296/src/crython/tuple.cr#L1" target="_blank">
+        crython/tuple.cr
       </a>
     
     <br/>
@@ -363,19 +397,6 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
 
 
   
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
 </div>
 
 
@@ -405,7 +426,7 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/e2eb94b7acf162f706b598163dff1ec617801296/src/crython/array.cr#L2" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/e2eb94b7acf162f706b598163dff1ec617801296/src/crython/tuple.cr#L2" target="_blank">View source</a>]
         
       </div>
     </div>
