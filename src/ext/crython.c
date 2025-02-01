@@ -96,19 +96,6 @@ extern PyObject *instantiate_python_class(PyObject *class)
   return PyObject_CallFunctionObjArgs(class, NULL); // Instantiate a Python class (no arguments)
 }
 
-/* ---- Attribute Access ---- */
-extern PyObject *get_name(PyObject *pObject)
-{
-  PyObject *pFunc, *pValue = NULL;
-  pFunc = PyObject_GetAttrString(pObject, "name"); // Get the "name" attribute
-  if (pFunc != NULL)
-  {
-    pValue = PyObject_CallFunctionObjArgs(pFunc, NULL);
-    Py_DECREF(pFunc);
-  }
-  return pValue;
-}
-
 /* ---- Singleton Object Access ---- */
 extern PyObject *py_none()
 {

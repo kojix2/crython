@@ -5,7 +5,7 @@ module Crython
     end
 
     def callable? : Bool
-      LibPython.object_callable?(@raw) != 0
+      LibPython.object_is_callable(@raw) != 0
     end
 
     def has_attr?(attr : String) : Bool

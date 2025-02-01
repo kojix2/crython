@@ -75,7 +75,12 @@ module Crython
         if args.size > 0
           ret = LibPython.object_call_function(attr, *args.map(&.to_py), nil)
         else
-          ret = LibPython.object_call_function(attr, nil)
+          if PyObject.new(attr).callable?
+            # PyFunction_Check is better? since callable can be a class
+            ret = LibPython.object_call_function(attr, nil)
+          else
+            ret = LibPython.object_get_attr_string(@raw, call.to_s.to_unsafe)
+          end
         end
       end
       PyObject.new(ret)

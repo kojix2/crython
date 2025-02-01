@@ -40,7 +40,4 @@ lib LibCrython
 
   # Class Instantiation
   fun instantiate = instantiate_python_class(class : PyObject) : PyObject
-
-  # Attribute Access
-  fun get_name = get_name(pObject : PyObject) : PyObject
 end
