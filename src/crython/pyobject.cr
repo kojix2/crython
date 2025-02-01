@@ -8,45 +8,6 @@ module Crython
     def initialize(@raw : LibPython::PyObject)
     end
 
-    # macro method_missing(call)
-    #   def {{ call.name }}(
-    #     {% for arg in call.args %}
-    #     {{arg}},
-    #   {% end %}
-    #   {% if call.named_args %}
-    #     {% for narg in call.named_args %}
-    #       {{narg.name}},
-    #     {% end %}
-    #   {% end %}
-    # )
-    #     attr = LibPython.object_get_attr_string(@raw, {{ call.name.stringify }}.to_unsafe)
-    #     {% if call.named_args %}
-    #       {% if call.args.size == 0 %}
-    #         args_tuple = LibPython.tuple_new(0)
-    #       {% elsif call.args.size == 1 %}
-    #         args_tuple = LibPython.build_value("(O)", {{ call.args.splat }})
-    #       {% elsif call.args.size > 1 %}
-    #         args_tuple = LibPython.build_value("O" * {{ call.args.size }}, {{ call.args.splat }})
-    #       {% end %}
-    #       kwargs_dict = LibPython.dict_new
-    #       {% for narg in call.named_args %}
-    #         str = {{ narg.name.stringify }}
-    #         cstr = str.to_unsafe
-    #         k = LibPython.unicode_from_string_and_size(cstr, str.size)
-    #         LibPython.dict_set_item(kwargs_dict, k, {{ narg.name }})
-    #       {% end %}
-    #       ret = LibPython.object_call(attr, args_tuple, kwargs_dict)
-    #     {% else %}
-    #       {% if call.args.size > 0 %}
-    #         ret = LibPython.object_call_function(attr, {{ call.args.splat }}, nil)
-    #       {% else %}
-    #         ret = LibPython.object_call_function(attr, nil)
-    #       {% end %}
-    #     {% end %}
-    #     PyObject.new(ret)
-    #   end
-    # end
-
     macro method_missing(call)
       def {{ call.name }}(*args, **kwargs)
         call({{ call.name.stringify }}, *args, **kwargs)
