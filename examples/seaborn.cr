@@ -3,10 +3,10 @@ require "../src/crython/string"
 
 Crython.embed_python do
   sns = Crython.import_module("seaborn")
-  sns.set_theme(style: "ticks".to_py)
+  sns.set_theme(style: "ticks")
 
-  df = sns.load_dataset("penguins".to_py)
-  plot = sns.pairplot(df, hue: "species".to_py)
+  df = sns.load_dataset("penguins")
+  plot = sns.pairplot(df, hue: "species")
 
   plt = Crython.import_module("matplotlib.pyplot")
   plt.show

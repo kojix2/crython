@@ -11,6 +11,6 @@ end
 # Example 2: Using the Python 'math' module to calculate the square root
 Crython.embed_python do
   mod = Crython.import_module("math")
-  result = mod.sqrt(16.0.to_py)
+  result = mod.sqrt(16.0)
   puts "Square root of 16 is: #{result}"
 end

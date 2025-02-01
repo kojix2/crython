@@ -8,10 +8,10 @@ Crython.embed_python do
   ret = plt.subplots
   fig = ret[0]
   ax = ret[1]
-  fruits = ["apple", "blueberry", "cherry", "orange"].to_py
-  counts = [40, 100, 30, 55].to_py
-  bar_labels = ["red", "blue", "_red", "orange"].to_py
-  bar_colors = ["tab:red", "tab:blue", "tab:red", "tab:orange"].to_py
+  fruits = ["apple", "blueberry", "cherry", "orange"]
+  counts = [40, 100, 30, 55]
+  bar_labels = ["red", "blue", "_red", "orange"]
+  bar_colors = ["tab:red", "tab:blue", "tab:red", "tab:orange"]
   ax.bar(fruits, counts, label: bar_labels, color: bar_colors)
   plt.show
 end

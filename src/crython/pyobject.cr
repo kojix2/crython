@@ -58,21 +58,21 @@ module Crython
         if args.size == 0
           args_tuple = LibPython.tuple_new(0)
         elsif args.size == 1
-          args_tuple = LibPython.build_value("(O)", *args)
+          args_tuple = LibPython.build_value("(O)", *args.map(&.to_py))
         else
-          args_tuple = LibPython.build_value("O" * args.size, *args)
+          args_tuple = LibPython.build_value("O" * args.size, *args.map(&.to_py))
         end
         kwargs_dict = LibPython.dict_new
         kwargs.each do |k, v|
           str = k.to_s
           cstr = str.to_unsafe
           key = LibPython.unicode_from_string_and_size(cstr, str.size)
-          LibPython.dict_set_item(kwargs_dict, key, v)
+          LibPython.dict_set_item(kwargs_dict, key, v.to_py)
         end
         ret = LibPython.object_call(attr, args_tuple, kwargs_dict)
       else
         if args.size > 0
-          ret = LibPython.object_call_function(attr, *args, nil)
+          ret = LibPython.object_call_function(attr, *args.map(&.to_py), nil)
         else
           ret = LibPython.object_call_function(attr, nil)
         end
@@ -146,6 +146,10 @@ module Crython
       s = LibPython.object_repr(@raw)
       ptr = LibPython.unicode_as_utf8(s)
       io.print String.new(ptr)
+    end
+
+    def to_py : PyObject
+      self
     end
   end
 end
