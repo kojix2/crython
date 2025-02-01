@@ -2,7 +2,7 @@ require "./crython/libpython"
 require "./crython/libcrython"
 require "./crython/env"
 require "./crython/err"
-require "./crython/object"
+require "./crython/pyobject"
 
 module Crython
   VERSION = "0.1.0"
