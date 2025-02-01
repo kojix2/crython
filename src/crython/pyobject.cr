@@ -94,52 +94,104 @@ module Crython
       __add__(other)
     end
 
+    def +(other) : PyObject
+      __add__(other.to_py)
+    end
+
     def -(other : PyObject) : PyObject
       __sub__(other)
+    end
+
+    def -(other) : PyObject
+      __sub__(other.to_py)
     end
 
     def *(other : PyObject) : PyObject
       __mul__(other)
     end
 
+    def *(other) : PyObject
+      __mul__(other.to_py)
+    end
+
     def /(other : PyObject) : PyObject
       __truediv__(other)
+    end
+
+    def /(other) : PyObject
+      __truediv__(other.to_py)
     end
 
     def //(other : PyObject) : PyObject
       __floordiv__(other)
     end
 
+    def //(other) : PyObject
+      __floordiv__(other.to_py)
+    end
+
     def %(other : PyObject) : PyObject
       __mod__(other)
+    end
+
+    def %(other) : PyObject
+      __mod__(other.to_py)
     end
 
     def **(other : PyObject) : PyObject
       __pow__(other)
     end
 
+    def **(other) : PyObject
+      __pow__(other.to_py)
+    end
+
     def <(other : PyObject) : Bool
       __lt__(other)
+    end
+
+    def <(other) : Bool
+      __lt__(other.to_py)
     end
 
     def <=(other : PyObject) : Bool
       __le__(other)
     end
 
+    def <=(other) : Bool
+      __le__(other.to_py)
+    end
+
     def >(other : PyObject) : Bool
       __gt__(other)
+    end
+
+    def >(other) : Bool
+      __gt__(other.to_py)
     end
 
     def >=(other : PyObject) : Bool
       __ge__(other)
     end
 
+    def >=(other) : Bool
+      __ge__(other.to_py)
+    end
+
     def ==(other : PyObject) : Bool
       __eq__(other)
     end
 
+    def ==(other) : Bool
+      __eq__(other.to_py)
+    end
+
     def !=(other : PyObject) : Bool
       __ne__(other)
+    end
+
+    def !=(other) : Bool
+      __ne__(other.to_py)
     end
 
     def to_s(io) : Nil
