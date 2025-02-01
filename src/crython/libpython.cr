@@ -26,7 +26,7 @@ lib LibPython
   fun err_occurred = PyErr_Occurred : PyObject
   fun err_print = PyErr_Print
 
-  fun import_module = PyImport_ImportModule(name : Char*) : PyObject
+  fun import = PyImport_ImportModule(name : Char*) : PyObject
 
   fun object_has_attr_string = PyObject_HasAttrString(o : PyObject, attr : Char*) : Int
   fun object_get_attr_string = PyObject_GetAttrString(o : PyObject, attr : Char*) : PyObject

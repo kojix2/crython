@@ -2,7 +2,7 @@ require "../../src/crython"
 
 Crython.embed_python do
   # Import seaborn as sns
-  sns = Crython.import_module("seaborn")
+  sns = Crython.import("seaborn")
   sns.set_theme(style: "ticks")
 
   # Load the example dataset for Anscombe's quartet
@@ -15,6 +15,6 @@ Crython.embed_python do
     height: 4, scatter_kws: {"s" => 50, "alpha" => 1}
   )
 
-  plt = Crython.import_module("matplotlib.pyplot")
+  plt = Crython.import("matplotlib.pyplot")
   plt.show
 end

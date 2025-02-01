@@ -3,7 +3,7 @@ require "../src/crython/array"
 require "../src/crython/number"
 
 Crython.embed_python do
-  np = Crython.import_module("numpy")
+  np = Crython.import("numpy")
 
   x1 = np.array([1, 2, 3])
   x2 = np.array([4, 5, 6])

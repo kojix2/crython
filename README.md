@@ -44,7 +44,7 @@ Crython allows you to import and use Python modules directly in Crystal. Here ar
 #### Importing a Python Module
 
 ```crystal
-mod = Crython.import_module("math")
+mod = Crython.import("math")
 ```
 
 #### Embedding Python Code

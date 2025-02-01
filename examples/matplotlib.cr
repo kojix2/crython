@@ -4,7 +4,7 @@ require "../src/crython/number"
 require "../src/crython/string"
 
 Crython.embed_python do
-  plt = Crython.import_module("matplotlib.pyplot")
+  plt = Crython.import("matplotlib.pyplot")
   ret = plt.subplots
   fig = ret[0]
   ax = ret[1]
