@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="crython">
-  <title>Array(T) - crython dev</title>
+  <title>Nil - crython dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -57,7 +57,7 @@
   <div class="types-list">
     <ul>
   
-  <li class=" current" data-id="crython/Array" data-name="array(t)">
+  <li class=" " data-id="crython/Array" data-name="array(t)">
       <a href="Array.html">Array</a>
       
     </li>
@@ -122,7 +122,7 @@
       
     </li>
   
-  <li class=" " data-id="crython/Nil" data-name="nil">
+  <li class=" current" data-id="crython/Nil" data-name="nil">
       <a href="Nil.html">Nil</a>
       
     </li>
@@ -171,12 +171,12 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">class</span> Array(T)
+  <span class="kind">struct</span> Nil
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="Array.html">Array(T)</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="Nil.html">Nil</a></li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
@@ -190,53 +190,40 @@
     Overview
   </h2>
 
-  <p>An <code><a href="Array.html">Array</a></code> is an ordered, integer-indexed collection of objects of type T.</p>
-<p>Array indexing starts at 0. A negative index is assumed to be
-relative to the end of the array: -1 indicates the last element,
--2 is the next to last element, and so on.</p>
-<p>An <code><a href="Array.html">Array</a></code> can be created using the usual <code>new</code> method (several are provided), or with an array literal:</p>
-<pre><code class="language-crystal"><span class="t">Array</span>(<span class="t">Int32</span>).new  <span class="c"># =&gt; []</span>
-[<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]         <span class="c"># Array(Int32)</span>
-[<span class="n">1</span>, <span class="s">&quot;hello&quot;</span>, <span class="s">&#39;x&#39;</span>] <span class="c"># Array(Int32 | String | Char)</span></code></pre>
-<p>See <a href="https://crystal-lang.org/reference/syntax_and_semantics/literals/array.html"><code>Array</code> literals</a> in the language reference.</p>
-<p>An <code><a href="Array.html">Array</a></code> can have mixed types, meaning T will be a union of types, but these are determined
-when the array is created, either by specifying T or by using an array literal. In the latter
-case, T will be set to the union of the array literal elements' types.</p>
-<p>When creating an empty array you must always specify T:</p>
-<pre><code class="language-crystal"><span class="o">[]</span> <span class="k">of</span> <span class="t">Int32</span> <span class="c"># same as Array(Int32)</span>
-<span class="o">[]</span>          <span class="c"># syntax error</span></code></pre>
-<p>An <code><a href="Array.html">Array</a></code> is implemented using an internal buffer of some capacity
-and is reallocated when elements are pushed to it when more capacity
-is needed. This is normally known as a <a href="http://en.wikipedia.org/wiki/Dynamic_array">dynamic array</a>.</p>
-<p>You can use a special array literal syntax with other types too, as long as they define an argless
-<code>new</code> method and a <code>&lt;&lt;</code> method. <code>Set</code> is one such type:</p>
-<pre><code class="language-crystal">set <span class="o">=</span> <span class="t">Set</span>{<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>} <span class="c"># =&gt; Set{1, 2, 3}</span>
-set.<span class="k">class</span>          <span class="c"># =&gt; Set(Int32)</span></code></pre>
-<p>The above is the same as this:</p>
-<pre><code class="language-crystal">set <span class="o">=</span> <span class="t">Set</span>(<span class="k">typeof</span>(<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>)).new
-set <span class="o">&lt;&lt;</span> <span class="n">1</span>
-set <span class="o">&lt;&lt;</span> <span class="n">2</span>
-set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
+  <p>The <code><a href="Nil.html">Nil</a></code> type has only one possible value: <code>nil</code>.</p>
+<p><code>nil</code> is commonly used to represent the absence of a value.
+For example, <code>String#index</code> returns the position of the character or <code>nil</code> if it's not
+in the string:</p>
+<pre><code class="language-crystal">str <span class="o">=</span> <span class="s">&quot;Hello world&quot;</span>
+str.index <span class="s">&#39;e&#39;</span> <span class="c"># =&gt; 1</span>
+str.index <span class="s">&#39;a&#39;</span> <span class="c"># =&gt; nil</span></code></pre>
+<p>In the above example, trying to invoke a method on the returned value will
+give a compile time error unless both <code><a href="Int32.html">Int32</a></code> and <code><a href="Nil.html">Nil</a></code> define that method:</p>
+<pre><code class="language-crystal">str <span class="o">=</span> <span class="s">&quot;Hello world&quot;</span>
+idx <span class="o">=</span> str.index <span class="s">&#39;e&#39;</span>
+idx <span class="o">+</span> <span class="n">1</span> <span class="c"># Error: undefined method &#39;+&#39; for Nil</span></code></pre>
+<p>The language and the standard library provide short, readable, easy ways to deal with <code>nil</code>,
+such as <code>Object#try</code> and <code>Object#not_nil!</code>:</p>
+<pre><code class="language-crystal">str <span class="o">=</span> <span class="s">&quot;Hello world&quot;</span>
+
+<span class="c"># The index of &#39;e&#39; in str or 0 if not found</span>
+idx1 <span class="o">=</span> str.index(<span class="s">&#39;e&#39;</span>) <span class="o">||</span> <span class="n">0</span>
+
+idx2 <span class="o">=</span> str.index(<span class="s">&#39;a&#39;</span>)
+<span class="k">if</span> idx2
+  <span class="c"># Compiles: idx2 can&#39;t be nil here</span>
+  idx2 <span class="o">+</span> <span class="n">1</span>
+<span class="k">end</span>
+
+<span class="c"># Tell the compiler that we are sure the returned</span>
+<span class="c"># value is not nil: raises a runtime exception</span>
+<span class="c"># if our assumption doesn&#39;t hold.</span>
+idx3 <span class="o">=</span> str.index(<span class="s">&#39;o&#39;</span>).not_nil!</code></pre>
+<p>See <a href="https://crystal-lang.org/reference/syntax_and_semantics/literals/nil.html"><code>Nil</code> literal</a> in the language reference.</p>
 
 
 
 
-
-  <h2>
-    <a id="included-modules" class="anchor" href="#included-modules">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Included Modules
-  </h2>
-  <ul class="other-types-list">
-    
-      <li class="other-type">Comparable(<a href="Array.html">Array(T)</a>)</li>
-    
-      <li class="other-type">Indexable::Mutable(T)</li>
-    
-  </ul>
 
 
 
@@ -257,8 +244,8 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/13a4d23583972ba7b2f540d8643d5a999fdd8f35/src/crython/array.cr#L1" target="_blank">
-        crython/array.cr
+      <a href="https://github.com/kojix2/crython/blob/13a4d23583972ba7b2f540d8643d5a999fdd8f35/src/crython/nil.cr#L1" target="_blank">
+        crython/nil.cr
       </a>
     
     <br/>
@@ -321,71 +308,6 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
 
 
   
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
 </div>
 
 
@@ -415,7 +337,7 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/13a4d23583972ba7b2f540d8643d5a999fdd8f35/src/crython/array.cr#L2" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/13a4d23583972ba7b2f540d8643d5a999fdd8f35/src/crython/nil.cr#L2" target="_blank">View source</a>]
         
       </div>
     </div>

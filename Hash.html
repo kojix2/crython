@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="crython">
-  <title>Array(T) - crython dev</title>
+  <title>Hash(K, V) - crython dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -57,7 +57,7 @@
   <div class="types-list">
     <ul>
   
-  <li class=" current" data-id="crython/Array" data-name="array(t)">
+  <li class=" " data-id="crython/Array" data-name="array(t)">
       <a href="Array.html">Array</a>
       
     </li>
@@ -92,7 +92,7 @@
       
     </li>
   
-  <li class=" " data-id="crython/Hash" data-name="hash(k, v)">
+  <li class=" current" data-id="crython/Hash" data-name="hash(k, v)">
       <a href="Hash.html">Hash</a>
       
     </li>
@@ -171,12 +171,12 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">class</span> Array(T)
+  <span class="kind">class</span> Hash(K, V)
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="Array.html">Array(T)</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="Hash.html">Hash(K, V)</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -190,33 +190,27 @@
     Overview
   </h2>
 
-  <p>An <code><a href="Array.html">Array</a></code> is an ordered, integer-indexed collection of objects of type T.</p>
-<p>Array indexing starts at 0. A negative index is assumed to be
-relative to the end of the array: -1 indicates the last element,
--2 is the next to last element, and so on.</p>
-<p>An <code><a href="Array.html">Array</a></code> can be created using the usual <code>new</code> method (several are provided), or with an array literal:</p>
-<pre><code class="language-crystal"><span class="t">Array</span>(<span class="t">Int32</span>).new  <span class="c"># =&gt; []</span>
-[<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]         <span class="c"># Array(Int32)</span>
-[<span class="n">1</span>, <span class="s">&quot;hello&quot;</span>, <span class="s">&#39;x&#39;</span>] <span class="c"># Array(Int32 | String | Char)</span></code></pre>
-<p>See <a href="https://crystal-lang.org/reference/syntax_and_semantics/literals/array.html"><code>Array</code> literals</a> in the language reference.</p>
-<p>An <code><a href="Array.html">Array</a></code> can have mixed types, meaning T will be a union of types, but these are determined
-when the array is created, either by specifying T or by using an array literal. In the latter
-case, T will be set to the union of the array literal elements' types.</p>
-<p>When creating an empty array you must always specify T:</p>
-<pre><code class="language-crystal"><span class="o">[]</span> <span class="k">of</span> <span class="t">Int32</span> <span class="c"># same as Array(Int32)</span>
-<span class="o">[]</span>          <span class="c"># syntax error</span></code></pre>
-<p>An <code><a href="Array.html">Array</a></code> is implemented using an internal buffer of some capacity
-and is reallocated when elements are pushed to it when more capacity
-is needed. This is normally known as a <a href="http://en.wikipedia.org/wiki/Dynamic_array">dynamic array</a>.</p>
-<p>You can use a special array literal syntax with other types too, as long as they define an argless
-<code>new</code> method and a <code>&lt;&lt;</code> method. <code>Set</code> is one such type:</p>
-<pre><code class="language-crystal">set <span class="o">=</span> <span class="t">Set</span>{<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>} <span class="c"># =&gt; Set{1, 2, 3}</span>
-set.<span class="k">class</span>          <span class="c"># =&gt; Set(Int32)</span></code></pre>
-<p>The above is the same as this:</p>
-<pre><code class="language-crystal">set <span class="o">=</span> <span class="t">Set</span>(<span class="k">typeof</span>(<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>)).new
-set <span class="o">&lt;&lt;</span> <span class="n">1</span>
-set <span class="o">&lt;&lt;</span> <span class="n">2</span>
-set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
+  <p>A <code><a href="Hash.html">Hash</a></code> represents a collection of key-value mappings, similar to a dictionary.</p>
+<p>Main operations are storing a key-value mapping (<code>#[]=</code>) and
+querying the value associated to a key (<code>#[]</code>). Key-value mappings can also be
+deleted (<code>#delete</code>).
+Keys are unique within a hash. When adding a key-value mapping with a key that
+is already in use, the old value will be forgotten.</p>
+<pre><code class="language-crystal"><span class="c"># Create a new Hash for mapping String to Int32</span>
+hash <span class="o">=</span> <span class="t">Hash</span>(<span class="t">String</span>, <span class="t">Int32</span>).new
+hash[<span class="s">&quot;one&quot;</span>] <span class="o">=</span> <span class="n">1</span>
+hash[<span class="s">&quot;two&quot;</span>] <span class="o">=</span> <span class="n">2</span>
+hash[<span class="s">&quot;one&quot;</span>] <span class="c"># =&gt; 1</span></code></pre>
+<p><a href="https://crystal-lang.org/reference/syntax_and_semantics/literals/hash.html">Hash literals</a>
+can also be used to create a <code><a href="Hash.html">Hash</a></code>:</p>
+<pre><code class="language-crystal">{<span class="s">&quot;one&quot;</span> <span class="o">=&gt;</span> <span class="n">1</span>, <span class="s">&quot;two&quot;</span> <span class="o">=&gt;</span> <span class="n">2</span>}</code></pre>
+<p>Implementation is based on an open hash table.
+Two objects refer to the same hash key when their hash value (<code>Object#hash</code>)
+is identical and both objects are equal to each other (<code>Object#==</code>).</p>
+<p>Enumeration follows the order that the corresponding keys were inserted.</p>
+<p><span class="flag purple">NOTE</span>  When using mutable data types as keys, changing the value of a key after
+it was inserted into the <code><a href="Hash.html">Hash</a></code> may lead to undefined behaviour. This can be
+restored by re-indexing the hash with <code>#rehash</code>.</p>
 
 
 
@@ -232,9 +226,9 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
   </h2>
   <ul class="other-types-list">
     
-      <li class="other-type">Comparable(<a href="Array.html">Array(T)</a>)</li>
+      <li class="other-type">Enumerable({K, V})</li>
     
-      <li class="other-type">Indexable::Mutable(T)</li>
+      <li class="other-type">Iterable({K, V})</li>
     
   </ul>
 
@@ -257,8 +251,8 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/13a4d23583972ba7b2f540d8643d5a999fdd8f35/src/crython/array.cr#L1" target="_blank">
-        crython/array.cr
+      <a href="https://github.com/kojix2/crython/blob/13a4d23583972ba7b2f540d8643d5a999fdd8f35/src/crython/hash.cr#L1" target="_blank">
+        crython/hash.cr
       </a>
     
     <br/>
@@ -347,45 +341,6 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
 
 
   
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
 </div>
 
 
@@ -415,7 +370,7 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/13a4d23583972ba7b2f540d8643d5a999fdd8f35/src/crython/array.cr#L2" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/13a4d23583972ba7b2f540d8643d5a999fdd8f35/src/crython/hash.cr#L2" target="_blank">View source</a>]
         
       </div>
     </div>
