@@ -1,5 +1,4 @@
-require "../src/crython"
-require "../src/crython/string"
+require "../../src/crython"
 
 Crython.embed_python do
   sns = Crython.import_module("seaborn")

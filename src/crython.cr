@@ -1,8 +1,6 @@
 require "./crython/libpython"
 require "./crython/libcrython"
-require "./crython/env"
-require "./crython/err"
-require "./crython/pyobject"
+require "./crython/*"
 
 module Crython
   VERSION = "0.1.0"

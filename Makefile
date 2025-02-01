@@ -26,7 +26,7 @@ LIB_CRYTHON_TARGET = src/ext/libcrython.a
 
 DEPS = $(LIB_CRYTHON_TARGET)
 
-EXAMPLES_SOURCES := $(wildcard examples/*.cr)
+EXAMPLES_SOURCES := $(shell find examples -type f -name '*.cr')
 EXAMPLES_TARGETS := $(patsubst examples/%.cr, $(O)/%, $(EXAMPLES_SOURCES))
 
 PYTHON_CFLAGS := $(shell python3-config --cflags)
@@ -53,7 +53,7 @@ $(LIB_CRYTHON_TARGET): $(LIB_CRYTHON_OBJ)
 	$(AR) -rcs $@ $^
 
 $(EXAMPLES_TARGETS): $(O)/%: examples/%.cr
-	@mkdir -p $(O)
+	@mkdir -p $(dir $@)
 	$(BUILD_PATH) crystal build $(FLAGS) $< --link-flags "$(LDFLAGS)" -o $@
 
 test: deps ## Run tests

@@ -1,4 +1,5 @@
 require "./pyobject/object_protocol"
+require "./string"
 
 module Crython
   struct PyObject
