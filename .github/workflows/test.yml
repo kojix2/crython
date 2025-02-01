@@ -35,5 +35,5 @@ jobs:
       - name: Run executable
         run: |
           make examples
-          chmod +x ./build/test
-          ./build/test
+          chmod +x ./bin/test
+          ./bin/test
