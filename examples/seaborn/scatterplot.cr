@@ -15,10 +15,10 @@ Crython.embed_python do
   sns.despine(f, left: true, bottom: true)
   clarity_ranking = ["I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF"]
   sns.scatterplot(x: "carat", y: "price",
-                  hue: "clarity", size: "depth",
-                  palette: "ch:r=-.2,d=.3_r",
-                  hue_order: clarity_ranking,
-                  sizes: {1, 8}, linewidth: 0,
-                  data: diamonds, ax: ax)
-  plt.show()
+    hue: "clarity", size: "depth",
+    palette: "ch:r=-.2,d=.3_r",
+    hue_order: clarity_ranking,
+    sizes: {1, 8}, linewidth: 0,
+    data: diamonds, ax: ax)
+  plt.show
 end
