@@ -8,7 +8,7 @@ link-flags ?= ## Additional flags to pass to the linker
 
 OS := $(LC_CTYPE=C $(shell uname -s | tr '[:upper:]' '[:lower:]'))
 
-O := build
+O := bin
 FLAGS := $(if $(release),--release) \
          $(if $(stats),--stats) \
          $(if $(threads),--threads $(threads)) \
