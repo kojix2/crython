@@ -9,7 +9,7 @@ Crython.embed_python do
   rs = np.random.call("RandomState", 11)
   x = rs.gamma(2, size: 1000)
   c = rs.normal(size: 1000)
-  y = x * (-0.5).to_py + c
+  y = -0.5 * x + c
   sns.jointplot(x: x, y: y, kind: "hex", color: "#4CB391")
 
   plt = Crython.import("matplotlib.pyplot")

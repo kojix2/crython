@@ -1,3 +1,57 @@
+struct Number
+  def +(other : Crython::PyObject) : Crython::PyObject
+    other.__radd__(self)
+  end
+
+  def -(other : Crython::PyObject) : Crython::PyObject
+    other.__rsub__(self)
+  end
+
+  def *(other : Crython::PyObject) : Crython::PyObject
+    other.__rmul__(self)
+  end
+
+  def /(other : Crython::PyObject) : Crython::PyObject
+    other.__rtruediv__(self)
+  end
+
+  def //(other : Crython::PyObject) : Crython::PyObject
+    other.__rfloordiv__(self)
+  end
+
+  def %(other : Crython::PyObject) : Crython::PyObject
+    other.__rmod__(self)
+  end
+
+  def **(other : Crython::PyObject) : Crython::PyObject
+    other.__rpow__(self)
+  end
+
+  def <(other : Crython::PyObject) : Crython::PyObject
+    to_py.__lt__(other)
+  end
+
+  def <=(other : Crython::PyObject) : Crython::PyObject
+    to_py.__le__(other)
+  end
+
+  def >(other : Crython::PyObject) : Crython::PyObject
+    to_py.__gt__(other)
+  end
+
+  def >=(other : Crython::PyObject) : Crython::PyObject
+    to_py.__ge__(other)
+  end
+
+  def ==(other : Crython::PyObject) : Crython::PyObject
+    to_py.__eq__(other)
+  end
+
+  def !=(other : Crython::PyObject) : Crython::PyObject
+    to_py.__ne__(other)
+  end
+end
+
 struct UInt8
   def to_py : Crython::PyObject
     ptr = LibPython.build_value("I", self)
