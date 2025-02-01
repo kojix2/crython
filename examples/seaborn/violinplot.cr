@@ -10,9 +10,9 @@ Crython.embed_python do
 
   # Draw a nested violinplot and split the violins for easier comparison
   sns.violinplot(data: tips, x: "day", y: "total_bill", hue: "smoker",
-                 split: true, inner: "quart", fill: false,
-                 palette: {"Yes" => "g", "No" => ".35"})
+    split: true, inner: "quart", fill: false,
+    palette: {"Yes" => "g", "No" => ".35"})
 
   plt = Crython.import("matplotlib.pyplot")
-  plt.show()
+  plt.show
 end

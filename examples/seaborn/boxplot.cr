@@ -10,10 +10,10 @@ Crython.embed_python do
 
   # Draw a nested boxplot to show bills by day and time
   sns.boxplot(x: "day", y: "total_bill",
-              hue: "smoker", palette: ["m", "g"],
-              data: tips)
+    hue: "smoker", palette: ["m", "g"],
+    data: tips)
   sns.despine(offset: 10, trim: true)
 
   plt = Crython.import("matplotlib.pyplot")
-  plt.show()
+  plt.show
 end
