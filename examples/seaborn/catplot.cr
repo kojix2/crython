@@ -15,9 +15,7 @@ Crython.embed_python do
   )
   g.despine(left: true)
   g.set_axis_labels("", "Body mass (g)")
-  l = g.legend
-  p l
-  l.set_title("aa")
+  g.legend.set_title("aa")
 
   plt = Crython.import("matplotlib.pyplot")
   plt.show
