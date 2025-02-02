@@ -15,11 +15,11 @@ Crython.embed_python do
   step = np.tile(np.arange(5), 20)
   walk = np.repeat(np.arange(20), 5)
   df = pd.call("DataFrame", np.c_[pos.flat, step, walk],
-               columns: ["position", "step", "walk"])
+    columns: ["position", "step", "walk"])
 
   # Initialize a grid of plots with an Axes for each walk
   grid = sns.call("FacetGrid", df, col: "walk", hue: "walk", palette: "tab20c",
-                  col_wrap: 4, height: 1.5)
+    col_wrap: 4, height: 1.5)
 
   # Draw a horizontal line to show the starting point
   grid.refline(y: 0, linestyle: ":")
@@ -29,7 +29,7 @@ Crython.embed_python do
 
   # Adjust the tick positions and labels
   grid.set(xticks: np.arange(5), yticks: [-3, 3],
-           xlim: [-0.5, 4.5], ylim: [-3.5, 3.5])
+    xlim: [-0.5, 4.5], ylim: [-3.5, 3.5])
 
   # Adjust the arrangement of the plots
   grid.fig.tight_layout(w_pad: 1)

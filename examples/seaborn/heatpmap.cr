@@ -12,10 +12,10 @@ Crython.embed_python do
   # Generate a large random dataset
   rs = np.random.call("RandomState", 33)
   d = pd.call("DataFrame", data: rs.normal(size: {100, 26}),
-              columns: ('A'..'Z').to_a)
+    columns: ('A'..'Z').to_a)
 
   # Compute the correlation matrix
-  corr = d.corr()
+  corr = d.corr
 
   # Generate a mask for the upper triangle
   mask = np.triu(np.ones_like(corr, dtype: "bool"))
@@ -28,7 +28,7 @@ Crython.embed_python do
 
   # Draw the heatmap with the mask and correct aspect ratio
   sns.heatmap(corr, mask: mask, cmap: cmap, vmax: 0.3, center: 0,
-              square: true, linewidths: 0.5, cbar_kws: {"shrink" => 0.5})
+    square: true, linewidths: 0.5, cbar_kws: {"shrink" => 0.5})
 
   plt.show
 end
