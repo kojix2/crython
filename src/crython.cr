@@ -14,4 +14,8 @@ module Crython
     end
     mod
   end
+
+  def self.slice_full : PyObject
+    PyObject.new(LibCrython.slice_full)
+  end
 end
