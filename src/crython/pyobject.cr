@@ -9,9 +9,16 @@ module Crython
     end
 
     macro method_missing(call)
-      def {{ call.name }}(*args, **kwargs)
-        call({{ call.name.stringify }}, *args, **kwargs)
-      end
+      # Setter methods cannot have more than one argument
+      {% if call.name.ends_with?("=") %}
+        def {{ call.name }}(value : PyObject)
+          __setattr__({{ call.name.stringify }}, value)
+        end
+      {% else %}
+        def {{ call.name }}(*args, **kwargs)
+          call({{ call.name.stringify }}, *args, **kwargs)
+        end
+      {% end %}
     end
 
     def call(call : (String | Symbol), *args, **kwargs) : PyObject
@@ -64,7 +71,16 @@ module Crython
     end
 
     def [](key) : PyObject
-      __getitem__(key.to_py)
+      if key.nil?
+        key = LibPython.build_value(":")
+      else
+        key = key.to_py
+      end
+      __getitem__(key)
+    end
+
+    def [](keys : Array(PyObject)) : PyObject
+      __getitem__(keys.to_py)
     end
 
     def +(other : PyObject) : PyObject
