@@ -12,7 +12,7 @@ module Crython
       LibPython.object_has_attr_string(@raw, attr.to_unsafe) != 0
     end
 
-    def get_attr(attr : String) : PyObject
+    def attr(attr : String) : PyObject
       PyObject.new(LibPython.object_get_attr_string(@raw, attr.to_unsafe))
     end
 

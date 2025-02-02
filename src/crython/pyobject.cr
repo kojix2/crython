@@ -56,8 +56,8 @@ module Crython
             # PyFunction_Check is better? since callable can be a class
             # FIXME: Attr ? Func ? Class ?
             ret = LibPython.object_call_function(attr, nil)
-            # User should call get_attr if they want to get the attribute
-            # "-".to_py.get_attr("join")
+            # User should call attr if they want to get the attribute
+            # "-".to_py.attr("join")
           else
             ret = attr
           end
