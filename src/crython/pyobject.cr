@@ -16,6 +16,9 @@ module Crython
 
     def call(call : (String | Symbol), *args, **kwargs) : PyObject
       attr = LibPython.object_get_attr_string(@raw, call.to_s.to_unsafe)
+      if attr.null?
+        raise "Error occurred while getting attribute '#{call}'"
+      end
       if kwargs.size > 0
         if args.size == 0
           args_tuple = LibPython.tuple_new(0)
@@ -44,7 +47,11 @@ module Crython
           end
         end
       end
-      PyObject.new(ret)
+      if LibPython.err_occurred
+        LibPython.err_print
+        raise "Error occurred while calling attribute '#{call}'"
+      end
+      PyObject.new(ret.not_nil!)
     end
 
     def [](key) : PyObject
