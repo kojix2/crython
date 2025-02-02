@@ -6,35 +6,47 @@ lib LibPython
   alias Char = LibC::Char
   alias FILE = Void*
 
+  # Initialization and Finalization
   fun init = Py_Initialize
   fun init_ex = Py_InitializeEx(initsigs : Int)
   fun is_initialized = Py_IsInitialized : Int
   fun finalize = Py_Finalize
   fun finalize_ex = Py_FinalizeEx : Int
 
+  # Python Home
   fun set_python_home = Py_SetPythonHome(home : Char*)
   fun get_python_home = Py_GetPythonHome : Char*
 
+  # Path
   fun sys_set_path = PySys_SetPath(path : Char*)
   fun sys_get_path = PySys_GetPath : Char*
 
+  # Version
   fun get_version = Py_GetVersion : Char*
   fun get_compiler = Py_GetCompiler : Char*
   fun get_build_info = Py_GetBuildInfo : Char*
 
+  # Error Handling
   fun err_clear = PyErr_Clear
   fun err_occurred = PyErr_Occurred : PyObject
   fun err_print = PyErr_Print
 
+  # Run / Eval
+  fun run_simple_string = PyRun_SimpleString(str : Char*) : Int
+
+  # Module
   fun import = PyImport_ImportModule(name : Char*) : PyObject
 
+  # Object
   fun object_has_attr_string = PyObject_HasAttrString(o : PyObject, attr : Char*) : Int
   fun object_get_attr_string = PyObject_GetAttrString(o : PyObject, attr : Char*) : PyObject
   fun object_set_attr_string = PyObject_SetAttrString(o : PyObject, attr : Char*, val : PyObject) : Int
   fun object_del_attr_string = PyObject_DelAttrString(o : PyObject, attr : Char*) : Int
 
+  # Attribute
   fun object_get_item = PyObject_GetItem(o : PyObject, key : PyObject) : PyObject
 
+  # Function
   fun object_call_function = PyObject_CallFunctionObjArgs(callable : PyObject, ...) : PyObject
   fun object_call = PyObject_Call(callable : PyObject, args : PyObject, kwargs : PyObject) : PyObject
 
@@ -45,8 +57,10 @@ lib LibPython
   fun object_string = PyObject_Str(o : PyObject) : PyObject
   fun object_repr = PyObject_Repr(o : PyObject) : PyObject
 
+  # Build Value
   fun build_value = Py_BuildValue(format : Char*, ...) : PyObject
 
+  # Unicode
   fun unicode_get_length = PyUnicode_GetLength(o : PyObject) : Int
   fun unicode_as_utf8 = PyUnicode_AsUTF8(str : PyObject) : Char*
   fun unicode_from_string_and_size = PyUnicode_FromStringAndSize(str : Char*, size : Int) : PyObject

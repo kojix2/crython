@@ -20,7 +20,7 @@ module Crython
 
   def self.embed_python
     LibPython.init
-    yield
+    yield(self)
     LibPython.finalize
   end
 
@@ -34,5 +34,13 @@ module Crython
 
   def self.python_compiler : String
     String.new(LibPython.get_compiler)
+  end
+
+  def self.eval(code : String) : Nil
+    r = LibPython.run_simple_string(code.to_unsafe)
+    if r != 0
+      LibPython.err_print
+      raise "Error evaluating Python code"
+    end
   end
 end
