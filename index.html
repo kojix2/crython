@@ -208,29 +208,12 @@ Crystal meets Python!</p>
   </svg>
 </a>Installation</h2>
 <ul>
-<li>A Python interpreter is required as a dependency.</li>
+<li>A Python3 interpreter is required as a dependency.</li>
 <li>Ensure <code>python3-config --ldflags</code> works.</li>
 </ul>
 <pre><code class="language-yaml">dependencies:
   crython:
     github: kojix2/crython</code></pre>
-<h3><a id="prerequisites" class="anchor" href="#prerequisites">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Prerequisites</h3>
-<ul>
-<li>Python 3.x installed on your system.</li>
-<li>Ensure that the <code>python3-config</code> command is available and correctly configured.</li>
-</ul>
-<h3><a id="troubleshooting" class="anchor" href="#troubleshooting">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Troubleshooting</h3>
-<ul>
-<li>If you encounter issues with <code>python3-config</code>, ensure that the Python development headers are installed on your system.</li>
-</ul>
 <h2><a id="environment-setup" class="anchor" href="#environment-setup">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -241,12 +224,11 @@ Crystal meets Python!</p>
 <p>This command appends the Python library directory to the existing <code>LD_LIBRARY_PATH</code>.</p>
 <p>To use Crython in your Crystal project, simply require the library:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;crython&quot;</span></code></pre>
-<h3><a id="examples" class="anchor" href="#examples">
+<h2><a id="usage" class="anchor" href="#usage">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Examples</h3>
-<p>Crython allows you to import and use Python modules directly in Crystal. Here are some basic examples:</p>
+</a>Usage</h2>
 <h4><a id="importing-a-python-module" class="anchor" href="#importing-a-python-module">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -262,6 +244,8 @@ Crystal meets Python!</p>
   <span class="c"># Your Python code here</span>
 <span class="k">end</span></code></pre>
 <p>For more examples, see the <a href="examples">examples</a> folder. Use <code>make examples</code> to build all examples.</p>
+<pre><code class="language-crystal">make examples</code></pre>
+<pre><code class="language-crystal">.<span class="o">/</span>bin<span class="o">/</span>hello</code></pre>
 <h2><a id="development" class="anchor" href="#development">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
