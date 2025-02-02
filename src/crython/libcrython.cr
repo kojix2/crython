@@ -40,4 +40,7 @@ lib LibCrython
 
   # Class Instantiation
   fun instantiate = instantiate_python_class(class : PyObject) : PyObject
+
+  # Slice Object Creation
+  fun slice_full = slice_full : PyObject
 end

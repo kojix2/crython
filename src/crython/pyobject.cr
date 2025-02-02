@@ -71,12 +71,7 @@ module Crython
     end
 
     def [](key) : PyObject
-      if key.nil?
-        key = LibPython.build_value(":")
-      else
-        key = key.to_py
-      end
-      __getitem__(key)
+      __getitem__(key.to_py)
     end
 
     def [](keys : Array(PyObject)) : PyObject

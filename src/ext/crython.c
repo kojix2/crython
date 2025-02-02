@@ -112,3 +112,9 @@ extern PyObject *py_false()
 {
   return Py_False; // Return Py_False singleton
 }
+
+/* ---- Slice Object Creation ---- */
+extern PyObject *slice_full()
+{
+  return PySlice_New(Py_None, Py_None, Py_None); // Create a full slice object
+}
