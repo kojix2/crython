@@ -45,6 +45,7 @@ lib LibPython
 
   # Attribute
   fun object_get_item = PyObject_GetItem(o : PyObject, key : PyObject) : PyObject
+  fun object_set_item = PyObject_SetItem(o : PyObject, key : PyObject, val : PyObject) : Int
 
   # Function
   fun object_is_callable = PyCallable_Check(o : PyObject) : Int

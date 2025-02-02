@@ -54,12 +54,10 @@ module Crython
         else
           if PyObject.new(attr).callable?
             # PyFunction_Check is better? since callable can be a class
-            ret = LibPython.object_call_function(attr, nil)
             # FIXME: Attr ? Func ? Class ?
-            if ret.null?
-              LibPython.err_clear
-              ret = attr
-            end
+            ret = LibPython.object_call_function(attr, nil)
+            # User should call get_attr if they want to get the attribute
+            # "-".to_py.get_attr("join")
           else
             ret = attr
           end
@@ -77,9 +75,19 @@ module Crython
       key_tuple = LibPython.build_value("O" * key.size, *key.map(&.to_py))
       ptr = LibPython.object_get_item(@raw, key_tuple)
       if ptr.null?
+        LibPython.err_print
         raise "Error occurred while getting item"
       end
       PyObject.new(ptr)
+    end
+
+    def []=(key, value) : Nil
+      # __setitem__
+      r = LibPython.object_set_item(@raw, key.to_py, value.to_py)
+      if r < 0
+        LibPython.err_print
+        raise "Error occurred while setting item"
+      end
     end
 
     def +(other : PyObject) : PyObject
