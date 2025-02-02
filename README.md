@@ -29,7 +29,15 @@ dependencies:
 
 - If you encounter issues with `python3-config`, ensure that the Python development headers are installed on your system.
 
-## Usage
+## Environment Setup
+
+Set the `LD_LIBRARY_PATH` to include Python's library directory to ensure shared libraries are found:
+
+```bash
+export LD_LIBRARY_PATH=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))"):$LD_LIBRARY_PATH
+```
+
+This command appends the Python library directory to the existing `LD_LIBRARY_PATH`.
 
 To use Crython in your Crystal project, simply require the library:
 
