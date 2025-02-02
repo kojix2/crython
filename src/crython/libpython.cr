@@ -33,6 +33,8 @@ lib LibPython
   fun object_set_attr_string = PyObject_SetAttrString(o : PyObject, attr : Char*, val : PyObject) : Int
   fun object_del_attr_string = PyObject_DelAttrString(o : PyObject, attr : Char*) : Int
 
+  fun object_get_item = PyObject_GetItem(o : PyObject, key : PyObject) : PyObject
+
   fun object_call_function = PyObject_CallFunctionObjArgs(callable : PyObject, ...) : PyObject
   fun object_call = PyObject_Call(callable : PyObject, args : PyObject, kwargs : PyObject) : PyObject
 

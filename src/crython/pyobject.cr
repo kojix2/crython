@@ -70,12 +70,14 @@ module Crython
       PyObject.new(ret.not_nil!)
     end
 
-    def [](key) : PyObject
-      __getitem__(key.to_py)
-    end
-
-    def [](keys : Array(PyObject)) : PyObject
-      __getitem__(keys.to_py)
+    def [](*key) : PyObject
+      # __getitem__
+      key_tuple = LibPython.build_value("O" * key.size, *key.map(&.to_py))
+      ptr = LibPython.object_get_item(@raw, key_tuple)
+      if ptr.null?
+        raise "Error occurred while getting item"
+      end
+      PyObject.new(ptr)
     end
 
     def +(other : PyObject) : PyObject
