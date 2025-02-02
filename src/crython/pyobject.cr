@@ -55,11 +55,13 @@ module Crython
           if PyObject.new(attr).callable?
             # PyFunction_Check is better? since callable can be a class
             ret = LibPython.object_call_function(attr, nil)
+            # FIXME: Attr ? Func ? Class ?
             if ret.null?
-              STDERR.puts "Error occurred while calling attribute '#{call}' with no args"
+              LibPython.err_clear
+              ret = attr
             end
           else
-            ret = LibPython.object_get_attr_string(@raw, call.to_s.to_unsafe)
+            ret = attr
           end
         end
       end

@@ -47,11 +47,11 @@ lib LibPython
   fun object_get_item = PyObject_GetItem(o : PyObject, key : PyObject) : PyObject
 
   # Function
+  fun object_is_callable = PyCallable_Check(o : PyObject) : Int
   fun object_call_function = PyObject_CallFunctionObjArgs(callable : PyObject, ...) : PyObject
   fun object_call = PyObject_Call(callable : PyObject, args : PyObject, kwargs : PyObject) : PyObject
 
   fun object_print = PyObject_Print(o : PyObject, fd : FILE, flags : Int) : Int
-  fun object_is_callable = PyCallable_Check(o : PyObject) : Int
   fun object_cmp = PyObject_Cmp(a : PyObject, b : PyObject, res : Int*) : Int
 
   fun object_string = PyObject_Str(o : PyObject) : PyObject
