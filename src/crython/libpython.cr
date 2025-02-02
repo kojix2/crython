@@ -61,6 +61,10 @@ lib LibPython
   # Build Value
   fun build_value = Py_BuildValue(format : Char*, ...) : PyObject
 
+  # Parse
+  fun arg_parse_tuple = PyArg_ParseTuple(args : PyObject, format : Char*, ...) : Int
+  fun arg_parse = PyArg_Parse(args : PyObject, format : Char*, ...) : Int
+
   # Unicode
   fun unicode_get_length = PyUnicode_GetLength(o : PyObject) : Int
   fun unicode_as_utf8 = PyUnicode_AsUTF8(str : PyObject) : Char*
