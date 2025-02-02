@@ -231,11 +231,14 @@ Crystal meets Python!</p>
 <ul>
 <li>If you encounter issues with <code>python3-config</code>, ensure that the Python development headers are installed on your system.</li>
 </ul>
-<h2><a id="usage" class="anchor" href="#usage">
+<h2><a id="environment-setup" class="anchor" href="#environment-setup">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Usage</h2>
+</a>Environment Setup</h2>
+<p>Set the <code>LD_LIBRARY_PATH</code> to include Python's library directory to ensure shared libraries are found:</p>
+<pre><code class="language-bash">export LD_LIBRARY_PATH=$(python3 -c &quot;import sysconfig; print(sysconfig.get_config_var('LIBDIR'))&quot;):$LD_LIBRARY_PATH</code></pre>
+<p>This command appends the Python library directory to the existing <code>LD_LIBRARY_PATH</code>.</p>
 <p>To use Crython in your Crystal project, simply require the library:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;crython&quot;</span></code></pre>
 <h3><a id="examples" class="anchor" href="#examples">
