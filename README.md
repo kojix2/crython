@@ -11,7 +11,7 @@ Crython allows the use of Python libraries within Crystal applications.
 
 ## Installation
 
-- A Python interpreter is required as a dependency.
+- A Python3 interpreter is required as a dependency.
 - Ensure `python3-config --ldflags` works.
 
 ```yaml
@@ -19,15 +19,6 @@ dependencies:
   crython:
     github: kojix2/crython
 ```
-
-### Prerequisites
-
-- Python 3.x installed on your system.
-- Ensure that the `python3-config` command is available and correctly configured.
-
-### Troubleshooting
-
-- If you encounter issues with `python3-config`, ensure that the Python development headers are installed on your system.
 
 ## Environment Setup
 
@@ -45,9 +36,7 @@ To use Crython in your Crystal project, simply require the library:
 require "crython"
 ```
 
-### Examples
-
-Crython allows you to import and use Python modules directly in Crystal. Here are some basic examples:
+## Usage
 
 #### Importing a Python Module
 
@@ -64,6 +53,14 @@ end
 ```
 
 For more examples, see the [examples](examples) folder. Use `make examples` to build all examples.
+
+```
+make examples
+```
+
+```
+./bin/hello
+```
 
 ## Development
 
