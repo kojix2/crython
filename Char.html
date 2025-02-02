@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="crython">
-  <title>Float32 - crython dev</title>
+  <title>Char - crython dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -67,7 +67,7 @@
       
     </li>
   
-  <li class=" " data-id="crython/Char" data-name="char">
+  <li class=" current" data-id="crython/Char" data-name="char">
       <a href="Char.html">Char</a>
       
     </li>
@@ -87,7 +87,7 @@
       
     </li>
   
-  <li class=" current" data-id="crython/Float32" data-name="float32">
+  <li class=" " data-id="crython/Float32" data-name="float32">
       <a href="Float32.html">Float32</a>
       
     </li>
@@ -191,19 +191,67 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">struct</span> Float32
+  <span class="kind">struct</span> Char
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="Float32.html">Float32</a></li><li class="superclass">Float</li><li class="superclass"><a href="Number.html">Number</a></li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="Char.html">Char</a></li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>A <code><a href="Char.html">Char</a></code> represents a <a href="http://en.wikipedia.org/wiki/Unicode">Unicode</a> <a href="http://en.wikipedia.org/wiki/Code_point">code point</a>.
+It occupies 32 bits.</p>
+<p>It is created by enclosing an UTF-8 character in single quotes.</p>
+<pre><code class="language-crystal"><span class="s">&#39;a&#39;</span>
+<span class="s">&#39;z&#39;</span>
+<span class="s">&#39;0&#39;</span>
+<span class="s">&#39;_&#39;</span>
+<span class="s">&#39;あ&#39;</span></code></pre>
+<p>You can use a backslash to denote some characters:</p>
+<pre><code class="language-crystal"><span class="s">&#39;\&#39;&#39;</span> <span class="c"># single quote</span>
+<span class="s">&#39;\\&#39;</span> <span class="c"># backslash</span>
+<span class="s">&#39;\e&#39;</span> <span class="c"># escape</span>
+<span class="s">&#39;\f&#39;</span> <span class="c"># form feed</span>
+<span class="s">&#39;\n&#39;</span> <span class="c"># newline</span>
+<span class="s">&#39;\r&#39;</span> <span class="c"># carriage return</span>
+<span class="s">&#39;\t&#39;</span> <span class="c"># tab</span>
+<span class="s">&#39;\v&#39;</span> <span class="c"># vertical tab</span></code></pre>
+<p>You can use a backslash followed by an <em>u</em> and four hexadecimal characters to denote a unicode codepoint written:</p>
+<pre><code class="language-crystal"><span class="s">&#39;\u0041&#39;</span> <span class="c"># == &#39;A&#39;</span></code></pre>
+<p>Or you can use curly braces and specify up to four hexadecimal numbers:</p>
+<pre><code class="language-crystal"><span class="s">&#39;\u{41}&#39;</span> <span class="c"># == &#39;A&#39;</span></code></pre>
+<p>See <a href="https://crystal-lang.org/reference/syntax_and_semantics/literals/char.html"><code>Char</code> literals</a> in the language reference.</p>
 
 
 
 
 
-
-
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type">Comparable(<a href="Char.html">Char</a>)</li>
+    
+      <li class="other-type">Steppable</li>
+    
+  </ul>
 
 
 
@@ -224,8 +272,8 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/ddda2560ff189f78ad35a99452f52f4c79bd8c55/src/crython/number.cr#L125" target="_blank">
-        crython/number.cr
+      <a href="https://github.com/kojix2/crython/blob/ddda2560ff189f78ad35a99452f52f4c79bd8c55/src/crython/string.cr#L8" target="_blank">
+        crython/string.cr
       </a>
     
     <br/>
@@ -261,101 +309,6 @@
 
 
 <div class="methods-inherited">
-  
-    
-
-
-    
-
-
-    
-
-
-    
-
-
-  
-    
-
-  <h3>Instance methods inherited from struct <code><a href="Number.html">Number</a></code></h3>
-  
-  
-    <a href="Number.html#%21%3D%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span>!=(other : Crython::PyObject) : Crython::PyObject</span>
-    !=</a>, 
-    
-  
-    <a href="Number.html#%25%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span>%(other : Crython::PyObject) : Crython::PyObject</span>
-    %</a>, 
-    
-  
-    <a href="Number.html#%2A%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span>*(other : Crython::PyObject) : Crython::PyObject</span>
-    *</a>, 
-    
-  
-    <a href="Number.html#%2A%2A%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span>**(other : Crython::PyObject) : Crython::PyObject</span>
-    **</a>, 
-    
-  
-    <a href="Number.html#%2B%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span>+(other : Crython::PyObject) : Crython::PyObject</span>
-    +</a>, 
-    
-  
-    <a href="Number.html#-%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span>-(other : Crython::PyObject) : Crython::PyObject</span>
-    -</a>, 
-    
-  
-    <a href="Number.html#/%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span>/(other : Crython::PyObject) : Crython::PyObject</span>
-    /</a>, 
-    
-  
-    <a href="Number.html#//%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span>//(other : Crython::PyObject) : Crython::PyObject</span>
-    //</a>, 
-    
-  
-    <a href="Number.html#%3C%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span><(other : Crython::PyObject) : Crython::PyObject</span>
-    <</a>, 
-    
-  
-    <a href="Number.html#%3C%3D%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span><=(other : Crython::PyObject) : Crython::PyObject</span>
-    <=</a>, 
-    
-  
-    <a href="Number.html#%3D%3D%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span>==(other : Crython::PyObject) : Crython::PyObject</span>
-    ==</a>, 
-    
-  
-    <a href="Number.html#%3E%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span>>(other : Crython::PyObject) : Crython::PyObject</span>
-    ></a>, 
-    
-  
-    <a href="Number.html#%3E%3D%28other%3ACrython%3A%3APyObject%29%3ACrython%3A%3APyObject-instance-method" class="tooltip">
-      <span>>=(other : Crython::PyObject) : Crython::PyObject</span>
-    >=</a>
-    
-  
-
-
-    
-
-
-    
-
-
-    
-
-
   
     
 
@@ -438,7 +391,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/ddda2560ff189f78ad35a99452f52f4c79bd8c55/src/crython/number.cr#L126" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/ddda2560ff189f78ad35a99452f52f4c79bd8c55/src/crython/string.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
