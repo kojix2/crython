@@ -61,6 +61,11 @@ make examples
 ```
 ./bin/hello
 ```
+#### Workarounds
+
+- Use `call("Abc")` to call a function that starts with a capital letter.
+- Use `call("Abc", args)` to call a function with arguments.
+- Use `"-".to_py.get_attr("join")` to get a function attribute.
 
 ## Development
 
