@@ -54,7 +54,7 @@ $(LIB_CRYTHON_TARGET): $(LIB_CRYTHON_OBJ)
 
 $(EXAMPLES_TARGETS): $(O)/%: examples/%.cr
 	@mkdir -p $(dir $@)
-	$(BUILD_PATH) crystal build $(FLAGS) $< --link-flags "$(LDFLAGS)" -o $@
+	$(BUILD_PATH) crystal build $(FLAGS) $< --link-flags "$(LDFLAGS)" -o $@ --error-trace
 
 test: deps ## Run tests
 	$(BUILD_PATH) crystal spec $(VERBOSE) --link-flags "$(LDFLAGS)"
