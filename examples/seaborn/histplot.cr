@@ -10,7 +10,7 @@ Crython.embed_python do
   diamonds = sns.load_dataset("diamonds")
 
   f, ax = plt.subplots(figsize: [7, 5])
-  sns.despine(f: f)
+  sns.despine(f)
 
   sns.histplot(
     diamonds,
