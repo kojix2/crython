@@ -146,51 +146,51 @@ module Crython
       __pow__(other.to_py)
     end
 
-    def <(other : PyObject) : Bool
+    def <(other : PyObject) : PyObject
       __lt__(other)
     end
 
-    def <(other) : Bool
+    def <(other) : PyObject
       __lt__(other.to_py)
     end
 
-    def <=(other : PyObject) : Bool
+    def <=(other : PyObject) : PyObject
       __le__(other)
     end
 
-    def <=(other) : Bool
+    def <=(other) : PyObject
       __le__(other.to_py)
     end
 
-    def >(other : PyObject) : Bool
+    def >(other : PyObject) : PyObject
       __gt__(other)
     end
 
-    def >(other) : Bool
+    def >(other) : PyObject
       __gt__(other.to_py)
     end
 
-    def >=(other : PyObject) : Bool
+    def >=(other : PyObject) : PyObject
       __ge__(other)
     end
 
-    def >=(other) : Bool
+    def >=(other) : PyObject
       __ge__(other.to_py)
     end
 
-    def ==(other : PyObject) : Bool
+    def ==(other : PyObject) : PyObject
       __eq__(other)
     end
 
-    def ==(other) : Bool
+    def ==(other) : PyObject
       __eq__(other.to_py)
     end
 
-    def !=(other : PyObject) : Bool
+    def !=(other : PyObject) : PyObject
       __ne__(other)
     end
 
-    def !=(other) : Bool
+    def !=(other) : PyObject
       __ne__(other.to_py)
     end
 
