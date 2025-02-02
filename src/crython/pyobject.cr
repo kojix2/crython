@@ -43,20 +43,20 @@ module Crython
         end
         ret = LibPython.object_call(attr, args_tuple, kwargs_dict)
         if ret.null?
-          raise "Error occurred while calling attribute '#{call}' with kwargs"
+          STDERR.puts "Error occurred while calling attribute '#{call}' with kwargs"
         end
       else
         if args.size > 0
           ret = LibPython.object_call_function(attr, *args.map(&.to_py), nil)
           if ret.null?
-            raise "Error occurred while calling attribute '#{call}' with args"
+            STDERR.puts "Error occurred while calling attribute '#{call}' with args"
           end
         else
           if PyObject.new(attr).callable?
             # PyFunction_Check is better? since callable can be a class
             ret = LibPython.object_call_function(attr, nil)
             if ret.null?
-              raise "Error occurred while calling attribute '#{call}' with no args"
+              STDERR.puts "Error occurred while calling attribute '#{call}' with no args"
             end
           else
             ret = LibPython.object_get_attr_string(@raw, call.to_s.to_unsafe)
