@@ -32,8 +32,11 @@ jobs:
         run: make
       - name: Run tests
         run: make test
-      - name: Run executable
+      - name: Build executables
         run: |
           make examples
-          chmod +x ./bin/test
-          ./bin/test
+      - name: Run excutables
+        run: |
+          find ./bin -type f ! -name "*.dwarf" | xargs chmod +x
+          find ./bin -type f ! -name "*.dwarf" | xargs -L1
+
