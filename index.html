@@ -192,25 +192,26 @@
 <h1><a id="crython" class="anchor" href="#crython">  <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>crython</h1>
+</a>Crython</h1>
 <p><a href="https://github.com/kojix2/crython/actions/workflows/test.yml"><img src="https://github.com/kojix2/crython/actions/workflows/test.yml/badge.svg" alt="test" /></a></p>
-<p>:gem: :snake:　
+<p>💎 🐍
 Crystal meets Python!</p>
 <h2><a id="overview" class="anchor" href="#overview">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>Overview</h2>
-<p>Crython allows the use of Python libraries within Crystal applications.</p>
+<p>Crython is a tool that lets you use <a href="https://github.com/python/cpython">Python</a> libraries in <a href="https://github.com/crystal-lang/crystal">Crystal</a>, a programming language.</p>
 <h2><a id="installation" class="anchor" href="#installation">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>Installation</h2>
 <ul>
-<li>A Python3 interpreter is required as a dependency.</li>
-<li>Ensure <code>python3-config --ldflags</code> works.</li>
+<li>You need Python3. Python is a popular programming language.</li>
+<li>Make sure <code>python3-config --ldflags</code> works.</li>
 </ul>
+<p>Add this to your dependencies:</p>
 <pre><code class="language-yaml">dependencies:
   crython:
     github: kojix2/crython</code></pre>
@@ -219,10 +220,11 @@ Crystal meets Python!</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Environment Setup</h2>
-<p>Set the <code>LD_LIBRARY_PATH</code> to include Python's library directory to ensure shared libraries are found:</p>
-<pre><code class="language-bash">export LD_LIBRARY_PATH=$(python3 -c &quot;import sysconfig; print(sysconfig.get_config_var('LIBDIR'))&quot;):$LD_LIBRARY_PATH</code></pre>
-<p>This command appends the Python library directory to the existing <code>LD_LIBRARY_PATH</code>.</p>
-<p>To use Crython in your Crystal project, simply require the library:</p>
+<p>To find Python libraries, set the <code>LD_LIBRARY_PATH</code>:</p>
+<pre><code class="language-bash">export LD_LIBRARY_PATH=$(python3 -c \
+&quot;import sysconfig; print(sysconfig.get_config_var('LIBDIR'))&quot;):$LD_LIBRARY_PATH</code></pre>
+<p>This command adds the Python library directory to <code>LD_LIBRARY_PATH</code>.</p>
+<p>To use Crython in your Crystal project, add this line:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;crython&quot;</span></code></pre>
 <h2><a id="usage" class="anchor" href="#usage">
   <svg class="octicon-link" aria-hidden="true">
@@ -241,42 +243,36 @@ Crystal meets Python!</p>
   </svg>
 </a>Embedding Python Code</h4>
 <pre><code class="language-crystal"><span class="t">Crython</span>.embed_python <span class="k">do</span>
-  <span class="c"># Your Python code here</span>
+  <span class="c"># Write your Python code here</span>
 <span class="k">end</span></code></pre>
-<p>For more examples, see the <a href="examples">examples</a> folder. Use <code>make examples</code> to build all examples.</p>
+<p>For more examples, check the <a href="examples">examples</a> folder. To build all examples, use:</p>
 <pre><code class="language-crystal">make examples</code></pre>
+<p>Then run:</p>
 <pre><code class="language-crystal">.<span class="o">/</span>bin<span class="o">/</span>hello</code></pre>
-<h4><a id="workarounds" class="anchor" href="#workarounds">
+<h4><a id="tips" class="anchor" href="#tips">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Workarounds</h4>
+</a>Tips</h4>
 <ul>
 <li>Use <code>call(&quot;Abc&quot;)</code> to call a function that starts with a capital letter.</li>
 <li>Use <code>call(&quot;Abc&quot;, args)</code> to call a function with arguments.</li>
 <li>Use <code>&quot;-&quot;.to_py.attr(&quot;join&quot;)</code> to get a function attribute.</li>
 <li>Use <code>Crython.slice_full</code> instead of <code>:</code>.</li>
 </ul>
-<h2><a id="development" class="anchor" href="#development">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Development</h2>
-<p>Some constants and functions in Python's C API are provided as preprocessor macros.
-To make them easier to use, Crython uses a small static library (see src/ext/crython.c) that turns them into a fixed C API.</p>
 <h2><a id="contributing" class="anchor" href="#contributing">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>Contributing</h2>
-<p>Fork ➔ Edit ➔ Commmit ➔ Pull Request</p>
+<p>Fork ➔ Edit ➔ Commit ➔ Pull Request</p>
 <h2><a id="license" class="anchor" href="#license">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>LICENSE</h2>
 <p><a href="LICENSE">MIT</a></p>
-<p><a href="https://github.com/RomainFranceschini">Romain Franceschini</a> - The original creator of the crython project</p>
+<p><a href="https://github.com/RomainFranceschini">Romain Franceschini</a> - The original creator of the Crython project</p>
 </div>
 </body>
 </html>
