@@ -54,14 +54,14 @@ end
 
 struct UInt8
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("I", self)
+    ptr = Crython::LibPython.build_value("B", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Int8
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("i", self)
+    ptr = Crython::LibPython.build_value("b", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
