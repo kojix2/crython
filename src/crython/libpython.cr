@@ -2,6 +2,7 @@
 lib LibPython
   alias PyObject = Void*
   alias Int = LibC::Int
+  alias Double = LibC::Double
   alias Long = LibC::Long
   alias Char = LibC::Char
   alias FILE = Void*
@@ -59,8 +60,12 @@ lib LibPython
   fun object_print = PyObject_Print(o : PyObject, fd : FILE, flags : Int) : Int
   fun object_cmp = PyObject_Cmp(a : PyObject, b : PyObject, res : Int*) : Int
 
-  fun object_string = PyObject_Str(o : PyObject) : PyObject
+  fun object_str = PyObject_Str(o : PyObject) : PyObject
   fun object_repr = PyObject_Repr(o : PyObject) : PyObject
+
+  fun object_type = PyObject_Type(o : PyObject) : PyObject
+  fun object_is_instance = PyObject_IsInstance(o : PyObject, cls : PyObject) : Int
+  fun object_is_subclass = PyObject_IsSubclass(o : PyObject, cls : PyObject) : Int
 
   # Build Value
   fun build_value = Py_BuildValue(format : Char*, ...) : PyObject
@@ -98,5 +103,15 @@ lib LibPython
   # Bool
   fun bool_from_long = PyBool_FromLong(i : Long) : PyObject
 
+  # Convertion
+  fun long_type = PyLong_Type
+  fun float_type = PyFloat_Type
+  fun str_type = PyUnicode_Type
+
   fun long_as_long = PyLong_AsLong(i : PyObject) : Long
+  fun float_as_double = PyFloat_AsDouble(f : PyObject) : Double
+
+  fun long_from_string = PyLong_FromString(str : Char*, end : Char**, base : Int) : PyObject
+
+  fun complex_from_doubles = PyComplex_FromDoubles(real : Double, imag : Double) : PyObject
 end

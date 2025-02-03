@@ -103,21 +103,23 @@ end
 
 struct Int64
   def to_py : Crython::PyObject
-    ptr = :LibPython.build_value("k", self)
+    ptr = LibPython.build_value("L", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct UInt128
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("N", self)
+    str_repr = self.to_s                                # UInt128 を String に変換
+    ptr = LibPython.long_from_string(str_repr, nil, 10) # 10進数の `int` に変換
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Int128
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("n", self)
+    str_repr = self.to_s                                # Int128 を String に変換
+    ptr = LibPython.long_from_string(str_repr, nil, 10) # 10進数の `int` に変換
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end

@@ -1,9 +1,12 @@
 require "./pyobject/object_protocol"
+require "./pyobject/experimental_crystalizer"
 require "./string"
 
 module Crython
   class PyObject # FIXME: Should be struct?
     include ObjectProtocol
+    include ExperimentalCrystalizer
+
     property need_decref : Bool
 
     def initialize(@raw : LibPython::PyObject, @need_decref = false)
@@ -214,7 +217,7 @@ module Crython
     end
 
     def to_s(io) : Nil
-      s = LibPython.object_string(@raw)
+      s = LibPython.object_str(@raw)
       ptr = LibPython.unicode_as_utf8(s)
       io.print String.new(ptr)
     end
