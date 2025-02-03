@@ -1,12 +1,12 @@
 struct NamedTuple
   def to_py : Crython::PyObject
-    dict = LibPython.dict_new
+    dict = Crython::LibPython.dict_new
     self.each do |key, value|
       py_key = key.to_py
       py_value = value.to_py
-      LibPython.dict_set_item(dict, py_key, py_value)
-      LibPython.decref(py_key)
-      LibPython.decref(py_value)
+      Crython::LibPython.dict_set_item(dict, py_key, py_value)
+      Crython::LibPython.decref(py_key)
+      Crython::LibPython.decref(py_value)
     end
     Crython::PyObject.new(dict)
   end

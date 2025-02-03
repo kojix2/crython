@@ -36,7 +36,7 @@ describe Crython do
   it "raises error" do
     Crython.embed_python do
       Crython.err_occurred?.should be_false
-      LibPython.import("nonexistent")
+      Crython::LibPython.import("nonexistent")
       Crython.err_occurred?.should be_true
       Crython.clear_error
       Crython.err_occurred?.should be_false

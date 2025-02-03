@@ -54,56 +54,56 @@ end
 
 struct UInt8
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("I", self)
+    ptr = Crython::LibPython.build_value("I", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Int8
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("i", self)
+    ptr = Crython::LibPython.build_value("i", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct UInt16
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("H", self)
+    ptr = Crython::LibPython.build_value("H", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Int16
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("h", self)
+    ptr = Crython::LibPython.build_value("h", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct UInt32
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("I", self)
+    ptr = Crython::LibPython.build_value("I", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Int32
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("i", self)
+    ptr = Crython::LibPython.build_value("i", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct UInt64
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("K", self)
+    ptr = Crython::LibPython.build_value("K", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Int64
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("L", self)
+    ptr = Crython::LibPython.build_value("L", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
@@ -111,7 +111,7 @@ end
 struct UInt128
   def to_py : Crython::PyObject
     str_repr = self.to_s                                # UInt128 を String に変換
-    ptr = LibPython.long_from_string(str_repr, nil, 10) # 10進数の `int` に変換
+    ptr = Crython::LibPython.long_from_string(str_repr, nil, 10) # 10進数の `int` に変換
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
@@ -119,21 +119,21 @@ end
 struct Int128
   def to_py : Crython::PyObject
     str_repr = self.to_s                                # Int128 を String に変換
-    ptr = LibPython.long_from_string(str_repr, nil, 10) # 10進数の `int` に変換
+    ptr = Crython::LibPython.long_from_string(str_repr, nil, 10) # 10進数の `int` に変換
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Float32
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("f", self)
+    ptr = Crython::LibPython.build_value("f", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Float64
   def to_py : Crython::PyObject
-    ptr = LibPython.build_value("d", self)
+    ptr = Crython::LibPython.build_value("d", self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
