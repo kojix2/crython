@@ -20,11 +20,6 @@ VERBOSE := $(if $(verbose),-v )
 CFLAGS += $(if $(debug),-g -O0)
 CFLAGS += $(if $(release),-O2)
 
-LIB_CRYTHON = src/ext/crython.c
-LIB_CRYTHON_OBJ = $(subst .c,.o,$(LIB_CRYTHON))
-
-DEPS = $(LIB_CRYTHON_TARGET)
-
 EXAMPLES_SOURCES := $(shell find examples -type f -name '*.cr')
 EXAMPLES_TARGETS := $(patsubst examples/%.cr, $(O)/%, $(EXAMPLES_SOURCES))
 
@@ -37,17 +32,15 @@ PYTHON_LIB := -lpython$(PYTHON_VERSION)
 CFLAGS += $(PYTHON_CFLAGS)
 LDFLAGS += $(PYTHON_LDFLAGS) $(PYTHON_LIB)
 
-.PHONY: all deps test examples doc clean
+.PHONY: all deps test examples doc clean help
+
+help:
+	@echo "Available targets:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 all: deps
 
 deps: ## Build dependencies
-
-$(LIB_CRYTHON_OBJ): $(LIB_CRYTHON)
-	$(CC) -o $@ -c $< $(CFLAGS)
-
-$(LIB_CRYTHON_TARGET): $(LIB_CRYTHON_OBJ)
-	$(AR) -rcs $@ $^
 
 $(EXAMPLES_TARGETS): $(O)/%: examples/%.cr
 	@mkdir -p $(dir $@)
@@ -56,7 +49,7 @@ $(EXAMPLES_TARGETS): $(O)/%: examples/%.cr
 test: deps ## Run tests
 	$(BUILD_PATH) crystal spec $(VERBOSE) --link-flags "$(LDFLAGS)"
 
-examples: $(DEPS) $(EXAMPLES_TARGETS)
+examples: $(DEPS) $(EXAMPLES_TARGETS) ## Build all examples
 
 doc: deps ## Generate crython library documentation
 	@echo "Building documentation..."
@@ -66,6 +59,4 @@ clean: ## Clean up built directories and files
 	@echo "Cleaning..."
 	rm -rf $(O)
 	rm -rf ./doc
-	rm -rf $(LIB_CRYTHON_OBJ)
-	rm -rf $(LIB_CRYTHON_TARGET)
 	rm -rf $(EXAMPLES_TARGETS)
