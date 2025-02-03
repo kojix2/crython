@@ -104,11 +104,6 @@ module Crython
     # Bool
     fun bool_from_long = PyBool_FromLong(i : Long) : PyObject
 
-    # Convertion
-    fun long_type = PyLong_Type
-    fun float_type = PyFloat_Type
-    fun str_type = PyUnicode_Type
-
     fun long_as_long = PyLong_AsLong(i : PyObject) : Long
     fun float_as_double = PyFloat_AsDouble(f : PyObject) : Double
 
