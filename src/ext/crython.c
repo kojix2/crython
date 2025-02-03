@@ -1,48 +1,38 @@
 #include <Python.h>
 
 /* ---- Reference Counting Functions ---- */
+extern Py_ssize_t py_refcnt(PyObject *o)
+{
+  return Py_REFCNT(o); // Get the reference count
+}
+
+extern void py_set_refcnt(PyObject *o, Py_ssize_t refcnt)
+{
+  Py_SET_REFCNT(o, refcnt); // Set the object o reference counter
+}
+
 extern void py_incref(PyObject *o)
 {
-  if (o == NULL) {
-    fprintf(stderr, "py_incref: NULL pointer\n");
-    return;
-  }
   Py_INCREF(o); // Increment reference count
 }
 
 extern void py_xincref(PyObject *o)
 {
-  if (o == NULL) {
-    fprintf(stderr, "py_xincref: NULL pointer\n");
-    return;
-  }
   Py_XINCREF(o); // Increment reference count if not NULL
 }
 
 extern void py_decref(PyObject *o)
 {
-  if (o == NULL) {
-    fprintf(stderr, "py_decref: NULL pointer\n");
-    return;
-  }
   Py_DECREF(o); // Decrement reference count
 }
 
 extern void py_xdecref(PyObject *o)
 {
-  if (o == NULL) {
-    fprintf(stderr, "py_xdecref: NULL pointer\n");
-    return;
-  }
   Py_XDECREF(o); // Decrement reference count if not NULL
 }
 
 extern void py_clear(PyObject *o)
 {
-  if (o == NULL) {
-    fprintf(stderr, "py_clear: NULL pointer\n");
-    return;
-  }
   Py_CLEAR(o); // Decrement reference count and set to NULL
 }
 

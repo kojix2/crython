@@ -4,6 +4,8 @@ lib LibCrython
   alias PyObject = Void*
 
   # Reference Counting Functions
+  fun refcnt = py_refcnt(o : PyObject) : LibC::SizeT
+  fun set_refcnt = py_set_refcnt(o : PyObject, refcnt : LibC::SizeT)
   fun incref = py_incref(o : PyObject)
   fun decref = py_decref(o : PyObject)
   fun xincref = py_xincref(o : PyObject)

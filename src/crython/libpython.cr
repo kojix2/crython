@@ -33,9 +33,13 @@ lib LibPython
 
   # Run / Eval
   fun run_simple_string = PyRun_SimpleString(str : Char*) : Int
-
+    
   # Module
   fun import = PyImport_ImportModule(name : Char*) : PyObject
+
+  # Reference Counting Functions
+  fun incref = Py_IncRef(o : PyObject)
+  fun decref = Py_DecRef(o : PyObject)
 
   # Object
   fun object_has_attr_string = PyObject_HasAttrString(o : PyObject, attr : Char*) : Int
