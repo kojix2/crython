@@ -4,8 +4,8 @@ struct Tuple
     self.each_with_index do |item, index|
       py_item = item.to_py
       py_item.need_decref = false
-      Crython::LibPython.tuple_set_item(tuple, index, item.to_py)
+      Crython::LibPython.tuple_set_item(tuple, index, py_item)
     end
-    Crython::PyObject.new(tuple)
+    Crython::PyObject.new(tuple, need_decref: true)
   end
 end
