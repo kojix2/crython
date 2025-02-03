@@ -1,14 +1,27 @@
 require "./spec_helper"
 
 describe Number do
-  describe UInt8 do
-    it "converts to Crystal" do
-      Crython.embed_python do
-        py_uint8 = 255_u8.to_py
-        py_uint8.should be_a(Crython::PyObject)
-        py_uint8.to_s.should eq("255")
-        py_uint8.to_cr.should eq(255)
-      end
+  it "long converts to Crystal" do
+    Crython.embed_python do
+      py_long = 256.to_py
+      py_long.should be_a(Crython::PyObject)
+      py_long.to_cr.should eq(256)
+    end
+  end
+
+  it "float converts to Crystal" do
+    Crython.embed_python do
+      py_float = 3.14.to_py
+      py_float.should be_a(Crython::PyObject)
+      py_float.to_cr.should eq(3.14)
+    end
+  end
+
+  it "string converts to Crystal" do
+    Crython.embed_python do
+      py_str = "hello".to_py
+      py_str.should be_a(Crython::PyObject)
+      py_str.to_cr.should eq("hello")
     end
   end
 end

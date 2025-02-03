@@ -21,7 +21,8 @@ module Crython
         when "<class 'float'>"
           LibPython.float_as_double(@raw)
         when "<class 'str'>"
-          LibPython.unicode_as_utf8(@raw)
+          ptr = LibPython.unicode_as_utf8(@raw)
+          String.new(ptr)
         else
           raise "Unsupported type: #{type_name}"
         end
