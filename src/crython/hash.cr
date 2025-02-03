@@ -2,7 +2,11 @@ class Hash(K, V)
   def to_py : Crython::PyObject
     dict = LibPython.dict_new
     self.each do |key, value|
-      LibPython.dict_set_item(dict, key.to_py, value.to_py)
+      py_key = key.to_py
+      py_value = value.to_py
+      LibPython.dict_set_item(dict, py_key, py_value)
+      LibPython.decref(py_key)
+      LibPython.decref(py_value)
     end
     Crython::PyObject.new(dict)
   end

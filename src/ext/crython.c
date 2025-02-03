@@ -11,25 +11,25 @@ extern void py_set_refcnt(PyObject *o, Py_ssize_t refcnt)
   Py_SET_REFCNT(o, refcnt); // Set the object o reference counter
 }
 
-extern void py_incref(PyObject *o)
-{
-  Py_INCREF(o); // Increment reference count
-}
+// extern void py_incref(PyObject *o)
+// {
+//   Py_INCREF(o); // Increment reference count
+// }
 
-extern void py_xincref(PyObject *o)
-{
-  Py_XINCREF(o); // Increment reference count if not NULL
-}
+// extern void py_xincref(PyObject *o)
+// {
+//   Py_XINCREF(o); // Increment reference count if not NULL
+// }
 
-extern void py_decref(PyObject *o)
-{
-  Py_DECREF(o); // Decrement reference count
-}
+// extern void py_decref(PyObject *o)
+// {
+//   Py_DECREF(o); // Decrement reference count
+// }
 
-extern void py_xdecref(PyObject *o)
-{
-  Py_XDECREF(o); // Decrement reference count if not NULL
-}
+// extern void py_xdecref(PyObject *o)
+// {
+//   Py_XDECREF(o); // Decrement reference count if not NULL
+// }
 
 extern void py_clear(PyObject *o)
 {

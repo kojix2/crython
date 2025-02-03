@@ -33,7 +33,7 @@ lib LibPython
 
   # Run / Eval
   fun run_simple_string = PyRun_SimpleString(str : Char*) : Int
-    
+
   # Module
   fun import = PyImport_ImportModule(name : Char*) : PyObject
 

@@ -2,10 +2,17 @@ require "./pyobject/object_protocol"
 require "./string"
 
 module Crython
-  struct PyObject
+  class PyObject # FIXME: Should be struct?
     include ObjectProtocol
+    property need_decref : Bool
 
-    def initialize(@raw : LibPython::PyObject)
+    def initialize(@raw : LibPython::PyObject, @need_decref = false)
+    end
+
+    def finalize
+      if @need_decref
+        LibPython.decref(@raw)
+      end
     end
 
     macro method_missing(call)
@@ -32,7 +39,7 @@ module Crython
         elsif args.size == 1
           args_tuple = LibPython.build_value("(O)", *args.map(&.to_py))
         else
-          args_tuple = LibPython.build_value("O" * args.size, *args.map(&.to_py))
+          args_tuple = LibPython.build_value("(" + "O" * args.size + ")", *args.map(&.to_py))
         end
         kwargs_dict = LibPython.dict_new
         kwargs.each do |k, v|
@@ -40,8 +47,12 @@ module Crython
           cstr = str.to_unsafe
           key = LibPython.unicode_from_string_and_size(cstr, str.size)
           LibPython.dict_set_item(kwargs_dict, key, v.to_py)
+          LibPython.decref(key)
         end
         ret = LibPython.object_call(attr, args_tuple, kwargs_dict)
+        LibPython.decref(args_tuple)
+        LibPython.decref(kwargs_dict)
+        LibPython.decref(attr)
         if ret.null?
           STDERR.puts "Error occurred while calling attribute '#{call}' with kwargs"
         end
@@ -51,6 +62,7 @@ module Crython
           if ret.null?
             STDERR.puts "Error occurred while calling attribute '#{call}' with args"
           end
+          LibPython.decref(attr)
         else
           if PyObject.new(attr).callable?
             # PyFunction_Check is better? since callable can be a class
@@ -58,6 +70,7 @@ module Crython
             ret = LibPython.object_call_function(attr, nil)
             # User should call attr if they want to get the attribute
             # "-".to_py.attr("join")
+            LibPython.decref(attr)
           else
             ret = attr
           end
@@ -74,6 +87,7 @@ module Crython
       # __getitem__
       key_tuple = LibPython.build_value("O" * key.size, *key.map(&.to_py))
       ptr = LibPython.object_get_item(@raw, key_tuple)
+      LibPython.decref(key_tuple)
       if ptr.null?
         LibPython.err_print
         raise "Error occurred while getting item"
@@ -83,7 +97,12 @@ module Crython
 
     def []=(key, value) : Nil
       # __setitem__
-      r = LibPython.object_set_item(@raw, key.to_py, value.to_py)
+      py_key = key.to_py
+      py_value = value.to_py
+      r = LibPython.object_set_item(@raw, py_key, py_value)
+      LibPython.decref(py_key)
+      LibPython.decref(py_value)
+
       if r < 0
         LibPython.err_print
         raise "Error occurred while setting item"

@@ -18,7 +18,7 @@ module Crython
     end
   end
 
-  def self.embed_python
+  def self.embed_python(&)
     LibPython.init
     yield(self)
     LibPython.finalize
