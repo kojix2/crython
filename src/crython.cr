@@ -1,5 +1,6 @@
 require "./crython/libpython"
 require "./crython/*"
+require "./crython/cr2py/*"
 
 module Crython
   VERSION = "0.1.0"

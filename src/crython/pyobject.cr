@@ -1,6 +1,6 @@
 require "./pyobject/object_protocol"
 require "./pyobject/experimental_crystalizer"
-require "./string"
+require "./cr2py/string"
 
 module Crython
   class PyObject # FIXME: Should be struct?
