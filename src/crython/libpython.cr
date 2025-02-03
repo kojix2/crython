@@ -92,6 +92,9 @@ lib LibPython
   fun dict_get_item = PyDict_GetItem(d : PyObject, key : PyObject) : PyObject
   fun dict_set_item = PyDict_SetItem(d : PyObject, key : PyObject, val : PyObject) : Int
 
+  # Slice
+  fun slice_new = PySlice_New(start : PyObject, stop : PyObject, step : PyObject) : PyObject
+
   # Bool
   fun bool_from_long = PyBool_FromLong(i : Long) : PyObject
 

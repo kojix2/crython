@@ -1,5 +1,4 @@
 require "./crython/libpython"
-require "./crython/libcrython"
 require "./crython/*"
 
 module Crython
@@ -16,6 +15,9 @@ module Crython
   end
 
   def self.slice_full : PyObject
-    PyObject.new(LibCrython.slice_full)
+    n = LibPython.build_value("")
+    sf = LibPython.slice_new(n, n, n)
+    LibPython.decref(n)
+    PyObject.new(sf)
   end
 end

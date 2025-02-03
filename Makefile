@@ -22,7 +22,6 @@ CFLAGS += $(if $(release),-O2)
 
 LIB_CRYTHON = src/ext/crython.c
 LIB_CRYTHON_OBJ = $(subst .c,.o,$(LIB_CRYTHON))
-LIB_CRYTHON_TARGET = src/ext/libcrython.a
 
 DEPS = $(LIB_CRYTHON_TARGET)
 
@@ -38,13 +37,11 @@ PYTHON_LIB := -lpython$(PYTHON_VERSION)
 CFLAGS += $(PYTHON_CFLAGS)
 LDFLAGS += $(PYTHON_LDFLAGS) $(PYTHON_LIB)
 
-.PHONY: all deps libcrython test examples doc clean
+.PHONY: all deps test examples doc clean
 
 all: deps
 
-deps: libcrython ## Build dependencies
-
-libcrython: $(LIB_CRYTHON_TARGET)
+deps: ## Build dependencies
 
 $(LIB_CRYTHON_OBJ): $(LIB_CRYTHON)
 	$(CC) -o $@ -c $< $(CFLAGS)

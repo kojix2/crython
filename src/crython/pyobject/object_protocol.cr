@@ -1,9 +1,5 @@
 module Crython
   private module ObjectProtocol
-    def none?
-      LibCrython.none?(@raw) != 0
-    end
-
     def callable? : Bool
       LibPython.object_is_callable(@raw) != 0
     end
