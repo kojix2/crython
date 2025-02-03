@@ -1,5 +1,4 @@
 require "../src/crython"
-require "../src/crython/number"
 
 # Example 1: Using the Python 'os' module to get the current working directory
 Crython.embed_python do

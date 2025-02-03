@@ -1,7 +1,4 @@
 require "../src/crython"
-require "../src/crython/array"
-require "../src/crython/number"
-require "../src/crython/string"
 
 Crython.embed_python do
   plt = Crython.import("matplotlib.pyplot")

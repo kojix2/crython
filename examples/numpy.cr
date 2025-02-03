@@ -1,6 +1,4 @@
 require "../src/crython"
-require "../src/crython/array"
-require "../src/crython/number"
 
 Crython.embed_python do
   np = Crython.import("numpy")
