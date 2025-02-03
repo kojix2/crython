@@ -92,5 +92,8 @@ lib LibPython
   fun dict_get_item = PyDict_GetItem(d : PyObject, key : PyObject) : PyObject
   fun dict_set_item = PyDict_SetItem(d : PyObject, key : PyObject, val : PyObject) : Int
 
+  # Bool
+  fun bool_from_long = PyBool_FromLong(i : Long) : PyObject
+
   fun long_as_long = PyLong_AsLong(i : PyObject) : Long
 end
