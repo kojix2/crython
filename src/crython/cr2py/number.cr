@@ -110,16 +110,16 @@ end
 
 struct UInt128
   def to_py : Crython::PyObject
-    str_repr = self.to_s                                # UInt128 を String に変換
-    ptr = Crython::LibPython.long_from_string(str_repr, nil, 10) # 10進数の `int` に変換
+    str_repr = self.to_s
+    ptr = Crython::LibPython.long_from_string(str_repr, nil, 10)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Int128
   def to_py : Crython::PyObject
-    str_repr = self.to_s                                # Int128 を String に変換
-    ptr = Crython::LibPython.long_from_string(str_repr, nil, 10) # 10進数の `int` に変換
+    str_repr = self.to_s
+    ptr = Crython::LibPython.long_from_string(str_repr, nil, 10)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
