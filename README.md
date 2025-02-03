@@ -1,18 +1,20 @@
-# crython 　
+# Crython
 
 [![test](https://github.com/kojix2/crython/actions/workflows/test.yml/badge.svg)](https://github.com/kojix2/crython/actions/workflows/test.yml)
 
-:gem: :snake:　
+💎 🐍
 Crystal meets Python!
 
 ## Overview
 
-Crython allows the use of Python libraries within Crystal applications.
+Crython is a tool that lets you use [Python](https://github.com/python/cpython) libraries in [Crystal](https://github.com/crystal-lang/crystal), a programming language.
 
 ## Installation
 
-- A Python3 interpreter is required as a dependency.
-- Ensure `python3-config --ldflags` works.
+- You need Python3. Python is a popular programming language.
+- Make sure `python3-config --ldflags` works.
+
+Add this to your dependencies:
 
 ```yaml
 dependencies:
@@ -22,15 +24,16 @@ dependencies:
 
 ## Environment Setup
 
-Set the `LD_LIBRARY_PATH` to include Python's library directory to ensure shared libraries are found:
+To find Python libraries, set the `LD_LIBRARY_PATH`:
 
 ```bash
-export LD_LIBRARY_PATH=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))"):$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$(python3 -c \
+"import sysconfig; print(sysconfig.get_config_var('LIBDIR'))"):$LD_LIBRARY_PATH
 ```
 
-This command appends the Python library directory to the existing `LD_LIBRARY_PATH`.
+This command adds the Python library directory to `LD_LIBRARY_PATH`.
 
-To use Crython in your Crystal project, simply require the library:
+To use Crython in your Crystal project, add this line:
 
 ```crystal
 require "crython"
@@ -48,38 +51,35 @@ mod = Crython.import("math")
 
 ```crystal
 Crython.embed_python do
-  # Your Python code here
+  # Write your Python code here
 end
 ```
 
-For more examples, see the [examples](examples) folder. Use `make examples` to build all examples.
+For more examples, check the [examples](examples) folder. To build all examples, use:
 
 ```
 make examples
 ```
 
+Then run:
+
 ```
 ./bin/hello
 ```
 
-#### Workarounds
+#### Tips
 
 - Use `call("Abc")` to call a function that starts with a capital letter.
 - Use `call("Abc", args)` to call a function with arguments.
 - Use `"-".to_py.attr("join")` to get a function attribute.
-- Use `Crython.slice_full` instead of `:`. 
-
-## Development
-
-Some constants and functions in Python's C API are provided as preprocessor macros.
-To make them easier to use, Crython uses a small static library (see src/ext/crython.c) that turns them into a fixed C API.
+- Use `Crython.slice_full` instead of `:`.
 
 ## Contributing
 
-Fork ➔ Edit ➔ Commmit ➔ Pull Request
+Fork ➔ Edit ➔ Commit ➔ Pull Request
 
 ## LICENSE
 
 [MIT](LICENSE)
 
-[Romain Franceschini](https://github.com/RomainFranceschini) - The original creator of the crython project
+[Romain Franceschini](https://github.com/RomainFranceschini) - The original creator of the Crython project
