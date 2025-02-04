@@ -74,6 +74,16 @@ Then run:
 - Use `"-".to_py.attr("join")` to get a function attribute.
 - Use `Crython.slice_full` instead of `:`.
 
+## Building Examples with Custom Python Library
+
+`python3-config` usually provides the correct flags for linking. If it doesn't, you can manually set `LDFLAGS` to your environment's library path. For example, if using micromamba:
+
+```bash
+LDFLAGS="-L/Users/<your-username>/micromamba/envs/crython/lib -lpython3.13" make examples
+```
+
+Replace `<your-username>` with your actual username and adjust the path as necessary.
+
 ## Contributing
 
 Fork ➔ Edit ➔ Commit ➔ Pull Request
