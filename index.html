@@ -265,6 +265,14 @@ Crystal meets Python!</p>
 <li>Use <code>&quot;-&quot;.to_py.attr(&quot;join&quot;)</code> to get a function attribute.</li>
 <li>Use <code>Crython.slice_full</code> instead of <code>:</code>.</li>
 </ul>
+<h2><a id="building-examples-with-custom-python-library" class="anchor" href="#building-examples-with-custom-python-library">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Building Examples with Custom Python Library</h2>
+<p><code>python3-config</code> usually provides the correct flags for linking. If it doesn't, you can manually set <code>LDFLAGS</code> to your environment's library path. For example, if using micromamba:</p>
+<pre><code class="language-bash">LDFLAGS=&quot;-L/Users/&lt;your-username&gt;/micromamba/envs/crython/lib -lpython3.13&quot; make examples</code></pre>
+<p>Replace <code>&lt;your-username&gt;</code> with your actual username and adjust the path as necessary.</p>
 <h2><a id="contributing" class="anchor" href="#contributing">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
