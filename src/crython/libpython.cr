@@ -39,6 +39,8 @@ module Crython
 
     # Run / Eval
     fun run_simple_string = PyRun_SimpleString(str : Char*) : Int
+    fun compile_string = Py_CompileString(str : Char*, file : Char*, start : Int) : PyObject
+    fun eval_eval_code = PyEval_EvalCode(code : PyObject, globals : PyObject, locals : PyObject) : PyObject
 
     # Module
     fun import = PyImport_ImportModule(name : Char*) : PyObject
