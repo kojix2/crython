@@ -1,6 +1,6 @@
 require "../../src/crython"
 
-Crython.embed_python do
+Crython.session do
   np = Crython.import("numpy")
   pd = Crython.import("pandas")
   sns = Crython.import("seaborn")

@@ -1,6 +1,6 @@
 require "../src/crython"
 
-Crython.embed_python do
+Crython.session do
   np = Crython.import("numpy")
 
   x1 = np.array([1, 2, 3])

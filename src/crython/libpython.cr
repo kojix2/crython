@@ -82,9 +82,15 @@ module Crython
     fun arg_parse = PyArg_Parse(args : PyObject, format : Char*, ...) : Int
 
     # Unicode
+    fun unicode_is_identifier = PyUnicode_IsIdentifier(str : PyObject) : Int
+    fun unicode_from_string_and_size = PyUnicode_FromStringAndSize(str : Char*, size : LibC::SizeT) : PyObject
+    fun unicode_from_string = PyUnicode_FromString(str : Char*) : PyObject
+    fun unicode_from_format = PyUnicode_FromFormat(format : Char*, ...) : PyObject
+    fun unicode_from_format_v = PyUnicode_FromFormatV(format : Char*, ...) : PyObject
+    fun unicode_from_object = PyUnicode_FromObject(o : PyObject) : PyObject
+    fun unicode_from_encoded_object = PyUnicode_FromEncodedObject(o : PyObject, encoding : Char*, errors : Char*) : PyObject
     fun unicode_get_length = PyUnicode_GetLength(o : PyObject) : Int
     fun unicode_as_utf8 = PyUnicode_AsUTF8(str : PyObject) : Char*
-    fun unicode_from_string_and_size = PyUnicode_FromStringAndSize(str : Char*, size : Int) : PyObject
 
     # List
     fun list_new = PyList_New(size : Int) : PyObject
@@ -121,6 +127,7 @@ module Crython
     fun long_from_unsigned_long_long = PyLong_FromUnsignedLongLong(v : ULongLong) : PyObject
     fun long_from_double = PyLong_FromDouble(v : Double) : PyObject
     fun long_from_string = PyLong_FromString(str : Char*, pend : Char**, base : Int) : PyObject
+    fun long_from_unicode_object = PyLong_FromUnicodeObject(str : PyObject, base : Int) : PyObject
     fun long_from_void_ptr = PyLong_FromVoidPtr(p : Void*) : PyObject
     fun long_as_long = PyLong_AsLong(i : PyObject) : Long
     fun long_as_int = PyLong_AsInt(i : PyObject) : Int

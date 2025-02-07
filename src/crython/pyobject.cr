@@ -9,12 +9,31 @@ module Crython
 
     property need_decref : Bool
 
+    # @id : Int32 = Random.rand(1000000) # Unique identifier for logging
+    @session_id : UInt64 = Crython.session_id
+
     def initialize(@raw : LibPython::PyObject, @need_decref = false)
+      ##############################################################
+      # GARBAGE COLLECTION DEBUGGING CODE
+      ##############################################################
+      # @session_id = Crython.session_id
+      # value_str = LibPython.object_str(@raw)
+      # value_ptr = LibPython.unicode_as_utf8(value_str)
+      # type_ptr = LibPython.object_get_attr_string(@raw, "__class__".to_unsafe)
+      # type_name_ptr = LibPython.object_get_attr_string(type_ptr, "__name__".to_unsafe)
+      # type_name = LibPython.unicode_as_utf8(type_name_ptr)
+      # puts "Initialized PyObject with ID: #{@id}, Python Type: #{String.new(type_name)}, Value: #{String.new(value_ptr)}"
+      # LibPython.decref(type_ptr)
+      # LibPython.decref(type_name_ptr)
+      # LibPython.decref(value_str)
+      ###############################################################
     end
 
     def finalize
-      if @need_decref
+      if @need_decref && Crython.active_session?(@session_id)
+        # puts "Finalizing PyObject with ID: #{@id} and session_id: #{@session_id}"
         LibPython.decref(@raw)
+        # puts "Finalized PyObject with ID: #{@id} and session_id: #{@session_id}"
       end
     end
 

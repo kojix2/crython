@@ -1,6 +1,6 @@
 require "../../src/crython"
 
-Crython.embed_python do
+Crython.session do
   sns = Crython.import("seaborn")
 
   df = sns.load_dataset("penguins")

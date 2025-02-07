@@ -1,6 +1,6 @@
 require "../../src/crython"
 
-Crython.embed_python do
+Crython.session do
   # Import seaborn as sns
   sns = Crython.import("seaborn")
   sns.set_theme(style: "ticks")

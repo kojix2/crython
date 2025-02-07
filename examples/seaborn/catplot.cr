@@ -1,7 +1,7 @@
 require "../../src/crython"
 
 # Example: Creating a categorical plot using Seaborn
-Crython.embed_python do
+Crython.session do
   sns = Crython.import("seaborn")
   sns.set_theme(style: "whitegrid")
 

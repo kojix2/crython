@@ -1,5 +1,5 @@
 require "../src/crython"
 
-Crython.embed_python do
+Crython.session do
   Crython.eval("print('💎 🐍 Crystal meets Python!')")
 end

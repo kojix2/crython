@@ -54,56 +54,56 @@ end
 
 struct UInt8
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("B", self)
+    ptr = Crython::LibPython.long_from_unsigned_long(self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Int8
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("b", self)
+    ptr = Crython::LibPython.long_from_long(self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct UInt16
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("H", self)
+    ptr = Crython::LibPython.long_from_unsigned_long(self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Int16
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("h", self)
+    ptr = Crython::LibPython.long_from_long(self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct UInt32
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("I", self)
+    ptr = Crython::LibPython.long_from_unsigned_long(self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Int32
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("i", self)
+    ptr = Crython::LibPython.long_from_long(self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct UInt64
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("K", self)
+    ptr = Crython::LibPython.long_from_unsigned_long_long(self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
 
 struct Int64
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("L", self)
+    ptr = Crython::LibPython.long_from_long_long(self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
@@ -111,7 +111,8 @@ end
 struct UInt128
   def to_py : Crython::PyObject
     str_repr = self.to_s
-    ptr = Crython::LibPython.long_from_string(str_repr, nil, 10)
+    py_str = Crython::LibPython.unicode_from_string(str_repr)
+    ptr = Crython::LibPython.long_from_unicode_object(py_str, 10)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end
@@ -119,7 +120,8 @@ end
 struct Int128
   def to_py : Crython::PyObject
     str_repr = self.to_s
-    ptr = Crython::LibPython.long_from_string(str_repr, nil, 10)
+    py_str = Crython::LibPython.unicode_from_string(str_repr)
+    ptr = Crython::LibPython.long_from_unicode_object(py_str, 10)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 end

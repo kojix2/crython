@@ -1,6 +1,6 @@
 require "../src/crython"
 
-Crython.embed_python do
+Crython.session do
   plt = Crython.import("matplotlib.pyplot")
   ret = plt.subplots
   fig = ret[0]

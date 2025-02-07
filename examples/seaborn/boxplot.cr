@@ -1,7 +1,7 @@
 require "../../src/crython"
 
 # Example: Creating a box plot using Seaborn
-Crython.embed_python do
+Crython.session do
   sns = Crython.import("seaborn")
   sns.set_theme(style: "ticks", palette: "pastel")
 

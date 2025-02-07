@@ -52,7 +52,7 @@ mod = Crython.import("math")
 #### Embedding Python Code
 
 ```crystal
-Crython.embed_python do
+Crython.session do
   # Write your Python code here
 end
 ```

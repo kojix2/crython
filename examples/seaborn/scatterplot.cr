@@ -1,7 +1,7 @@
 require "../../src/crython"
 
 # Example: Creating a scatter plot using Seaborn and Matplotlib
-Crython.embed_python do
+Crython.session do
   sns = Crython.import("seaborn")
   plt = Crython.import("matplotlib.pyplot")
   sns.set_theme(style: "whitegrid")
