@@ -5,8 +5,6 @@
 💎 🐍
 Crystal meets Python!
 
-This tool is experimental. Please read ([Avoiding Double Free in Crython: Managing Shared Memory Between Crystal and Python #1](https://github.com/kojix2/crython/issues/1)) to see why.
-
 ## Overview
 
 Crython is a tool that lets you use [Python](https://github.com/python/cpython) libraries in [Crystal](https://github.com/crystal-lang/crystal), a programming language.
