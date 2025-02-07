@@ -227,49 +227,49 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython.cr#L5" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython.cr#L5" target="_blank">
         crython.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/env.cr#L1" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/env.cr#L1" target="_blank">
         crython/env.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/err.cr#L1" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/err.cr#L1" target="_blank">
         crython/err.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/libpython.cr#L1" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/libpython.cr#L1" target="_blank">
         crython/libpython.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/pyobject.cr#L5" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/pyobject.cr#L5" target="_blank">
         crython/pyobject.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/pyobject/experimental_crystalizer.cr#L1" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/pyobject/experimental_crystalizer.cr#L1" target="_blank">
         crython/pyobject/experimental_crystalizer.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/pyobject/object_protocol.cr#L1" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/pyobject/object_protocol.cr#L1" target="_blank">
         crython/pyobject/object_protocol.cr
       </a>
     
@@ -312,12 +312,14 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#clear_error-class-method" class="signature"><strong>.clear_error</strong></a>
+        <a href="#active_session%3F%28id%3AUInt64%29%3ABool-class-method" class="signature"><strong>.active_session?</strong>(id : UInt64) : Bool</a>
+        
+          <div class="summary"><p>Check if the current session is active</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#embed_python%28%26%29-class-method" class="signature"><strong>.embed_python</strong>(&)</a>
+        <a href="#clear_error-class-method" class="signature"><strong>.clear_error</strong></a>
         
       </li>
     
@@ -331,12 +333,14 @@
       <li class="entry-summary">
         <a href="#eval%28code%3AString%29%3ANil-class-method" class="signature"><strong>.eval</strong>(code : String) : Nil</a>
         
+          <div class="summary"><p>Evaluate Python code with error handling</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#finalize-class-method" class="signature"><strong>.finalize</strong></a>
         
-          <div class="summary"><p>Finalize embedded Python interpreter.</p></div>
+          <div class="summary"><p>Finalize Python interpreter</p></div>
         
       </li>
     
@@ -348,14 +352,14 @@
       <li class="entry-summary">
         <a href="#init-class-method" class="signature"><strong>.init</strong></a>
         
-          <div class="summary"><p>Initialize a Python interpreter.</p></div>
+          <div class="summary"><p>Initialize a Python interpreter</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#initialized%3F%3ABool-class-method" class="signature"><strong>.initialized?</strong> : Bool</a>
         
-          <div class="summary"><p>Whether the Python interpreter has been initialized.</p></div>
+          <div class="summary"><p>Check if Python interpreter is initialized</p></div>
         
       </li>
     
@@ -371,6 +375,20 @@
     
       <li class="entry-summary">
         <a href="#python_version%3AString-class-method" class="signature"><strong>.python_version</strong> : String</a>
+        
+          <div class="summary"><p>Python environment information (cached)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#session%28%26%29-class-method" class="signature"><strong>.session</strong>(&)</a>
+        
+          <div class="summary"><p>Embed Python execution</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#session_id%3AUInt64-class-method" class="signature"><strong>.session_id</strong> : UInt64</a>
         
       </li>
     
@@ -403,6 +421,27 @@
     Class Method Detail
   </h2>
   
+    <div class="entry-detail" id="active_session?(id:UInt64):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>active_session?</strong>(id : <a href="UInt64.html">UInt64</a>) : <a href="Bool.html">Bool</a>
+
+        <a class="method-permalink" href="#active_session%3F%28id%3AUInt64%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Check if the current session is active</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/env.cr#L76" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="clear_error-class-method">
       <div class="signature">
         
@@ -414,23 +453,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/err.cr#L7" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="embed_python(&amp;)-class-method">
-      <div class="signature">
-        
-        def self.<strong>embed_python</strong>(&)
-
-        <a class="method-permalink" href="#embed_python%28%26%29-class-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/env.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/err.cr#L7" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -451,7 +474,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/err.cr#L3" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/err.cr#L3" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -464,10 +487,15 @@
         <a class="method-permalink" href="#eval%28code%3AString%29%3ANil-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Evaluate Python code with error handling</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/env.cr#L39" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/env.cr#L67" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -482,13 +510,13 @@
       
         <div class="doc">
           
-          <p>Finalize embedded Python interpreter.</p>
+          <p>Finalize Python interpreter</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/env.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/env.cr#L39" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -504,7 +532,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -519,13 +547,13 @@
       
         <div class="doc">
           
-          <p>Initialize a Python interpreter.</p>
+          <p>Initialize a Python interpreter</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/env.cr#L3" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/env.cr#L26" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -540,13 +568,13 @@
       
         <div class="doc">
           
-          <p>Whether the Python interpreter has been initialized.</p>
+          <p>Check if Python interpreter is initialized</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/env.cr#L10" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/env.cr#L34" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -562,7 +590,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/env.cr#L31" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/env.cr#L58" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -578,7 +606,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/env.cr#L35" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/env.cr#L62" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -591,10 +619,52 @@
         <a class="method-permalink" href="#python_version%3AString-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Python environment information (cached)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython/env.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/env.cr#L54" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="session(&amp;)-class-method">
+      <div class="signature">
+        
+        def self.<strong>session</strong>(&)
+
+        <a class="method-permalink" href="#session%28%26%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Embed Python execution</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/env.cr#L47" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="session_id:UInt64-class-method">
+      <div class="signature">
+        
+        def self.<strong>session_id</strong> : <a href="UInt64.html">UInt64</a>
+
+        <a class="method-permalink" href="#session_id%3AUInt64-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython/env.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -610,7 +680,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/16fe6d7348500ae4e16f47bb6a36ff2de3af994b/src/crython.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/f0775e55e2bc4d5d03ec2790a0a0254b773ebf78/src/crython.cr#L18" target="_blank">View source</a>]
         
       </div>
     </div>
