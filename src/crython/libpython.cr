@@ -2,9 +2,13 @@ module Crython
   @[Link("python3")]
   lib LibPython
     alias PyObject = Void*
+    alias UInt = LibC::UInt
     alias Int = LibC::Int
     alias Double = LibC::Double
+    alias ULong = LibC::ULong
     alias Long = LibC::Long
+    alias ULongLong = LibC::ULongLong
+    alias LongLong = LibC::LongLong
     alias Char = LibC::Char
     alias FILE = Void*
 
@@ -102,13 +106,45 @@ module Crython
     fun slice_new = PySlice_New(start : PyObject, stop : PyObject, step : PyObject) : PyObject
 
     # Bool
+    fun bool_check = PyBool_Check(o : PyObject) : Int
     fun bool_from_long = PyBool_FromLong(i : Long) : PyObject
 
+    # Integer
+    fun long_check = PyLong_Check(o : PyObject) : Int
+    fun long_check_exact = PyLong_CheckExact(o : PyObject) : Int
+    fun long_from_long = PyLong_FromLong(v : Long) : PyObject
+    fun long_from_unsigned_long = PyLong_FromUnsignedLong(v : ULong) : PyObject
+    fun long_from_size_t = PyLong_FromSize_t(v : LibC::SizeT) : PyObject
+    fun long_from_long_long = PyLong_FromLongLong(v : LongLong) : PyObject
+    fun long_from_unsigned_long_long = PyLong_FromUnsignedLongLong(v : ULongLong) : PyObject
+    fun long_from_double = PyLong_FromDouble(v : Double) : PyObject
+    fun long_from_string = PyLong_FromString(str : Char*, pend : Char**, base : Int) : PyObject
+    fun long_from_void_ptr = PyLong_FromVoidPtr(p : Void*) : PyObject
     fun long_as_long = PyLong_AsLong(i : PyObject) : Long
+    fun long_as_int = PyLong_AsInt(i : PyObject) : Int
+    fun long_as_long_and_overflow = PyLong_AsLongAndOverflow(i : PyObject, overflow : Int*) : Long
+    fun long_as_unsigned_long = PyLong_AsUnsignedLong(i : PyObject) : ULong
+    fun long_as_size_t = PyLong_AsSize_t(i : PyObject) : LibC::SizeT
+    fun long_as_unsigned_long_long = PyLong_AsUnsignedLongLong(i : PyObject) : ULongLong
+    fun long_as_unsigned_long_mask = PyLong_AsUnsignedLongMask(i : PyObject) : ULong
+    fun long_as_unsigned_long_long_mask = PyLong_AsUnsignedLongLongMask(i : PyObject) : ULongLong
+    fun long_as_double = PyLong_AsDouble(i : PyObject) : Double
+    fun long_as_void_ptr = PyLong_AsVoidPtr(i : PyObject) : Void*
+    fun long_get_info = PyLong_GetInfo : PyObject
+
+    # Float
+    fun float_check = PyFloat_Check(o : PyObject) : Int
+    fun float_check_exact = PyFloat_CheckExact(o : PyObject) : Int
+    fun float_from_string = PyFloat_FromString(o : PyObject) : PyObject
+    fun float_from_double = PyFloat_FromDouble(v : Double) : PyObject
     fun float_as_double = PyFloat_AsDouble(f : PyObject) : Double
+    fun float_get_info = PyFloat_GetInfo : PyObject
+    fun float_get_max = PyFloat_GetMax : Double
+    fun float_get_min = PyFloat_GetMin : Double
 
-    fun long_from_string = PyLong_FromString(str : Char*, end : Char**, base : Int) : PyObject
-
+    # Complex
     fun complex_from_doubles = PyComplex_FromDoubles(real : Double, imag : Double) : PyObject
+    fun complex_real_as_double = PyComplex_RealAsDouble(o : PyObject) : Double
+    fun complex_imag_as_double = PyComplex_ImagAsDouble(o : PyObject) : Double
   end
 end
