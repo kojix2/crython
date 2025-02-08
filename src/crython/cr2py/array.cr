@@ -8,4 +8,14 @@ class Array(T)
     end
     Crython::PyObject.new(list, need_decref: true)
   end
+
+  def self.new(pyobject : Crython::PyObject) : Array(T)
+    size = Crython::LibPython.list_size(pyobject)
+    Array.new(size) do |index|
+      # This may be slow
+      py_item = Crython::LibPython.list_get_item(pyobject, index)
+      py_obj = Crython::PyObject.new(py_item)
+      T.new(py_obj)
+    end
+  end
 end
