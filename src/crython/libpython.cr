@@ -51,9 +51,16 @@ module Crython
 
     # Object
     fun object_has_attr_string = PyObject_HasAttrString(o : PyObject, attr : Char*) : Int
-    fun object_get_attr_string = PyObject_GetAttrString(o : PyObject, attr : Char*) : PyObject
-    fun object_set_attr_string = PyObject_SetAttrString(o : PyObject, attr : Char*, val : PyObject) : Int
-    fun object_del_attr_string = PyObject_DelAttrString(o : PyObject, attr : Char*) : Int
+    fun object_get_attr = PyObject_GetAttr(o : PyObject, attr_name : PyObject) : PyObject
+    fun object_get_attr_string = PyObject_GetAttrString(o : PyObject, attr_name : Char*) : PyObject
+    fun object_get_optional_attr = PyObject_GetOptionalAttr(o : PyObject, attr_name : PyObject, result : PyObject**) : Int
+    fun object_get_optional_attr_string = PyObject_GetOptionalAttrString(o : PyObject, attr_name : Char*, result : PyObject**) : Int
+    fun object_generic_get_attr = PyObject_GenericGetAttr(o : PyObject, name : PyObject) : PyObject
+    fun object_set_attr = PyObject_SetAttr(o : PyObject, attr_name : PyObject, val : PyObject) : Int
+    fun object_set_attr_string = PyObject_SetAttrString(o : PyObject, attr_name : Char*, val : PyObject) : Int
+    fun object_generic_set_attr = PyObject_GenericSetAttr(o : PyObject, name : PyObject, value : PyObject) : Int
+    fun object_del_attr = PyObject_DelAttr(o : PyObject, attr_name : PyObject) : Int
+    fun object_del_attr_string = PyObject_DelAttrString(o : PyObject, attr_name : Char*) : Int
 
     # Attribute
     fun object_get_item = PyObject_GetItem(o : PyObject, key : PyObject) : PyObject
@@ -71,8 +78,24 @@ module Crython
     fun object_repr = PyObject_Repr(o : PyObject) : PyObject
 
     fun object_type = PyObject_Type(o : PyObject) : PyObject
-    fun object_is_instance = PyObject_IsInstance(o : PyObject, cls : PyObject) : Int
-    fun object_is_subclass = PyObject_IsSubclass(o : PyObject, cls : PyObject) : Int
+    fun object_generic_get_dict = PyObject_GenericGetDict(o : PyObject, context : Void*) : PyObject
+    fun object_generic_set_dict = PyObject_GenericSetDict(o : PyObject, value : PyObject, context : Void*) : Int
+    fun object_rich_compare = PyObject_RichCompare(o1 : PyObject, o2 : PyObject, opid : Int) : PyObject
+    fun object_rich_compare_bool = PyObject_RichCompareBool(o1 : PyObject, o2 : PyObject, opid : Int) : Int
+    fun object_format = PyObject_Format(o : PyObject, format_spec : PyObject) : PyObject
+    fun object_ascii = PyObject_ASCII(o : PyObject) : PyObject
+    fun object_bytes = PyObject_Bytes(o : PyObject) : PyObject
+    # fun object_hash = PyObject_Hash(o : PyObject) : Py_hash_t
+    # fun object_hash_not_implemented = PyObject_HashNotImplemented(o : PyObject) : Py_hash_t
+    fun object_is_true = PyObject_IsTrue(o : PyObject) : Int
+    fun object_not = PyObject_Not(o : PyObject) : Int
+    # fun object_size = PyObject_Size(o : PyObject) : Py_ssize_t
+    # fun object_length = PyObject_Length(o : PyObject) : Py_ssize_t
+    fun object_del_item = PyObject_DelItem(o : PyObject, key : PyObject) : Int
+    fun object_del_item_string = PyObject_DelItemString(o : PyObject, key : Char*) : Int
+    fun object_dir = PyObject_Dir(o : PyObject) : PyObject
+    fun object_get_iter = PyObject_GetIter(o : PyObject) : PyObject
+    fun object_self_iter = PyObject_SelfIter(o : PyObject) : PyObject
 
     # Build Value
     fun build_value = Py_BuildValue(format : Char*, ...) : PyObject
