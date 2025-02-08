@@ -155,5 +155,45 @@ module Crython
     fun complex_from_doubles = PyComplex_FromDoubles(real : Double, imag : Double) : PyObject
     fun complex_real_as_double = PyComplex_RealAsDouble(o : PyObject) : Double
     fun complex_imag_as_double = PyComplex_ImagAsDouble(o : PyObject) : Double
+
+    # Number Protocols
+    fun number_check = PyNumber_Check(o : PyObject) : Int
+    fun number_add = PyNumber_Add(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_subtract = PyNumber_Subtract(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_multiply = PyNumber_Multiply(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_matrix_multiply = PyNumber_MatrixMultiply(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_floor_divide = PyNumber_FloorDivide(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_true_divide = PyNumber_TrueDivide(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_remainder = PyNumber_Remainder(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_divmod = PyNumber_Divmod(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_power = PyNumber_Power(o1 : PyObject, o2 : PyObject, o3 : PyObject) : PyObject
+    fun number_negative = PyNumber_Negative(o : PyObject) : PyObject
+    fun number_positive = PyNumber_Positive(o : PyObject) : PyObject
+    fun number_absolute = PyNumber_Absolute(o : PyObject) : PyObject
+    fun number_invert = PyNumber_Invert(o : PyObject) : PyObject
+    fun number_lshift = PyNumber_Lshift(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_rshift = PyNumber_Rshift(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_and = PyNumber_And(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_xor = PyNumber_Xor(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_or = PyNumber_Or(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_add = PyNumber_InPlaceAdd(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_subtract = PyNumber_InPlaceSubtract(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_multiply = PyNumber_InPlaceMultiply(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_matrix_multiply = PyNumber_InPlaceMatrixMultiply(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_floor_divide = PyNumber_InPlaceFloorDivide(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_true_divide = PyNumber_InPlaceTrueDivide(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_remainder = PyNumber_InPlaceRemainder(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_power = PyNumber_InPlacePower(o1 : PyObject, o2 : PyObject, o3 : PyObject) : PyObject
+    fun number_in_place_lshift = PyNumber_InPlaceLshift(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_rshift = PyNumber_InPlaceRshift(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_and = PyNumber_InPlaceAnd(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_xor = PyNumber_InPlaceXor(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_in_place_or = PyNumber_InPlaceOr(o1 : PyObject, o2 : PyObject) : PyObject
+    fun number_long = PyNumber_Long(o : PyObject) : PyObject
+    fun number_float = PyNumber_Float(o : PyObject) : PyObject
+    fun number_index = PyNumber_Index(o : PyObject) : PyObject
+    fun number_to_base = PyNumber_ToBase(n : PyObject, base : Int) : PyObject
+    fun number_as_ssize_t = PyNumber_AsSsize_t(o : PyObject, exc : PyObject) : Long
+    fun index_check = PyIndex_Check(o : PyObject) : Int
   end
 end
