@@ -216,5 +216,21 @@ module Crython
     fun sequence_list = PySequence_List(o : PyObject) : PyObject
     fun sequence_tuple = PySequence_Tuple(o : PyObject) : PyObject
     fun sequence_fast = PySequence_Fast(o : PyObject, m : Char*) : PyObject
+
+    # Mapping Protocols
+    fun mapping_check = PyMapping_Check(o : PyObject) : Int
+    fun mapping_size = PyMapping_Size(o : PyObject) : Long
+    fun mapping_length = PyMapping_Length(o : PyObject) : Long
+    fun mapping_get_item_string = PyMapping_GetItemString(o : PyObject, key : Char*) : PyObject
+    fun mapping_get_optional_item = PyMapping_GetOptionalItem(obj : PyObject, key : PyObject, result : PyObject**) : Int
+    fun mapping_get_optional_item_string = PyMapping_GetOptionalItemString(obj : PyObject, key : Char*, result : PyObject**) : Int
+    fun mapping_set_item_string = PyMapping_SetItemString(o : PyObject, key : Char*, v : PyObject) : Int
+    fun mapping_has_key_with_error = PyMapping_HasKeyWithError(o : PyObject, key : PyObject) : Int
+    fun mapping_has_key_string_with_error = PyMapping_HasKeyStringWithError(o : PyObject, key : Char*) : Int
+    fun mapping_has_key = PyMapping_HasKey(o : PyObject, key : PyObject) : Int
+    fun mapping_has_key_string = PyMapping_HasKeyString(o : PyObject, key : Char*) : Int
+    fun mapping_keys = PyMapping_Keys(o : PyObject) : PyObject
+    fun mapping_values = PyMapping_Values(o : PyObject) : PyObject
+    fun mapping_items = PyMapping_Items(o : PyObject) : PyObject
   end
 end
