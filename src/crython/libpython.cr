@@ -195,5 +195,26 @@ module Crython
     fun number_to_base = PyNumber_ToBase(n : PyObject, base : Int) : PyObject
     fun number_as_ssize_t = PyNumber_AsSsize_t(o : PyObject, exc : PyObject) : Long
     fun index_check = PyIndex_Check(o : PyObject) : Int
+
+    # Sequence Protocols
+    fun sequence_check = PySequence_Check(o : PyObject) : Int
+    fun sequence_size = PySequence_Size(o : PyObject) : Long
+    fun sequence_length = PySequence_Length(o : PyObject) : Long
+    fun sequence_concat = PySequence_Concat(o1 : PyObject, o2 : PyObject) : PyObject
+    fun sequence_repeat = PySequence_Repeat(o : PyObject, count : Long) : PyObject
+    fun sequence_in_place_concat = PySequence_InPlaceConcat(o1 : PyObject, o2 : PyObject) : PyObject
+    fun sequence_in_place_repeat = PySequence_InPlaceRepeat(o : PyObject, count : Long) : PyObject
+    fun sequence_get_item = PySequence_GetItem(o : PyObject, i : Long) : PyObject
+    fun sequence_get_slice = PySequence_GetSlice(o : PyObject, i1 : Long, i2 : Long) : PyObject
+    fun sequence_set_item = PySequence_SetItem(o : PyObject, i : Long, v : PyObject) : Int
+    fun sequence_del_item = PySequence_DelItem(o : PyObject, i : Long) : Int
+    fun sequence_set_slice = PySequence_SetSlice(o : PyObject, i1 : Long, i2 : Long, v : PyObject) : Int
+    fun sequence_del_slice = PySequence_DelSlice(o : PyObject, i1 : Long, i2 : Long) : Int
+    fun sequence_count = PySequence_Count(o : PyObject, value : PyObject) : Long
+    fun sequence_contains = PySequence_Contains(o : PyObject, value : PyObject) : Int
+    fun sequence_index = PySequence_Index(o : PyObject, value : PyObject) : Long
+    fun sequence_list = PySequence_List(o : PyObject) : PyObject
+    fun sequence_tuple = PySequence_Tuple(o : PyObject) : PyObject
+    fun sequence_fast = PySequence_Fast(o : PyObject, m : Char*) : PyObject
   end
 end
