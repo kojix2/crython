@@ -108,4 +108,15 @@ describe Number do
       end
     end
   end
+
+  describe Bool do
+    it "converts from Python" do
+      Crython.session do
+        py_true = true.to_py
+        Bool.new(py_true).should eq(true)
+        py_false = false.to_py
+        Bool.new(py_false).should eq(false)
+      end
+    end
+  end
 end
