@@ -11,7 +11,7 @@ Crython is a tool that lets you use [Python](https://github.com/python/cpython) 
 
 ## Installation
 
-- You need Python3. Python is a popular programming language.
+- You need Python3. Python3.12 or later is recommended.
 - Make sure `python3-config --ldflags` works.
 
 Add this to your dependencies:
