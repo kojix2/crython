@@ -119,4 +119,42 @@ describe Number do
       end
     end
   end
+
+  describe Complex do
+    it "converts from Python" do
+      Crython.session do
+        pyobject = Complex.new(3.14, 2.71).to_py
+        Complex.new(pyobject).should eq(Complex.new(3.14, 2.71))
+      end
+    end
+  end
+
+  # describe Symbol do
+  #   it "converts from Python" do
+  #     Crython.session do
+  #       pyobject = :hello.to_py
+  #       expect_raises(RuntimeError) do
+  #         Symbol.new(pyobject)
+  #       end
+  #     end
+  #   end
+  # end
+
+  describe String do
+    it "converts from Python" do
+      Crython.session do
+        pyobject = "Hello, World!".to_py
+        String.new(pyobject).should eq("Hello, World!")
+      end
+    end
+  end
+
+  describe Char do
+    it "converts from Python" do
+      Crython.session do
+        pyobject = '@'.to_py
+        Char.new(pyobject).should eq('@')
+      end
+    end
+  end
 end
