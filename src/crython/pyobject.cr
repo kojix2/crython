@@ -38,10 +38,9 @@ module Crython
     end
 
     macro method_missing(call)
-      # Setter methods cannot have more than one argument
       {% if call.name.ends_with?("=") %}
-        def {{ call.name }}(value : PyObject)
-          __setattr__({{ call.name.stringify }}, value)
+        def {{ call.name }}(value)
+          __setattr__({{ call.name.stringify }}, value.to_py)
         end
       {% else %}
         def {{ call.name }}(*args, **kwargs)
@@ -131,109 +130,31 @@ module Crython
       end
     end
 
-    def +(other : PyObject) : PyObject
-      __add__(other)
-    end
+    {% for op, method in {
+                           "+"  => "__add__",
+                           "-"  => "__sub__",
+                           "*"  => "__mul__",
+                           "/"  => "__truediv__",
+                           "//" => "__floordiv__",
+                           "%"  => "__mod__",
+                           "**" => "__pow__",
+                           "<"  => "__lt__",
+                           "<=" => "__le__",
+                           ">"  => "__gt__",
+                           ">=" => "__ge__",
+                           "==" => "__eq__",
+                           "!=" => "__ne__",
+                         } %}
 
-    def +(other) : PyObject
-      __add__(other.to_py)
-    end
+      def {{op.id}}(other : PyObject) : PyObject
+        {{method.id}}(other)
+      end
 
-    def -(other : PyObject) : PyObject
-      __sub__(other)
-    end
+      def {{op.id}}(other) : PyObject
+        {{method.id}}(other.to_py)
+      end
 
-    def -(other) : PyObject
-      __sub__(other.to_py)
-    end
-
-    def *(other : PyObject) : PyObject
-      __mul__(other)
-    end
-
-    def *(other) : PyObject
-      __mul__(other.to_py)
-    end
-
-    def /(other : PyObject) : PyObject
-      __truediv__(other)
-    end
-
-    def /(other) : PyObject
-      __truediv__(other.to_py)
-    end
-
-    def //(other : PyObject) : PyObject
-      __floordiv__(other)
-    end
-
-    def //(other) : PyObject
-      __floordiv__(other.to_py)
-    end
-
-    def %(other : PyObject) : PyObject
-      __mod__(other)
-    end
-
-    def %(other) : PyObject
-      __mod__(other.to_py)
-    end
-
-    def **(other : PyObject) : PyObject
-      __pow__(other)
-    end
-
-    def **(other) : PyObject
-      __pow__(other.to_py)
-    end
-
-    def <(other : PyObject) : PyObject
-      __lt__(other)
-    end
-
-    def <(other) : PyObject
-      __lt__(other.to_py)
-    end
-
-    def <=(other : PyObject) : PyObject
-      __le__(other)
-    end
-
-    def <=(other) : PyObject
-      __le__(other.to_py)
-    end
-
-    def >(other : PyObject) : PyObject
-      __gt__(other)
-    end
-
-    def >(other) : PyObject
-      __gt__(other.to_py)
-    end
-
-    def >=(other : PyObject) : PyObject
-      __ge__(other)
-    end
-
-    def >=(other) : PyObject
-      __ge__(other.to_py)
-    end
-
-    def ==(other : PyObject) : PyObject
-      __eq__(other)
-    end
-
-    def ==(other) : PyObject
-      __eq__(other.to_py)
-    end
-
-    def !=(other : PyObject) : PyObject
-      __ne__(other)
-    end
-
-    def !=(other) : PyObject
-      __ne__(other.to_py)
-    end
+    {% end %}
 
     def to_s(io) : Nil
       s = LibPython.object_str(@raw)
