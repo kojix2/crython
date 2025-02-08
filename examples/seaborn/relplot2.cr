@@ -1,0 +1,17 @@
+require "../../src/crython"
+
+Crython.session do
+  sns = Crython.import("seaborn")
+  sns.set_theme(style: "white")
+
+  # Load the example mpg dataset
+  mpg = sns.load_dataset("mpg")
+
+  # Plot miles per gallon against horsepower with other semantics
+  sns.relplot(x: "horsepower", y: "mpg", hue: "origin", size: "weight",
+    sizes: {40, 400}, alpha: 0.5, palette: "muted",
+    height: 6, data: mpg)
+
+  plt = Crython.import("matplotlib.pyplot")
+  plt.show
+end
