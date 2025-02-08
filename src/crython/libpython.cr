@@ -232,5 +232,10 @@ module Crython
     fun mapping_keys = PyMapping_Keys(o : PyObject) : PyObject
     fun mapping_values = PyMapping_Values(o : PyObject) : PyObject
     fun mapping_items = PyMapping_Items(o : PyObject) : PyObject
+
+    # Iterator Protocols
+    fun iter_check = PyIter_Check(o : PyObject) : Int
+    fun aiter_check = PyAIter_Check(o : PyObject) : Int
+    fun iter_next = PyIter_Next(o : PyObject) : PyObject
   end
 end
