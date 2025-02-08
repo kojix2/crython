@@ -3,7 +3,7 @@ require "./pyobject/experimental_crystalizer"
 require "./cr2py/string"
 
 module Crython
-  class PyObject # FIXME: Should be struct?
+  class PyObject
     include ObjectProtocol
     include ExperimentalCrystalizer
 
