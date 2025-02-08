@@ -219,7 +219,7 @@
 <p>Array indexing starts at 0. A negative index is assumed to be
 relative to the end of the array: -1 indicates the last element,
 -2 is the next to last element, and so on.</p>
-<p>An <code><a href="Array.html">Array</a></code> can be created using the usual <code>new</code> method (several are provided), or with an array literal:</p>
+<p>An <code><a href="Array.html">Array</a></code> can be created using the usual <code><a href="Array.html#new%28pyobject%3ACrython%3A%3APyObject%29%3AArray%28T%29-class-method">.new</a></code> method (several are provided), or with an array literal:</p>
 <pre><code class="language-crystal"><span class="t">Array</span>(<span class="t">Int32</span>).new  <span class="c"># =&gt; []</span>
 [<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]         <span class="c"># Array(Int32)</span>
 [<span class="n">1</span>, <span class="s">&quot;hello&quot;</span>, <span class="s">&#39;x&#39;</span>] <span class="c"># Array(Int32 | String | Char)</span></code></pre>
@@ -234,7 +234,7 @@ case, T will be set to the union of the array literal elements' types.</p>
 and is reallocated when elements are pushed to it when more capacity
 is needed. This is normally known as a <a href="http://en.wikipedia.org/wiki/Dynamic_array">dynamic array</a>.</p>
 <p>You can use a special array literal syntax with other types too, as long as they define an argless
-<code>new</code> method and a <code>&lt;&lt;</code> method. <code>Set</code> is one such type:</p>
+<code><a href="Array.html#new%28pyobject%3ACrython%3A%3APyObject%29%3AArray%28T%29-class-method">.new</a></code> method and a <code>&lt;&lt;</code> method. <code>Set</code> is one such type:</p>
 <pre><code class="language-crystal">set <span class="o">=</span> <span class="t">Set</span>{<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>} <span class="c"># =&gt; Set{1, 2, 3}</span>
 set.<span class="k">class</span>          <span class="c"># =&gt; Set(Int32)</span></code></pre>
 <p>The above is the same as this:</p>
@@ -282,7 +282,7 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/4f852009410cac028af07be6da9be8fd4c6338cc/src/crython/cr2py/array.cr#L1" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/e09e5a008ad524823f63b678fe3404bf658dedf4/src/crython/cr2py/array.cr#L1" target="_blank">
         crython/cr2py/array.cr
       </a>
     
@@ -292,6 +292,23 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
 
 
 
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28pyobject%3ACrython%3A%3APyObject%29%3AArray%28T%29-class-method" class="signature"><strong>.new</strong>(pyobject : Crython::PyObject) : Array(T)</a>
+        
+      </li>
+    
+  </ul>
 
 
 
@@ -414,6 +431,32 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
 </div>
 
 
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(pyobject:Crython::PyObject):Array(T)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(pyobject : <a href="Crython/PyObject.html">Crython::PyObject</a>) : <a href="Array.html">Array</a>(T)
+
+        <a class="method-permalink" href="#new%28pyobject%3ACrython%3A%3APyObject%29%3AArray%28T%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/e09e5a008ad524823f63b678fe3404bf658dedf4/src/crython/cr2py/array.cr#L12" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
 
 
@@ -440,7 +483,7 @@ set <span class="o">&lt;&lt;</span> <span class="n">3</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/4f852009410cac028af07be6da9be8fd4c6338cc/src/crython/cr2py/array.cr#L2" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/e09e5a008ad524823f63b678fe3404bf658dedf4/src/crython/cr2py/array.cr#L2" target="_blank">View source</a>]
         
       </div>
     </div>
