@@ -55,8 +55,8 @@ module Crython
     fun object_has_attr_string = PyObject_HasAttrString(o : PyObject, attr : Char*) : Int
     fun object_get_attr = PyObject_GetAttr(o : PyObject, attr_name : PyObject) : PyObject
     fun object_get_attr_string = PyObject_GetAttrString(o : PyObject, attr_name : Char*) : PyObject
-    fun object_get_optional_attr = PyObject_GetOptionalAttr(o : PyObject, attr_name : PyObject, result : PyObject**) : Int
-    fun object_get_optional_attr_string = PyObject_GetOptionalAttrString(o : PyObject, attr_name : Char*, result : PyObject**) : Int
+    fun object_get_optional_attr = PyObject_GetOptionalAttr(o : PyObject, attr_name : PyObject, result : PyObject*) : Int
+    fun object_get_optional_attr_string = PyObject_GetOptionalAttrString(o : PyObject, attr_name : Char*, result : PyObject*) : Int
     fun object_generic_get_attr = PyObject_GenericGetAttr(o : PyObject, name : PyObject) : PyObject
     fun object_set_attr = PyObject_SetAttr(o : PyObject, attr_name : PyObject, val : PyObject) : Int
     fun object_set_attr_string = PyObject_SetAttrString(o : PyObject, attr_name : Char*, val : PyObject) : Int
@@ -141,8 +141,6 @@ module Crython
     fun dict_size = PyDict_Size(d : PyObject) : Int
     fun dict_get_item = PyDict_GetItem(d : PyObject, key : PyObject) : PyObject
     fun dict_set_item = PyDict_SetItem(d : PyObject, key : PyObject, val : PyObject) : Int
-
-    # Additional Stable ABI functions
     fun dict_type = PyDict_Type : PyObject
     fun dict_check = PyDict_Check(p : PyObject) : Int
     fun dict_check_exact = PyDict_CheckExact(p : PyObject) : Int
@@ -153,18 +151,18 @@ module Crython
     fun dict_set_item_string = PyDict_SetItemString(p : PyObject, key : Char*, val : PyObject) : Int
     fun dict_del_item = PyDict_DelItem(p : PyObject, key : PyObject) : Int
     fun dict_del_item_string = PyDict_DelItemString(p : PyObject, key : Char*) : Int
-    fun dict_get_item_ref = PyDict_GetItemRef(p : PyObject, key : PyObject, result : PyObject**) : Int
+    fun dict_get_item_ref = PyDict_GetItemRef(p : PyObject, key : PyObject, result : PyObject*) : Int
     fun dict_get_item_with_error = PyDict_GetItemWithError(p : PyObject, key : PyObject) : PyObject
     fun dict_get_item_string = PyDict_GetItemString(p : PyObject, key : Char*) : PyObject
-    fun dict_get_item_string_ref = PyDict_GetItemStringRef(p : PyObject, key : Char*, result : PyObject**) : Int
+    fun dict_get_item_string_ref = PyDict_GetItemStringRef(p : PyObject, key : Char*, result : PyObject*) : Int
     fun dict_set_default = PyDict_SetDefault(p : PyObject, key : PyObject, defaultobj : PyObject) : PyObject
-    fun dict_set_default_ref = PyDict_SetDefaultRef(p : PyObject, key : PyObject, default_value : PyObject, result : PyObject**) : Int
-    fun dict_pop = PyDict_Pop(p : PyObject, key : PyObject, result : PyObject**) : Int
-    fun dict_pop_string = PyDict_PopString(p : PyObject, key : Char*, result : PyObject**) : Int
+    fun dict_set_default_ref = PyDict_SetDefaultRef(p : PyObject, key : PyObject, default_value : PyObject, result : PyObject*) : Int
+    fun dict_pop = PyDict_Pop(p : PyObject, key : PyObject, result : PyObject*) : Int
+    fun dict_pop_string = PyDict_PopString(p : PyObject, key : Char*, result : PyObject*) : Int
     fun dict_items = PyDict_Items(p : PyObject) : PyObject
     fun dict_keys = PyDict_Keys(p : PyObject) : PyObject
     fun dict_values = PyDict_Values(p : PyObject) : PyObject
-    fun dict_next = PyDict_Next(p : PyObject, ppos : Py_ssize_t*, pkey : PyObject**, pvalue : PyObject**) : Int
+    fun dict_next = PyDict_Next(p : PyObject, ppos : Py_ssize_t*, pkey : PyObject*, pvalue : PyObject*) : Int
     fun dict_merge = PyDict_Merge(a : PyObject, b : PyObject, override : Int) : Int
     fun dict_update = PyDict_Update(a : PyObject, b : PyObject) : Int
     fun dict_merge_from_seq2 = PyDict_MergeFromSeq2(a : PyObject, seq2 : PyObject, override : Int) : Int
@@ -285,8 +283,8 @@ module Crython
     fun mapping_size = PyMapping_Size(o : PyObject) : Long
     fun mapping_length = PyMapping_Length(o : PyObject) : Long
     fun mapping_get_item_string = PyMapping_GetItemString(o : PyObject, key : Char*) : PyObject
-    fun mapping_get_optional_item = PyMapping_GetOptionalItem(obj : PyObject, key : PyObject, result : PyObject**) : Int
-    fun mapping_get_optional_item_string = PyMapping_GetOptionalItemString(obj : PyObject, key : Char*, result : PyObject**) : Int
+    fun mapping_get_optional_item = PyMapping_GetOptionalItem(obj : PyObject, key : PyObject, result : PyObject*) : Int
+    fun mapping_get_optional_item_string = PyMapping_GetOptionalItemString(obj : PyObject, key : Char*, result : PyObject*) : Int
     fun mapping_set_item_string = PyMapping_SetItemString(o : PyObject, key : Char*, v : PyObject) : Int
     fun mapping_has_key_with_error = PyMapping_HasKeyWithError(o : PyObject, key : PyObject) : Int
     fun mapping_has_key_string_with_error = PyMapping_HasKeyStringWithError(o : PyObject, key : Char*) : Int

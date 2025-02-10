@@ -157,4 +157,43 @@ describe Number do
       end
     end
   end
+
+  describe Array do
+    it "converts from Python" do
+      Crython.session do
+        pyobject = [1, 2, 3].to_py
+        Array(Int32).new(pyobject).should eq([1, 2, 3])
+      end
+    end
+
+    # it "converts from Python with different types" do
+    #   Crython.session do
+    #     pyobject = [1, 2.0, "3"].to_py
+    #     Array(Int32 | Float64 | String).new(pyobject).should eq([1, 2.0, "3"])
+    #   end
+    # end
+
+    it "converts from Python with nested arrays" do
+      Crython.session do
+        pyobject = [[1, 2], [3, 4], [5, 6]].to_py
+        Array(Array(Int32)).new(pyobject).should eq([[1, 2], [3, 4], [5, 6]])
+      end
+    end
+  end
+
+  describe Hash do
+    it "converts from Python" do
+      Crython.session do
+        pyobject = {"a" => 1, "b" => 2, "c" => 3}.to_h.to_py
+        Hash(String, Int32).new(pyobject).should eq({"a" => 1, "b" => 2, "c" => 3})
+      end
+    end
+
+    # it "converts from Python with different types" do
+    #   Crython.session do
+    #     pyobject = {a: 1, b: 2.0, c: "3"}.to_py
+    #     Hash(Symbol, Int32 | Float64 | String).new(pyobject).should eq({a: 1, b: 2.0, c: "3"})
+    #   end
+    # end
+  end
 end
