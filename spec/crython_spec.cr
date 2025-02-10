@@ -1,6 +1,10 @@
 require "./spec_helper"
 
 describe Crython do
+  it "has a version" do
+    Crython::VERSION.should be_a(String)
+  end
+  
   it "loads" do
     Crython.init
     Crython.initialized?.should be_true

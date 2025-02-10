@@ -3,8 +3,6 @@ require "./crython/*"
 require "./crython/cr2py/*"
 
 module Crython
-  VERSION = "0.1.0"
-
   def self.import(name : String) : PyObject
     mod = PyObject.new(LibPython.import(name))
     e = LibPython.err_occurred
