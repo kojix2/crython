@@ -25,6 +25,8 @@ module Crython
           String.new(ptr)
         when "<class 'bool'>"
           Bool.new(self)
+        when "<class 'NoneType'>"
+          nil 
         else
           raise "Unsupported type: #{type_name}"
         end

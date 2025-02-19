@@ -129,6 +129,22 @@ describe Number do
     end
   end
 
+  describe Nil do
+    it "converts from Python" do
+      Crython.session do
+        pyobject = nil.to_py
+        Nil.new(pyobject).should eq(nil)
+      end
+    end
+
+    it "to_cr" do
+      Crython.session do
+        pyobject = nil.to_py
+        pyobject.to_cr.should eq(nil)
+      end
+    end
+  end
+
   describe Complex do
     it "converts from Python" do
       Crython.session do
