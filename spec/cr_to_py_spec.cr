@@ -149,6 +149,22 @@ describe Number do
         py_tuple.to_s.should eq("(1, 2, 3)")
       end
     end
+
+    it "converts a tuple with different types to Python" do
+      Crython.session do
+        py_tuple = {1, 2.0, "3"}.to_py
+        py_tuple.should be_a(Crython::PyObject)
+        py_tuple.to_s.should eq("(1, 2.0, '3')")
+      end
+    end
+
+    it "converts a tuple with nested tuples to Python" do
+      Crython.session do
+        py_tuple = { {1, 2}, {3, 4}, {5, 6} }.to_py
+        py_tuple.should be_a(Crython::PyObject)
+        py_tuple.to_s.should eq("((1, 2), (3, 4), (5, 6))")
+      end
+    end
   end
 
   describe Hash do
