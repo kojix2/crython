@@ -17,8 +17,10 @@ module Crython
         end
         case type_name
         when "<class 'int'>"
+          # FIXME: Overflow check
           LibPython.long_as_long(@raw)
         when "<class 'float'>"
+          # FIXME: Overflow check
           LibPython.float_as_double(@raw)
         when "<class 'str'>"
           ptr = LibPython.unicode_as_utf8(@raw)
