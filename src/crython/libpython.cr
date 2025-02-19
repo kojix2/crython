@@ -1,5 +1,4 @@
 module Crython
-
   # Note:
   # LibPython is a low-level binding to the Python C API.
   # Due to the large number of Python C functions, each function is implemented

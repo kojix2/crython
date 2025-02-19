@@ -23,6 +23,8 @@ module Crython
         when "<class 'str'>"
           ptr = LibPython.unicode_as_utf8(@raw)
           String.new(ptr)
+        when "<class 'bool'>"
+          Bool.new(self)
         else
           raise "Unsupported type: #{type_name}"
         end

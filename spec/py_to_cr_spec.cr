@@ -118,6 +118,15 @@ describe Number do
         Bool.new(py_false).should eq(false)
       end
     end
+
+    it "to_cr" do
+      Crython.session do
+        py_true = true.to_py
+        py_false = false.to_py
+        py_true.to_cr.should eq(true)
+        py_false.to_cr.should eq(false)
+      end
+    end
   end
 
   describe Complex do
