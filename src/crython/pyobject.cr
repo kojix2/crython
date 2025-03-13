@@ -50,10 +50,21 @@ module Crython
     end
 
     def call(call : (String | Symbol), *args, **kwargs) : PyObject
+      # Get object type for better error messages
+      type_ptr = LibPython.object_get_attr_string(@raw, "__class__".to_unsafe)
+      type_name_ptr = LibPython.object_get_attr_string(type_ptr, "__name__".to_unsafe)
+      type_name = String.new(LibPython.unicode_as_utf8(type_name_ptr))
+      LibPython.decref(type_name_ptr)
+      LibPython.decref(type_ptr)
+
+      # Get attribute
       attr = LibPython.object_get_attr_string(@raw, call.to_s.to_unsafe)
       if attr.null?
-        raise "Error occurred while getting attribute '#{call}'"
+        error_info = Crython.extract_python_error
+        raise AttributeError.new(type_name, call.to_s, error_info)
       end
+
+      # Call with kwargs
       if kwargs.size > 0
         if args.size == 0
           args_tuple = LibPython.tuple_new(0)
@@ -75,16 +86,21 @@ module Crython
         LibPython.decref(kwargs_dict)
         LibPython.decref(attr)
         if ret.null?
-          STDERR.puts "Error occurred while calling attribute '#{call}' with kwargs"
+          error_info = Crython.extract_python_error
+          raise CallError.new(call.to_s, "Error with kwargs - #{error_info}")
         end
       else
+        # Call with args only
         if args.size > 0
           ret = LibPython.object_call_function(attr, *args.map(&.to_py), nil)
           if ret.null?
-            STDERR.puts "Error occurred while calling attribute '#{call}' with args"
+            error_info = Crython.extract_python_error
+            LibPython.decref(attr)
+            raise CallError.new(call.to_s, "Error with args - #{error_info}")
           end
           LibPython.decref(attr)
         else
+          # No args - either call as function or return attribute
           if PyObject.new(attr).callable?
             # PyFunction_Check is better? since callable can be a class
             # FIXME: Attr ? Func ? Class ?
@@ -97,10 +113,14 @@ module Crython
           end
         end
       end
+
+      # Check for errors
       if LibPython.err_occurred
+        error_info = Crython.extract_python_error
         LibPython.err_print
-        raise "Error occurred while calling attribute '#{call}'"
+        raise CallError.new(call.to_s, error_info)
       end
+
       PyObject.new(ret.not_nil!)
     end
 
@@ -110,8 +130,9 @@ module Crython
       ptr = LibPython.object_get_item(@raw, key_tuple)
       LibPython.decref(key_tuple)
       if ptr.null?
+        error_info = Crython.extract_python_error
         LibPython.err_print
-        raise "Error occurred while getting item"
+        raise ItemError.new(error_info)
       end
       PyObject.new(ptr)
     end
@@ -125,8 +146,9 @@ module Crython
       LibPython.decref(py_value)
 
       if r < 0
+        error_info = Crython.extract_python_error
         LibPython.err_print
-        raise "Error occurred while setting item"
+        raise ItemError.new(error_info)
       end
     end
 

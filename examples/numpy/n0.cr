@@ -1,4 +1,4 @@
-require "../src/crython"
+require "../../src/crython"
 
 Crython.session do
   np = Crython.import("numpy")

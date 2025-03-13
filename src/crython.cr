@@ -7,8 +7,9 @@ module Crython
     mod = PyObject.new(LibPython.import(name))
     e = LibPython.err_occurred
     if !e.null?
+      error_info = extract_python_error
       LibPython.err_print
-      raise "Error importing module: #{name}"
+      raise ImportError.new(name, error_info)
     end
     mod
   end
