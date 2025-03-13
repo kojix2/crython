@@ -2,6 +2,7 @@ require "./crython/libpython"
 require "./crython/error"
 require "./crython/*"
 require "./crython/cr2py/*"
+require "./crython/py2cr/*"
 
 module Crython
   def self.import(name : String) : PyObject

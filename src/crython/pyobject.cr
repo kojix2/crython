@@ -1,11 +1,9 @@
 require "./pyobject/object_protocol"
-require "./pyobject/experimental_crystalizer"
 require "./cr2py/string"
 
 module Crython
   class PyObject
     include ObjectProtocol
-    include ExperimentalCrystalizer
 
     property need_decref : Bool
 
