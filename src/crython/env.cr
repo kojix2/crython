@@ -67,8 +67,9 @@ module Crython
   def self.eval(code : String) : Nil
     r = LibPython.run_simple_string(code.to_unsafe)
     if r != 0
+      error_info = extract_python_error
       LibPython.err_print
-      raise "Error evaluating Python code"
+      raise CrythonError.new("Error evaluating Python code#{error_info ? " - #{error_info}" : ""}")
     end
   end
 

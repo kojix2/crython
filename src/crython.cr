@@ -1,4 +1,5 @@
 require "./crython/libpython"
+require "./crython/error"
 require "./crython/*"
 require "./crython/cr2py/*"
 

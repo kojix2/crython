@@ -95,7 +95,7 @@ describe "Error handling" do
       Crython.session do
         mod = Crython.import("math")
         expect_raises(Crython::CallError, /ValueError/) do
-          mod.sqrt(-1)  # sqrt of negative number
+          mod.sqrt(-1) # sqrt of negative number
         end
       end
     end

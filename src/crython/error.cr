@@ -55,6 +55,16 @@ module Crython
     end
   end
 
+  # Whether the Python interpreter raised an error.
+  def self.err_occurred? : Bool
+    !LibPython.err_occurred.null?
+  end
+
+  # Clear the current Python error state
+  def self.clear_error
+    LibPython.err_clear
+  end
+
   # Helper method to extract Python error information
   def self.extract_python_error : String?
     return nil unless err_occurred?
