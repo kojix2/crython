@@ -246,7 +246,21 @@ Crystal meets Python!</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Overview</h2>
-<p>Crython is a tool that lets you use <a href="https://github.com/python/cpython">Python</a> libraries in <a href="https://github.com/crystal-lang/crystal">Crystal</a>, a programming language.</p>
+<p>Crython is a tool that lets you use <a href="https://github.com/python/cpython">Python</a> libraries in <a href="https://github.com/crystal-lang/crystal">Crystal</a>, a programming language. It provides seamless integration between Crystal and Python, allowing you to leverage Python's rich ecosystem while enjoying Crystal's performance and type safety.</p>
+<h2><a id="features" class="anchor" href="#features">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Features</h2>
+<ul>
+<li>Import and use Python modules directly from Crystal</li>
+<li>Convert between Crystal and Python data types</li>
+<li>Embed Python code within Crystal applications</li>
+<li>Call Python functions with Crystal arguments</li>
+<li>Access Python object attributes and methods</li>
+<li>Handle Python exceptions in Crystal</li>
+<li>Support for complex data structures (arrays, hashes, etc.)</li>
+</ul>
 <h2><a id="installation" class="anchor" href="#installation">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -271,39 +285,197 @@ Crystal meets Python!</p>
 <p>This command adds the Python library directory to <code>LD_LIBRARY_PATH</code>.</p>
 <p>To use Crython in your Crystal project, add this line:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;crython&quot;</span></code></pre>
-<h2><a id="usage" class="anchor" href="#usage">
+<p>For complex numbers, also add:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;complex&quot;</span></code></pre>
+<h2><a id="basic-usage" class="anchor" href="#basic-usage">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Usage</h2>
-<h4><a id="importing-a-python-module" class="anchor" href="#importing-a-python-module">
+</a>Basic Usage</h2>
+<h3><a id="importing-a-python-module" class="anchor" href="#importing-a-python-module">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Importing a Python Module</h4>
-<pre><code class="language-crystal">mod <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;math&quot;</span>)</code></pre>
-<h4><a id="embedding-python-code" class="anchor" href="#embedding-python-code">
+</a>Importing a Python Module</h3>
+<pre><code class="language-crystal"><span class="c"># Import a Python module</span>
+np <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;numpy&quot;</span>)
+
+<span class="c"># Use the module</span>
+array <span class="o">=</span> np.array([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>])
+result <span class="o">=</span> array <span class="o">*</span> <span class="n">2</span>
+puts result  <span class="c"># [2 4 6]</span></code></pre>
+<h3><a id="embedding-python-code" class="anchor" href="#embedding-python-code">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Embedding Python Code</h4>
+</a>Embedding Python Code</h3>
 <pre><code class="language-crystal"><span class="t">Crython</span>.session <span class="k">do</span>
   <span class="c"># Write your Python code here</span>
+  <span class="t">Crython</span>.eval(<span class="s">&quot;print(&#39;Hello from Python!&#39;)&quot;</span>)
+
+  <span class="c"># Import modules and use them</span>
+  np <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;numpy&quot;</span>)
+  array <span class="o">=</span> np.array([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>])
+  puts array
 <span class="k">end</span></code></pre>
-<p>For more examples, check the <a href="examples">examples</a> folder. To build all examples, use:</p>
-<pre><code class="language-crystal">make examples</code></pre>
-<p>Then run:</p>
-<pre><code class="language-crystal">.<span class="o">/</span>bin<span class="o">/</span>hello</code></pre>
-<h4><a id="tips" class="anchor" href="#tips">
+<h3><a id="type-conversion" class="anchor" href="#type-conversion">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Tips</h4>
+</a>Type Conversion</h3>
+<h4><a id="crystal-to-python" class="anchor" href="#crystal-to-python">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Crystal to Python</h4>
+<p>Convert Crystal objects to Python objects using the <code>to_py</code> method:</p>
+<pre><code class="language-crystal"><span class="n">42</span>.to_py                <span class="c"># Python int</span>
+<span class="n">3.14</span>.to_py              <span class="c"># Python float</span>
+<span class="s">&quot;hello&quot;</span>.to_py           <span class="c"># Python str</span>
+[<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>].to_py         <span class="c"># Python list</span>
+{<span class="s">&quot;a&quot;</span> <span class="o">=&gt;</span> <span class="n">1</span>, <span class="s">&quot;b&quot;</span> <span class="o">=&gt;</span> <span class="n">2</span>}.to_py  <span class="c"># Python dict</span>
+<span class="n">true</span>.to_py              <span class="c"># Python bool</span>
+<span class="n">nil</span>.to_py               <span class="c"># Python None</span>
+<span class="t">Complex</span>.new(<span class="n">1</span>, <span class="n">2</span>).to_py <span class="c"># Python complex</span></code></pre>
+<h4><a id="python-to-crystal" class="anchor" href="#python-to-crystal">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Python to Crystal</h4>
+<p>Convert Python objects to Crystal objects using the <code>to_cr</code> method:</p>
+<pre><code class="language-crystal">py_int <span class="o">=</span> <span class="n">42</span>.to_py
+py_int.to_cr  <span class="c"># Crystal Int64: 42</span>
+
+py_float <span class="o">=</span> <span class="n">3.14</span>.to_py
+py_float.to_cr  <span class="c"># Crystal Float64: 3.14</span>
+
+py_str <span class="o">=</span> <span class="s">&quot;hello&quot;</span>.to_py
+py_str.to_cr  <span class="c"># Crystal String: &quot;hello&quot;</span>
+
+py_list <span class="o">=</span> [<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>].to_py
+py_list.to_cr  <span class="c"># Crystal Array(PyObject)</span>
+
+py_dict <span class="o">=</span> {<span class="s">&quot;a&quot;</span> <span class="o">=&gt;</span> <span class="n">1</span>, <span class="s">&quot;b&quot;</span> <span class="o">=&gt;</span> <span class="n">2</span>}.to_py
+py_dict.to_cr  <span class="c"># Crystal Hash(PyObject, PyObject)</span>
+
+py_bool <span class="o">=</span> <span class="n">true</span>.to_py
+py_bool.to_cr  <span class="c"># Crystal Bool: true</span>
+
+py_none <span class="o">=</span> <span class="n">nil</span>.to_py
+py_none.to_cr  <span class="c"># Crystal Nil: nil</span>
+
+py_complex <span class="o">=</span> <span class="t">Complex</span>.new(<span class="n">1</span>, <span class="n">2</span>).to_py
+py_complex.to_cr  <span class="c"># Crystal Complex: 1+2i</span></code></pre>
+<p>You can also convert Python objects to specific Crystal types:</p>
+<pre><code class="language-crystal">py_list <span class="o">=</span> [<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>].to_py
+<span class="t">Array</span>(<span class="t">Int32</span>).new(py_list)  <span class="c"># Crystal Array(Int32): [1, 2, 3]</span>
+
+py_dict <span class="o">=</span> {<span class="s">&quot;a&quot;</span> <span class="o">=&gt;</span> <span class="n">1</span>, <span class="s">&quot;b&quot;</span> <span class="o">=&gt;</span> <span class="n">2</span>}.to_py
+<span class="t">Hash</span>(<span class="t">String</span>, <span class="t">Int32</span>).new(py_dict)  <span class="c"># Crystal Hash(String, Int32): {&quot;a&quot; =&gt; 1, &quot;b&quot; =&gt; 2}</span></code></pre>
+<h3><a id="working-with-python-objects" class="anchor" href="#working-with-python-objects">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Working with Python Objects</h3>
+<pre><code class="language-crystal"><span class="c"># Call methods on Python objects</span>
+py_str <span class="o">=</span> <span class="s">&quot;hello&quot;</span>.to_py
+py_str.upper.to_cr  <span class="c"># &quot;HELLO&quot;</span>
+
+<span class="c"># Access attributes</span>
+np <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;numpy&quot;</span>)
+version <span class="o">=</span> np.attr(<span class="s">&quot;__version__&quot;</span>).to_cr
+puts <span class="s">&quot;NumPy version: </span><span class="i">#{</span>version<span class="i">}</span><span class="s">&quot;</span>
+
+<span class="c"># Call methods with arguments</span>
+math <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;math&quot;</span>)
+result <span class="o">=</span> math.pow(<span class="n">2</span>, <span class="n">3</span>).to_cr
+puts <span class="s">&quot;2^3 = </span><span class="i">#{</span>result<span class="i">}</span><span class="s">&quot;</span>  <span class="c"># 8.0</span>
+
+<span class="c"># Call methods with keyword arguments</span>
+plt <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;matplotlib.pyplot&quot;</span>)
+plt.plot([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>], [<span class="n">4</span>, <span class="n">5</span>, <span class="n">6</span>], color: <span class="s">&quot;red&quot;</span>, marker: <span class="s">&quot;o&quot;</span>)</code></pre>
+<h2><a id="advanced-usage" class="anchor" href="#advanced-usage">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Advanced Usage</h2>
+<h3><a id="tips" class="anchor" href="#tips">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Tips</h3>
 <ul>
 <li>Use <code>call(&quot;Abc&quot;)</code> to call a function that starts with a capital letter.</li>
 <li>Use <code>call(&quot;Abc&quot;, args)</code> to call a function with arguments.</li>
 <li>Use <code>&quot;-&quot;.to_py.attr(&quot;join&quot;)</code> to get a function attribute.</li>
 <li>Use <code>Crython.slice_full</code> instead of <code>:</code>.</li>
+</ul>
+<h3><a id="error-handling" class="anchor" href="#error-handling">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Error Handling</h3>
+<pre><code class="language-crystal"><span class="t">Crython</span>.session <span class="k">do</span>
+  <span class="k">begin</span>
+    <span class="c"># This will raise an error</span>
+    <span class="t">Crython</span>.eval(<span class="s">&quot;1/0&quot;</span>)
+  <span class="k">rescue</span> ex
+    puts <span class="s">&quot;Python error: </span><span class="i">#{</span>ex.message<span class="i">}</span><span class="s">&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
+<h2><a id="examples" class="anchor" href="#examples">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Examples</h2>
+<p>For more examples, check the <a href="examples">examples</a> folder. To build all examples, use:</p>
+<pre><code class="language-crystal">make examples</code></pre>
+<p>Then run:</p>
+<pre><code class="language-crystal">.<span class="o">/</span>bin<span class="o">/</span>hello</code></pre>
+<h3><a id="num-py-example" class="anchor" href="#num-py-example">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>NumPy Example</h3>
+<pre><code class="language-crystal"><span class="t">Crython</span>.session <span class="k">do</span>
+  np <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;numpy&quot;</span>)
+
+  x1 <span class="o">=</span> np.array([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>])
+  x2 <span class="o">=</span> np.array([<span class="n">4</span>, <span class="n">5</span>, <span class="n">6</span>])
+
+  y <span class="o">=</span> x1 <span class="o">+</span> x2
+  puts <span class="s">&quot;</span><span class="i">#{</span>x1<span class="i">}</span><span class="s"> + </span><span class="i">#{</span>x2<span class="i">}</span><span class="s"> = </span><span class="i">#{</span>y<span class="i">}</span><span class="s">&quot;</span>  <span class="c"># [1 2 3] + [4 5 6] = [5 7 9]</span>
+<span class="k">end</span></code></pre>
+<h3><a id="matplotlib-example" class="anchor" href="#matplotlib-example">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Matplotlib Example</h3>
+<pre><code class="language-crystal"><span class="t">Crython</span>.session <span class="k">do</span>
+  plt <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;matplotlib.pyplot&quot;</span>)
+
+  <span class="c"># Create data</span>
+  x <span class="o">=</span> [<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>, <span class="n">4</span>, <span class="n">5</span>]
+  y <span class="o">=</span> [<span class="n">1</span>, <span class="n">4</span>, <span class="n">9</span>, <span class="n">16</span>, <span class="n">25</span>]
+
+  <span class="c"># Create plot</span>
+  plt.plot(x, y, marker: <span class="s">&quot;o&quot;</span>, linestyle: <span class="s">&quot;--&quot;</span>)
+  plt.title(<span class="s">&quot;Square Numbers&quot;</span>)
+  plt.xlabel(<span class="s">&quot;Number&quot;</span>)
+  plt.ylabel(<span class="s">&quot;Square&quot;</span>)
+
+  <span class="c"># Show plot</span>
+  plt.show
+<span class="k">end</span></code></pre>
+<h2><a id="known-limitations" class="anchor" href="#known-limitations">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Known Limitations</h2>
+<ul>
+<li>Symbol conversion: Crystal cannot create Symbols at runtime, so Python strings cannot be converted to Crystal Symbols.</li>
+<li>Union types: Converting Python collections with mixed types to Crystal collections with union types is not fully supported.</li>
+<li>Performance: There is some overhead in type conversion between Crystal and Python.</li>
 </ul>
 <h2><a id="building-examples-with-custom-python-library" class="anchor" href="#building-examples-with-custom-python-library">
   <svg class="octicon-link" aria-hidden="true">
@@ -313,6 +485,24 @@ Crystal meets Python!</p>
 <p><code>python3-config</code> usually provides the correct flags for linking. If it doesn't, you can manually set <code>LDFLAGS</code> to your environment's library path. For example, if using micromamba:</p>
 <pre><code class="language-bash">LDFLAGS=&quot;-L/Users/&lt;your-username&gt;/micromamba/envs/crython/lib -lpython3.13&quot; make examples</code></pre>
 <p>Replace <code>&lt;your-username&gt;</code> with your actual username and adjust the path as necessary.</p>
+<h2><a id="troubleshooting" class="anchor" href="#troubleshooting">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Troubleshooting</h2>
+<h3><a id="library-not-found" class="anchor" href="#library-not-found">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Library Not Found</h3>
+<p>If you get an error like <code>error while loading shared libraries: libpython3.13.so.1.0: cannot open shared object file: No such file or directory</code>, make sure you've set the <code>LD_LIBRARY_PATH</code> correctly:</p>
+<pre><code class="language-bash">export LD_LIBRARY_PATH=$(python3 -c &quot;import sysconfig; print(sysconfig.get_config_var('LIBDIR'))&quot;):$LD_LIBRARY_PATH</code></pre>
+<h3><a id="linking-errors" class="anchor" href="#linking-errors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Linking Errors</h3>
+<p>If you encounter linking errors during compilation, check that <code>python3-config --ldflags</code> returns the correct flags for your Python installation.</p>
 <h2><a id="contributing" class="anchor" href="#contributing">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -325,6 +515,11 @@ Crystal meets Python!</p>
   </svg>
 </a>LICENSE</h2>
 <p><a href="LICENSE">MIT</a></p>
+<h2><a id="credits" class="anchor" href="#credits">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Credits</h2>
 <p><a href="https://github.com/RomainFranceschini">Romain Franceschini</a> - The original creator of the Crython project</p>
 </div>
 </body>
