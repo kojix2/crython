@@ -154,8 +154,119 @@ class Crython::PyObject
       to_b
     when "<class 'NoneType'>"
       nil
+    when "<class 'list'>"
+      to_list
+    when "<class 'tuple'>"
+      to_tuple
+    when "<class 'dict'>"
+      to_dict
+    when "<class 'complex'>"
+      to_complex
     else
       raise TypeError.new(type_name, "Crystal type", "Unsupported Python type")
     end
+  end
+
+  # Convert Python list to Crystal Array(PyObject)
+  def to_list : Array(PyObject)
+    size = LibPython.list_size(@raw)
+    result = Array(PyObject).new(size)
+
+    size.times do |i|
+      item = LibPython.list_get_item(@raw, i)
+      if item.null?
+        error_info = Crython.extract_python_error
+        raise ValueError.new("Failed to get list item at index #{i}#{error_info ? " - #{error_info}" : ""}")
+      end
+
+      # We don't need to decref item because list_get_item returns a borrowed reference
+      py_item = PyObject.new(item)
+      result << py_item
+    end
+
+    result
+  end
+
+  # Convert Python tuple to Crystal Array(PyObject)
+  def to_tuple : Array(PyObject)
+    size = LibPython.tuple_size(@raw)
+    result = Array(PyObject).new(size)
+
+    size.times do |i|
+      item = LibPython.tuple_get_item(@raw, i)
+      if item.null?
+        error_info = Crython.extract_python_error
+        raise ValueError.new("Failed to get tuple item at index #{i}#{error_info ? " - #{error_info}" : ""}")
+      end
+
+      # We don't need to decref item because tuple_get_item returns a borrowed reference
+      py_item = PyObject.new(item)
+      result << py_item
+    end
+
+    result
+  end
+
+  # Convert Python dict to Crystal Hash(PyObject, PyObject)
+  def to_dict : Hash(PyObject, PyObject)
+    result = Hash(PyObject, PyObject).new
+
+    # Get dict keys
+    keys = LibPython.dict_keys(@raw)
+    if keys.null?
+      error_info = Crython.extract_python_error
+      raise ValueError.new("Failed to get dict keys#{error_info ? " - #{error_info}" : ""}")
+    end
+
+    # Convert keys to a list for iteration
+    keys_list = LibPython.sequence_list(keys)
+    if keys_list.null?
+      LibPython.decref(keys)
+      error_info = Crython.extract_python_error
+      raise ValueError.new("Failed to convert dict keys to list#{error_info ? " - #{error_info}" : ""}")
+    end
+
+    # Get the size of the keys list
+    size = LibPython.list_size(keys_list)
+
+    # Iterate over the keys
+    size.times do |i|
+      # Get the key
+      key_item = LibPython.list_get_item(keys_list, i)
+      if key_item.null?
+        LibPython.decref(keys)
+        LibPython.decref(keys_list)
+        error_info = Crython.extract_python_error
+        raise ValueError.new("Failed to get dict key at index #{i}#{error_info ? " - #{error_info}" : ""}")
+      end
+
+      # Get the value
+      value_item = LibPython.dict_get_item(@raw, key_item)
+      if value_item.null?
+        LibPython.decref(keys)
+        LibPython.decref(keys_list)
+        error_info = Crython.extract_python_error
+        raise ValueError.new("Failed to get dict value for key at index #{i}#{error_info ? " - #{error_info}" : ""}")
+      end
+
+      # Convert the key and value to PyObject
+      py_key = PyObject.new(key_item)
+      py_value = PyObject.new(value_item)
+
+      result[py_key] = py_value
+    end
+
+    # Clean up
+    LibPython.decref(keys)
+    LibPython.decref(keys_list)
+
+    result
+  end
+
+  # Convert Python complex to Crystal Complex
+  def to_complex : Complex
+    real = LibPython.complex_real_as_double(@raw)
+    imag = LibPython.complex_imag_as_double(@raw)
+    Complex.new(real, imag)
   end
 end
