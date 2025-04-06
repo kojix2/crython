@@ -294,21 +294,21 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/basic.cr#L89" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L89" target="_blank">
         crython/py2cr/basic.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/collections.cr#L128" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/collections.cr#L128" target="_blank">
         crython/py2cr/collections.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L5" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L5" target="_blank">
         crython/pyobject.cr
       </a>
     
@@ -567,9 +567,23 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#to_complex%3AComplex-instance-method" class="signature"><strong>#to_complex</strong> : Complex</a>
+        
+          <div class="summary"><p>Convert Python complex to Crystal Complex</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#to_cr-instance-method" class="signature"><strong>#to_cr</strong></a>
         
           <div class="summary"><p>Convert to appropriate Crystal type</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_dict%3AHash%28PyObject%2CPyObject%29-instance-method" class="signature"><strong>#to_dict</strong> : Hash(PyObject, PyObject)</a>
+        
+          <div class="summary"><p>Convert Python dict to Crystal Hash(PyObject, PyObject)</p></div>
         
       </li>
     
@@ -602,6 +616,13 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#to_list%3AArray%28PyObject%29-instance-method" class="signature"><strong>#to_list</strong> : Array(PyObject)</a>
+        
+          <div class="summary"><p>Convert Python list to Crystal Array(PyObject)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#to_py%3APyObject-instance-method" class="signature"><strong>#to_py</strong> : PyObject</a>
         
       </li>
@@ -615,6 +636,13 @@
     
       <li class="entry-summary">
         <a href="#to_s%28io%29%3ANil-instance-method" class="signature"><strong>#to_s</strong>(io) : Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_tuple%3AArray%28PyObject%29-instance-method" class="signature"><strong>#to_tuple</strong> : Array(PyObject)</a>
+        
+          <div class="summary"><p>Convert Python tuple to Crystal Array(PyObject)</p></div>
         
       </li>
     
@@ -725,7 +753,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -755,7 +783,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L38" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -783,7 +811,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -811,7 +839,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -827,7 +855,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -843,7 +871,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -859,7 +887,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -875,7 +903,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -891,7 +919,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -907,7 +935,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -923,7 +951,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -939,7 +967,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -955,7 +983,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -971,7 +999,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -987,7 +1015,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1003,7 +1031,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1019,7 +1047,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1035,7 +1063,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1051,7 +1079,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1067,7 +1095,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1083,7 +1111,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1099,7 +1127,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1115,7 +1143,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1140,7 +1168,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1156,7 +1184,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1172,7 +1200,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1188,7 +1216,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1204,7 +1232,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1220,7 +1248,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L125" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L125" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1236,7 +1264,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L138" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L138" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1252,7 +1280,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L50" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L50" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1268,7 +1296,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L30" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L30" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1289,7 +1317,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/basic.cr#L91" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L91" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1305,7 +1333,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L185" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L185" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1321,7 +1349,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1337,7 +1365,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1358,7 +1386,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/basic.cr#L111" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L111" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1379,7 +1407,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/collections.cr#L130" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/collections.cr#L130" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1400,7 +1428,28 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/basic.cr#L139" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L139" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_complex:Complex-instance-method">
+      <div class="signature">
+        
+        def <strong>to_complex</strong> : <a href="../Complex.html">Complex</a>
+
+        <a class="method-permalink" href="#to_complex%3AComplex-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Convert Python complex to Crystal Complex</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L267" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1421,7 +1470,28 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/basic.cr#L144" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L144" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_dict:Hash(PyObject,PyObject)-instance-method">
+      <div class="signature">
+        
+        def <strong>to_dict</strong> : <a href="../Hash.html">Hash</a>(<a href="../Crython/PyObject.html">PyObject</a>, <a href="../Crython/PyObject.html">PyObject</a>)
+
+        <a class="method-permalink" href="#to_dict%3AHash%28PyObject%2CPyObject%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Convert Python dict to Crystal Hash(PyObject, PyObject)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L211" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1442,7 +1512,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/basic.cr#L126" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L126" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1463,7 +1533,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/collections.cr#L135" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/collections.cr#L135" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1484,7 +1554,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/basic.cr#L116" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L116" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1505,7 +1575,28 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/basic.cr#L121" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L121" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_list:Array(PyObject)-instance-method">
+      <div class="signature">
+        
+        def <strong>to_list</strong> : <a href="../Array.html">Array</a>(<a href="../Crython/PyObject.html">PyObject</a>)
+
+        <a class="method-permalink" href="#to_list%3AArray%28PyObject%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Convert Python list to Crystal Array(PyObject)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L171" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1521,7 +1612,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L191" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L191" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1542,7 +1633,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/py2cr/basic.cr#L131" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L131" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1558,7 +1649,28 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/2510677b58778df61f0437081b06e1f9f6d24366/src/crython/pyobject.cr#L179" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/pyobject.cr#L179" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_tuple:Array(PyObject)-instance-method">
+      <div class="signature">
+        
+        def <strong>to_tuple</strong> : <a href="../Array.html">Array</a>(<a href="../Crython/PyObject.html">PyObject</a>)
+
+        <a class="method-permalink" href="#to_tuple%3AArray%28PyObject%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Convert Python tuple to Crystal Array(PyObject)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/4b05c4cae28683bb7d19b9957252fabf600c8996/src/crython/py2cr/basic.cr#L191" target="_blank">View source</a>]
         
       </div>
     </div>
