@@ -9,17 +9,7 @@ Crystal meets Python!
 
 ## Overview
 
-Crython is a tool that lets you use [Python](https://github.com/python/cpython) libraries in [Crystal](https://github.com/crystal-lang/crystal), a programming language. It provides seamless integration between Crystal and Python, allowing you to leverage Python's rich ecosystem while enjoying Crystal's performance and type safety.
-
-## Features
-
-- Import and use Python modules directly from Crystal
-- Convert between Crystal and Python data types
-- Embed Python code within Crystal applications
-- Call Python functions with Crystal arguments
-- Access Python object attributes and methods
-- Handle Python exceptions in Crystal
-- Support for complex data structures (arrays, hashes, etc.)
+Crython is a tool that lets you use [Python](https://github.com/python/cpython) libraries in [Crystal](https://github.com/crystal-lang/crystal), a programming language. It provides seamless integration between Crystal and Python, allowing you to leverage Python's ecosystem while enjoying Crystal language.
 
 ## Installation
 
@@ -47,13 +37,13 @@ This command adds the Python library directory to `LD_LIBRARY_PATH`.
 
 To use Crython in your Crystal project, add this line:
 
-```crystal
+```cr
 require "crython"
 ```
 
 For complex numbers, also add:
 
-```crystal
+```cr
 require "complex"
 ```
 
@@ -61,11 +51,15 @@ require "complex"
 
 ### Importing a Python Module
 
-```crystal
-# Import a Python module
-np = Crython.import("numpy")
+Import a Python module
 
-# Use the module
+```cr
+np = Crython.import("numpy")
+```
+
+Use the module
+
+```cr
 array = np.array([1, 2, 3])
 result = array * 2
 puts result  # [2 4 6]
@@ -73,7 +67,7 @@ puts result  # [2 4 6]
 
 ### Embedding Python Code
 
-```crystal
+```cr
 Crython.session do
   # Write your Python code here
   Crython.eval("print('Hello from Python!')")
@@ -91,75 +85,101 @@ end
 
 Convert Crystal objects to Python objects using the `to_py` method:
 
-```crystal
-42.to_py                # Python int
-3.14.to_py              # Python float
-"hello".to_py           # Python str
-[1, 2, 3].to_py         # Python list
+```cr
+42.to_py                    # Python int
+3.14.to_py                  # Python float
+"hello".to_py               # Python str
+[1, 2, 3].to_py             # Python list
 {"a" => 1, "b" => 2}.to_py  # Python dict
-true.to_py              # Python bool
-nil.to_py               # Python None
-Complex.new(1, 2).to_py # Python complex
+true.to_py                  # Python bool
+nil.to_py                   # Python None
+Complex.new(1, 2).to_py     # Python complex
 ```
 
 #### Python to Crystal
 
 Convert Python objects to Crystal objects using the `to_cr` method:
 
-```crystal
+```cr
 py_int = 42.to_py
-py_int.to_cr  # Crystal Int64: 42
+py_int.to_cr                         # Int64: 42
+```
 
+```cr
 py_float = 3.14.to_py
-py_float.to_cr  # Crystal Float64: 3.14
+py_float.to_cr                       # Float64: 3.14
+```
 
+```cr
 py_str = "hello".to_py
-py_str.to_cr  # Crystal String: "hello"
+py_str.to_cr                         # String: "hello"
+```
 
+```cr
 py_list = [1, 2, 3].to_py
-py_list.to_cr  # Crystal Array(PyObject)
+py_list.to_cr                        # Array(PyObject)
+```
 
+```cr
 py_dict = {"a" => 1, "b" => 2}.to_py
-py_dict.to_cr  # Crystal Hash(PyObject, PyObject)
+py_dict.to_cr                        # Hash(PyObject, PyObject)
+```
 
+```cr
 py_bool = true.to_py
-py_bool.to_cr  # Crystal Bool: true
+py_bool.to_cr                        # Bool: true
+```
 
+```cr
 py_none = nil.to_py
-py_none.to_cr  # Crystal Nil: nil
+py_none.to_cr                        # Nil: nil
+```
 
+```cr
 py_complex = Complex.new(1, 2).to_py
-py_complex.to_cr  # Crystal Complex: 1+2i
+py_complex.to_cr                     # Complex: 1+2i
 ```
 
 You can also convert Python objects to specific Crystal types:
 
-```crystal
+```cr
 py_list = [1, 2, 3].to_py
-Array(Int32).new(py_list)  # Crystal Array(Int32): [1, 2, 3]
+Array(Int32).new(py_list)            # Array(Int32): [1, 2, 3]
+```
 
+```cr
 py_dict = {"a" => 1, "b" => 2}.to_py
-Hash(String, Int32).new(py_dict)  # Crystal Hash(String, Int32): {"a" => 1, "b" => 2}
+Hash(String, Int32).new(py_dict)     # Hash(String, Int32): {"a" => 1, "b" => 2}
 ```
 
 ### Working with Python Objects
 
-```crystal
-# Call methods on Python objects
+Call methods on Python objects
+
+```cr
 py_str = "hello".to_py
 py_str.upper.to_cr  # "HELLO"
+```
 
-# Access attributes
+Access attributes
+
+```cr
 np = Crython.import("numpy")
 version = np.attr("__version__").to_cr
 puts "NumPy version: #{version}"
+```
 
-# Call methods with arguments
+Call methods with arguments
+
+```cr
 math = Crython.import("math")
 result = math.pow(2, 3).to_cr
 puts "2^3 = #{result}"  # 8.0
+```
 
-# Call methods with keyword arguments
+Call methods with keyword arguments
+
+```cr
 plt = Crython.import("matplotlib.pyplot")
 plt.plot([1, 2, 3], [4, 5, 6], color: "red", marker: "o")
 ```
@@ -175,7 +195,7 @@ plt.plot([1, 2, 3], [4, 5, 6], color: "red", marker: "o")
 
 ### Error Handling
 
-```crystal
+```cr
 Crython.session do
   begin
     # This will raise an error
@@ -202,7 +222,7 @@ Then run:
 
 ### NumPy Example
 
-```crystal
+```cr
 Crython.session do
   np = Crython.import("numpy")
 
@@ -216,7 +236,7 @@ end
 
 ### Matplotlib Example
 
-```crystal
+```cr
 Crython.session do
   plt = Crython.import("matplotlib.pyplot")
 
@@ -239,7 +259,6 @@ end
 
 - Symbol conversion: Crystal cannot create Symbols at runtime, so Python strings cannot be converted to Crystal Symbols.
 - Union types: Converting Python collections with mixed types to Crystal collections with union types is not fully supported.
-- Performance: There is some overhead in type conversion between Crystal and Python.
 
 ## Building Examples with Custom Python Library
 
