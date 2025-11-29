@@ -76,8 +76,15 @@ module Crython
           str = k.to_s
           cstr = str.to_unsafe
           key = LibPython.unicode_from_string_and_size(cstr, str.size)
-          LibPython.dict_set_item(kwargs_dict, key, v.to_py)
+          # unicode_from_string_and_size and v.to_py both return new
+          # references. PyDict_SetItem does not steal references; it
+          # increments the reference counts internally. We must decref the
+          # temporaries we own after the call.
+          value_py = v.to_py
+          LibPython.dict_set_item(kwargs_dict, key, value_py.to_unsafe)
           LibPython.decref(key)
+          LibPython.decref(value_py.to_unsafe)
+          value_py.need_decref = false
         end
         ret = LibPython.object_call(attr, args_tuple, kwargs_dict)
         LibPython.decref(args_tuple)
