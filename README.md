@@ -188,8 +188,8 @@ plt.plot([1, 2, 3], [4, 5, 6], color: "red", marker: "o")
 
 ### Tips
 
-- Use `call("Abc")` to call a function that starts with a capital letter.
-- Use `call("Abc", args)` to call a function with arguments.
+- Use `obj.call("Abc")` to call a Python attribute whose name is not a valid Crystal method name.
+- Use `obj.call("Abc", arg1, arg2)` to call it with positional arguments.
 - Use `"-".to_py.attr("join")` to get a function attribute.
 - Use `Crython.slice_full` instead of `:`.
 
