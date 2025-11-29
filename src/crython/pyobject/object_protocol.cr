@@ -13,8 +13,11 @@ module Crython
     end
 
     def set_attr(attr : String, obj : ObjectMethods)
-      if LibPython.object_set_attr_string(@raw, attr.to_unsafe, obj.to_unsafe) == 0
-        # TODO: handle exception
+      result = LibPython.object_set_attr_string(@raw, attr.to_unsafe, obj.to_unsafe)
+      if result < 0
+        error_info = Crython.extract_python_error
+        LibPython.err_print
+        raise AttributeError.new("object", attr, error_info)
       end
     end
 
@@ -26,7 +29,9 @@ module Crython
       if LibPython.object_cmp(@raw, other.to_unsafe, out cmp) >= 0
         cmp
       else
-        # TODO: handle exception
+        error_info = Crython.extract_python_error
+        LibPython.err_print
+        raise CrythonError.new("Object comparison failed#{error_info ? " - #{error_info}" : ""}")
       end
     end
 
