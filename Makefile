@@ -30,7 +30,7 @@ PYTHON_VERSION := $(shell python3 -c "import sys; print(f'{sys.version_info.majo
 PYTHON_LIB := -lpython$(PYTHON_VERSION)
 
 CFLAGS += $(PYTHON_CFLAGS)
-LDFLAGS += $(PYTHON_LDFLAGS) $(PYTHON_LIB)
+LDFLAGS += $(PYTHON_LDFLAGS) $(PYTHON_LIB) -lm
 
 .PHONY: all deps test examples doc clean help
 
