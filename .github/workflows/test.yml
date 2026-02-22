@@ -59,6 +59,27 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gdb
+      - name: Collect diagnostic baseline
+        run: |
+          set -euo pipefail
+          mkdir -p .ci-logs
+          {
+            echo "== uname =="
+            uname -a
+            echo
+            echo "== python =="
+            python3 --version
+            python3 -c "import sys, sysconfig; print(sys.version); print('LIBDIR=', sysconfig.get_config_var('LIBDIR'))"
+            echo
+            echo "== crystal =="
+            crystal --version
+            echo
+            echo "== python3-config --ldflags =="
+            python3-config --ldflags
+            echo
+            echo "== env =="
+            env | sort
+          } > .ci-logs/baseline.log
       - name: Install dependencies
         run: shards install --without-development --release
       - name: Run tests repeatedly (diagnostic mode)
@@ -69,23 +90,44 @@ jobs:
           ITERATIONS=20
 
           CMD="$(make -n test CRYTHON_DEBUG=1 verbose=1 | tail -n1)"
+          CMD="$CMD --error-trace"
           echo "Resolved test command: $CMD" | tee .ci-logs/resolved-command.log
           echo "Iterations: ${ITERATIONS}" | tee -a .ci-logs/resolved-command.log
+
+          ulimit -c unlimited || true
 
           for i in $(seq 1 ${ITERATIONS}); do
             echo "Iteration $i"
             LOG_FILE=".ci-logs/stability-${i}.log"
 
-            if ! PYTHONMALLOC=debug PYTHONFAULTHANDLER=1 bash -lc "$CMD" 2>&1 | tee "$LOG_FILE"; then
+            if ! PYTHONMALLOC=debug PYTHONFAULTHANDLER=1 PYTHONDEVMODE=1 PYTHONTRACEMALLOC=25 bash -lc "$CMD" 2>&1 | tee "$LOG_FILE"; then
               echo "Iteration $i failed. Capturing gdb backtrace..." | tee -a "$LOG_FILE"
+
+              SPEC_BIN="$(find /home/runner/.cache/crystal -maxdepth 1 -name 'crystal-run-spec.tmp' | head -n1 || true)"
+              echo "SPEC_BIN=${SPEC_BIN}" | tee -a "$LOG_FILE"
 
               gdb -q -batch \
                 -ex "set pagination off" \
                 -ex "set confirm off" \
                 -ex "run" \
+                -ex "info threads" \
                 -ex "thread apply all bt full" \
-                --args bash -lc "PYTHONMALLOC=debug PYTHONFAULTHANDLER=1 $CMD" \
+                -ex "info registers" \
+                -ex "x/16i $pc" \
+                --args bash -lc "PYTHONMALLOC=debug PYTHONFAULTHANDLER=1 PYTHONDEVMODE=1 PYTHONTRACEMALLOC=25 $CMD" \
                 > ".ci-logs/gdb-${i}.log" 2>&1 || true
+
+              CORE_FILE="$(find . -maxdepth 2 -type f \( -name 'core' -o -name 'core.*' \) | head -n1 || true)"
+              if [ -n "${CORE_FILE}" ] && [ -n "${SPEC_BIN}" ]; then
+                gdb -q -batch \
+                  -ex "set pagination off" \
+                  -ex "info threads" \
+                  -ex "thread apply all bt full" \
+                  -ex "info registers" \
+                  -ex "x/16i $pc" \
+                  "${SPEC_BIN}" "${CORE_FILE}" \
+                  > ".ci-logs/gdb-core-${i}.log" 2>&1 || true
+              fi
 
               exit 1
             fi
