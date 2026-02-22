@@ -64,13 +64,26 @@ module Crython
 
       # Call with kwargs
       if kwargs.size > 0
-        if args.size == 0
-          args_tuple = LibPython.tuple_new(0)
-        elsif args.size == 1
-          args_tuple = LibPython.build_value("(O)", *args.map(&.to_py))
-        else
-          args_tuple = LibPython.build_value("(" + "O" * args.size + ")", *args.map(&.to_py))
+        args_tuple = LibPython.tuple_new(args.size)
+        args.each_with_index do |arg, index|
+          value_py = arg.to_py
+          value_raw = value_py.to_unsafe
+
+          if value_py.need_decref
+            value_py.need_decref = false
+          else
+            LibPython.incref(value_raw)
+          end
+
+          if LibPython.tuple_set_item(args_tuple, index, value_raw) < 0
+            LibPython.decref(value_raw)
+            LibPython.decref(args_tuple)
+            LibPython.decref(attr)
+            error_info = Crython.extract_python_error
+            raise CallError.new(call.to_s, "Error building args tuple - #{error_info}")
+          end
         end
+
         kwargs_dict = LibPython.dict_new
         kwargs.each do |k, v|
           str = k.to_s
@@ -81,10 +94,24 @@ module Crython
           # increments the reference counts internally. We must decref the
           # temporaries we own after the call.
           value_py = v.to_py
-          LibPython.dict_set_item(kwargs_dict, key, value_py.to_unsafe)
+          value_raw = value_py.to_unsafe
+          if LibPython.dict_set_item(kwargs_dict, key, value_py.to_unsafe) < 0
+            LibPython.decref(key)
+            if value_py.need_decref
+              LibPython.decref(value_raw)
+              value_py.need_decref = false
+            end
+            LibPython.decref(kwargs_dict)
+            LibPython.decref(args_tuple)
+            LibPython.decref(attr)
+            error_info = Crython.extract_python_error
+            raise CallError.new(call.to_s, "Error building kwargs dict - #{error_info}")
+          end
           LibPython.decref(key)
-          LibPython.decref(value_py.to_unsafe)
-          value_py.need_decref = false
+          if value_py.need_decref
+            LibPython.decref(value_raw)
+            value_py.need_decref = false
+          end
         end
         ret = LibPython.object_call(attr, args_tuple, kwargs_dict)
         LibPython.decref(args_tuple)
