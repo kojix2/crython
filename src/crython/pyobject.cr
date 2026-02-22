@@ -5,6 +5,14 @@ module Crython
   class PyObject
     include ObjectProtocol
 
+    # Ownership rules
+    # - `need_decref = true` means this wrapper owns one Python reference.
+    # - `need_decref = false` means borrowed/non-owning wrapper.
+    # - When passing values to a stealing API (e.g. PyTuple_SetItem,
+    #   PyList_SetItem), transfer ownership only if we own the ref;
+    #   otherwise incref before passing.
+    # - When passing values to a non-stealing API (e.g. PyDict_SetItem),
+    #   decref temporary values only if this wrapper owns them.
     property need_decref : Bool
 
     # @id : Int32 = Random.rand(1000000) # Unique identifier for logging
