@@ -420,6 +420,9 @@ plt.plot([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3<
 <pre><code class="language-bash">make test</code></pre>
 <p>Or with uv:</p>
 <pre><code class="language-bash">uv run make test</code></pre>
+<p>Enable Crython debug logs on demand:</p>
+<pre><code class="language-bash">make test CRYTHON_DEBUG=1</code></pre>
+<pre><code class="language-bash">uv run make test CRYTHON_DEBUG=1</code></pre>
 <p>Direct <code>crystal spec</code> is not supported in this project because it may miss Python linker flags.</p>
 <h2><a id="examples" class="anchor" href="#examples">
   <svg class="octicon-link" aria-hidden="true">
