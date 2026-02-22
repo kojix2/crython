@@ -38,7 +38,6 @@ module Crython
   # Finalize Crython logical session
   def self.finalize
     if initialized?
-      @@session_id = 0 # Invalidate first so GC finalizers won't decref during shutdown
       @@session_active = false
       # no-op: Python runtime remains initialized and is reused
     end
