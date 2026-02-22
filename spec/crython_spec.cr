@@ -56,4 +56,18 @@ describe Crython do
       mod.should be_a(Crython::PyObject)
     end
   end
+
+  it "imports a Python module with import?" do
+    Crython.session do
+      mod = Crython.import?("math")
+      mod.should be_a(Crython::PyObject)
+    end
+  end
+
+  it "returns nil with import? for non-existent module" do
+    Crython.session do
+      mod = Crython.import?("non_existent_module")
+      mod.should be_nil
+    end
+  end
 end

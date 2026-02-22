@@ -23,6 +23,18 @@ module Crython
       end
     end
 
+    def attr?(attr : String) : PyObject?
+      Crython.with_gil do
+        ptr = LibPython.object_get_attr_string(@raw, attr.to_unsafe)
+        if ptr.null?
+          Crython.clear_error
+          nil
+        else
+          PyObject.new(ptr, need_decref: true)
+        end
+      end
+    end
+
     def set_attr(attr : String, obj : ObjectMethods)
       Crython.with_gil do
         result = LibPython.object_set_attr_string(@raw, attr.to_unsafe, obj.to_unsafe)

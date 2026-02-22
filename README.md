@@ -215,6 +215,13 @@ plt.plot([1, 2, 3], [4, 5, 6], color: "red", marker: "o")
 - Use `obj.call("Abc", arg1, arg2)` to call it with positional arguments.
 - Use `"-".to_py.attr("join")` to get a function attribute.
 - Use `Crython.slice_full` instead of `:`.
+- Use `import?`, `attr?`, `call?` when you want `nil` instead of exceptions on failure.
+
+```cr
+math = Crython.import?("math")
+pi = math.try &.attr?("pi")
+pow = math.try &.call?("pow", 2, 3)
+```
 
 ### Error Handling
 

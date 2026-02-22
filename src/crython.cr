@@ -21,6 +21,23 @@ module Crython
     mod
   end
 
+  def self.import?(name : String) : PyObject?
+    debug_log("import?:start name=#{name} session_id=#{session_id} active=#{initialized?}")
+    mod = Crython.with_gil do
+      mod_ptr = LibPython.import(name)
+      e = LibPython.err_occurred
+      if mod_ptr.null? || !e.null?
+        error_info = extract_python_error
+        debug_log("import?:nil name=#{name} error=#{error_info}")
+        nil
+      else
+        PyObject.new(mod_ptr, need_decref: true)
+      end
+    end
+    debug_log("import?:ok name=#{name}") unless mod.nil?
+    mod
+  end
+
   def self.slice_full : PyObject
     with_gil do
       n1 = none_newref

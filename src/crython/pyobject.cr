@@ -212,6 +212,12 @@ module Crython
       end
     end
 
+    def call?(call : (String | Symbol), *args, **kwargs) : PyObject?
+      call(call, *args, **kwargs)
+    rescue AttributeError | CallError
+      nil
+    end
+
     def [](*key) : PyObject
       Crython.with_gil do
         # __getitem__
