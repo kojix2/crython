@@ -86,6 +86,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .ci-logs
+          touch .ci-logs/started.log
 
           ITERATIONS=20
 
@@ -113,18 +114,18 @@ jobs:
                 -ex "info threads" \
                 -ex "thread apply all bt full" \
                 -ex "info registers" \
-                -ex "x/16i $pc" \
+                -ex 'x/16i $pc' \
                 --args bash -lc "PYTHONMALLOC=debug PYTHONFAULTHANDLER=1 PYTHONDEVMODE=1 PYTHONTRACEMALLOC=25 $CMD" \
                 > ".ci-logs/gdb-${i}.log" 2>&1 || true
 
-              CORE_FILE="$(find . -maxdepth 2 -type f \( -name 'core' -o -name 'core.*' \) | head -n1 || true)"
+              CORE_FILE="$(find . /tmp /home/runner/work -maxdepth 4 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null | head -n1 || true)"
               if [ -n "${CORE_FILE}" ] && [ -n "${SPEC_BIN}" ]; then
                 gdb -q -batch \
                   -ex "set pagination off" \
                   -ex "info threads" \
                   -ex "thread apply all bt full" \
                   -ex "info registers" \
-                  -ex "x/16i $pc" \
+                  -ex 'x/16i $pc' \
                   "${SPEC_BIN}" "${CORE_FILE}" \
                   > ".ci-logs/gdb-core-${i}.log" 2>&1 || true
               fi
@@ -133,18 +134,21 @@ jobs:
             fi
           done
 
+      - name: Collect crash artifacts into .ci-logs
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p .ci-logs
+          cp -f /home/runner/.cache/crystal/crystal-run-spec.tmp .ci-logs/ 2>/dev/null || true
+          cp -f /home/runner/.cache/crystal/crystal-run-spec.tmp.dwarf .ci-logs/ 2>/dev/null || true
+          find . /tmp /home/runner/work -maxdepth 4 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null -exec cp -f {} .ci-logs/ \; || true
+          find .ci-logs -maxdepth 2 -type f -print | sort > .ci-logs/files.txt || true
+
       - name: Upload stability diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: stability-diagnostics
           if-no-files-found: warn
-          path: |
-            .ci-logs
-            /home/runner/.cache/crystal/crystal-run-spec.tmp
-            /home/runner/.cache/crystal/crystal-run-spec.tmp.dwarf
-            core
-            core.*
-            **/core
-            **/core.*
+          path: .ci-logs
 
