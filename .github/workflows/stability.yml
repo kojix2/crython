@@ -1,0 +1,68 @@
+name: stability
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  stability:
+    name: stability (ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - run: |
+          pip3 install matplotlib seaborn
+      - name: Install gdb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gdb
+      - name: Install dependencies
+        run: shards install --without-development --release
+      - name: Run tests repeatedly
+        run: |
+          set -euo pipefail
+          mkdir -p .ci-logs
+          : > .ci-logs/started.log
+
+          ITERATIONS=20
+          echo "Command: make test CRYTHON_DEBUG=1 verbose=1" > .ci-logs/config.log
+          echo "Iterations: ${ITERATIONS}" >> .ci-logs/config.log
+
+          for i in $(seq 1 ${ITERATIONS}); do
+            echo "Iteration $i"
+            LOG_FILE=".ci-logs/stability-${i}.log"
+            if ! make test CRYTHON_DEBUG=1 verbose=1 2>&1 | tee "$LOG_FILE"; then
+              echo "Iteration $i failed" | tee -a "$LOG_FILE"
+              gdb -q -batch \
+                -ex "set pagination off" \
+                -ex "run" \
+                -ex "info threads" \
+                -ex "thread apply all bt full" \
+                --args bash -lc "make test CRYTHON_DEBUG=1 verbose=1" \
+                > ".ci-logs/gdb-${i}.log" 2>&1 || true
+              exit 1
+            fi
+          done
+
+      - name: Index diagnostics files
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p .ci-logs
+          find .ci-logs -maxdepth 2 -type f -print | sort > .ci-logs/files.txt || true
+
+      - name: Upload stability diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stability-diagnostics
+          if-no-files-found: warn
+          path: .ci-logs
