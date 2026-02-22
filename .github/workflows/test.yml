@@ -40,3 +40,27 @@ jobs:
           find ./bin -type f ! -name "*.dwarf" | xargs chmod +x
           find ./bin -type f ! -name "*.dwarf" | xargs -L1
 
+  stability:
+    name: stability (ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - run: |
+          pip3 install matplotlib seaborn
+      - name: Install dependencies
+        run: shards install --without-development --release
+      - name: Run tests repeatedly
+        run: |
+          for i in 1 2 3 4 5; do
+            echo "Iteration $i"
+            make test
+          done
+
