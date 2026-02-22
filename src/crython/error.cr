@@ -74,29 +74,44 @@ module Crython
     with_gil do
       return nil if LibPython.err_occurred.null?
 
-      # Get error type and message
-      error_type = LibPython.err_occurred
-      if error_type.null?
-        return nil
+      # Fetch the exception type, value, and traceback
+      exc_type_ptr = uninitialized LibPython::PyObject
+      exc_value_ptr = uninitialized LibPython::PyObject
+      exc_tb_ptr = uninitialized LibPython::PyObject
+
+      LibPython.err_fetch(pointerof(exc_type_ptr), pointerof(exc_value_ptr), pointerof(exc_tb_ptr))
+
+      # Normalize the exception
+      LibPython.err_normalize_exception(pointerof(exc_type_ptr), pointerof(exc_value_ptr), pointerof(exc_tb_ptr))
+
+      error_message = ""
+
+      # Get the exception type name
+      if !exc_type_ptr.null?
+        exc_type_obj = PyObject.new(exc_type_ptr)
+        error_name_obj = exc_type_obj.attr("__name__")
+        error_message = error_name_obj.to_s
+        if error_name_obj.need_decref
+          LibPython.decref(error_name_obj.to_unsafe)
+          error_name_obj.need_decref = false
+        end
+        LibPython.decref(exc_type_ptr)
       end
 
-      # Store the error in a local variable
-      error_type_obj = PyObject.new(error_type)
-      error_name_obj = error_type_obj.attr("__name__")
-      error_type_name = error_name_obj.to_s
-      if error_name_obj.need_decref
-        LibPython.decref(error_name_obj.to_unsafe)
-        error_name_obj.need_decref = false
+      # Get the exception message
+      if !exc_value_ptr.null?
+        exc_value_obj = PyObject.new(exc_value_ptr)
+        exc_str = exc_value_obj.to_s
+        error_message += ": #{exc_str}" unless exc_str.empty?
+        LibPython.decref(exc_value_ptr)
       end
 
-      # Get the error message
-      # Note: This is a simplified approach, a more robust implementation would
-      # fetch the actual exception instance and its message
+      # Decref traceback if present
+      if !exc_tb_ptr.null?
+        LibPython.decref(exc_tb_ptr)
+      end
 
-      # Clear the error to avoid interference with future operations
-      LibPython.err_clear
-
-      error_type_name
+      error_message.empty? ? nil : error_message
     end
   end
 end
