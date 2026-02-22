@@ -48,7 +48,7 @@ jobs:
 
           PYTHON_VERSION="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
           LINK_FLAGS="$(python3-config --ldflags) -lpython${PYTHON_VERSION} -lm"
-          crystal build ci-logs/spec_runner.cr -v --error-trace --link-flags "${LINK_FLAGS}" -o ci-logs/spec-bin
+          crystal build ci-logs/spec_runner.cr --error-trace --link-flags "${LINK_FLAGS}" -o ci-logs/spec-bin
       - name: Run tests repeatedly
         run: |
           set -euo pipefail
