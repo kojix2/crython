@@ -61,6 +61,6 @@ jobs:
         run: |
           for i in 1 2 3 4 5; do
             echo "Iteration $i"
-            make test
+            make test CRYTHON_DEBUG=1
           done
 

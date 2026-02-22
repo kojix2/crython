@@ -5,6 +5,7 @@ debug ?=   ## Add symbolic debug info
 no-debug ?= ## No symbolic debug info
 verbose ?= ## Run specs in verbose mode
 link-flags ?= ## Additional flags to pass to the linker
+CRYTHON_DEBUG ?= 0 ## Set 1 to enable Crython debug logs
 
 OS := $(LC_CTYPE=C $(shell uname -s | tr '[:upper:]' '[:lower:]'))
 
@@ -27,6 +28,8 @@ PYTHON_CFLAGS := $(shell python3-config --cflags)
 PYTHON_LDFLAGS := $(shell python3-config --ldflags)
 PYTHON_LIBDIR := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR') or '')")
 RUNTIME_LD_LIBRARY_PATH := $(if $(PYTHON_LIBDIR),LD_LIBRARY_PATH="$(PYTHON_LIBDIR):$${LD_LIBRARY_PATH}")
+RUNTIME_CRYTHON_DEBUG := $(if $(filter 1,$(CRYTHON_DEBUG)),CRYTHON_DEBUG=1)
+RUNTIME_ENV := $(strip $(RUNTIME_CRYTHON_DEBUG) $(RUNTIME_LD_LIBRARY_PATH))
 
 EXAMPLE := $(or $(example),$(word 2,$(MAKECMDGOALS)))
 
@@ -56,7 +59,7 @@ $(EXAMPLES_TARGETS): $(O)/%: examples/%.cr
 	$(BUILD_PATH) crystal build $(FLAGS) $< --link-flags "$(LDFLAGS)" -o $@ --error-trace
 
 test: deps ## Run tests
-	$(RUNTIME_LD_LIBRARY_PATH) $(BUILD_PATH) crystal spec $(VERBOSE) --link-flags "$(LDFLAGS)"
+	$(RUNTIME_ENV) $(BUILD_PATH) crystal spec $(VERBOSE) --link-flags "$(LDFLAGS)"
 
 examples: $(DEPS) $(EXAMPLES_TARGETS) ## Build all examples
 
@@ -65,7 +68,7 @@ run: ## Run an example (usage: make run hello args="...")
 	@if [ ! -x "$(O)/$(EXAMPLE)" ]; then \
 		$(MAKE) $(O)/$(EXAMPLE); \
 	fi
-	$(RUNTIME_LD_LIBRARY_PATH) ./$(O)/$(EXAMPLE) $(args)
+	$(RUNTIME_ENV) ./$(O)/$(EXAMPLE) $(args)
 
 doc: deps ## Generate crython library documentation
 	@echo "Building documentation..."

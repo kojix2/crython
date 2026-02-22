@@ -1,4 +1,12 @@
 module Crython
+  def self.debug_enabled? : Bool
+    ENV["CRYTHON_DEBUG"]? == "1"
+  end
+
+  def self.debug_log(message : String) : Nil
+    STDERR.puts("[crython][debug] #{message}") if debug_enabled?
+  end
+
   # ===============================================================
   # @session_id (UInt64)
   # ===============================================================
@@ -23,11 +31,14 @@ module Crython
 
   # Initialize a Python interpreter
   def self.init
+    debug_log("init:start initialized=#{LibPython.is_initialized != 0} session_id=#{@@session_id} active=#{@@session_active}")
     unless LibPython.is_initialized != 0
       LibPython.init
+      debug_log("init:python runtime initialized")
     end
     @@session_id = @@session_id &+ 1
     @@session_active = true
+    debug_log("init:done session_id=#{@@session_id} active=#{@@session_active}")
   end
 
   # Check if Crython logical session is initialized
@@ -38,15 +49,19 @@ module Crython
   # Finalize Crython logical session
   def self.finalize
     if initialized?
+      debug_log("finalize:start session_id=#{@@session_id} active=#{@@session_active}")
       @@session_active = false
       # no-op: Python runtime remains initialized and is reused
+      debug_log("finalize:done session_id=#{@@session_id} active=#{@@session_active}")
     end
   end
 
   # Embed Python execution
   def self.session(&)
+    debug_log("session:enter")
     init
     yield(self)
+    debug_log("session:leave")
   end
 
   # Python environment information (cached)

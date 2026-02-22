@@ -232,6 +232,16 @@ Or with uv:
 uv run make test
 ```
 
+Enable Crython debug logs on demand:
+
+```bash
+make test CRYTHON_DEBUG=1
+```
+
+```bash
+uv run make test CRYTHON_DEBUG=1
+```
+
 Direct `crystal spec` is not supported in this project because it may miss Python linker flags.
 
 ## Examples
