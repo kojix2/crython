@@ -1,7 +1,7 @@
 struct Bool
   def to_py : Crython::PyObject
     py_bool = self ? Crython::LibPython.bool_from_long(1) : Crython::LibPython.bool_from_long(0)
-    Crython::PyObject.new(py_bool)
+    Crython::PyObject.new(py_bool, need_decref: true)
   end
 
   def self.new(pyobject : Crython::PyObject) : Bool
