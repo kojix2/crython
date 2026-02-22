@@ -182,7 +182,7 @@ end
 
 struct Float32
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("f", self)
+    ptr = Crython::LibPython.float_from_double(self.to_f64)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 
@@ -193,7 +193,7 @@ end
 
 struct Float64
   def to_py : Crython::PyObject
-    ptr = Crython::LibPython.build_value("d", self)
+    ptr = Crython::LibPython.float_from_double(self)
     Crython::PyObject.new(ptr, need_decref: true)
   end
 
