@@ -29,25 +29,25 @@ jobs:
       - name: Run tests repeatedly
         run: |
           set -euo pipefail
-          mkdir -p .ci-logs
-          : > .ci-logs/started.log
+          mkdir -p ci-logs
+          : > ci-logs/started.log
 
           ITERATIONS=20
-          echo "Command: make test CRYTHON_DEBUG=1 verbose=1" > .ci-logs/config.log
-          echo "Iterations: ${ITERATIONS}" >> .ci-logs/config.log
+          echo "Command: PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1" > ci-logs/config.log
+          echo "Iterations: ${ITERATIONS}" >> ci-logs/config.log
 
           for i in $(seq 1 ${ITERATIONS}); do
             echo "Iteration $i"
-            LOG_FILE=".ci-logs/stability-${i}.log"
-            if ! make test CRYTHON_DEBUG=1 verbose=1 2>&1 | tee "$LOG_FILE"; then
+            LOG_FILE="ci-logs/stability-${i}.log"
+            if ! PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1 2>&1 | tee "$LOG_FILE"; then
               echo "Iteration $i failed" | tee -a "$LOG_FILE"
               gdb -q -batch \
                 -ex "set pagination off" \
                 -ex "run" \
                 -ex "info threads" \
                 -ex "thread apply all bt full" \
-                --args bash -lc "make test CRYTHON_DEBUG=1 verbose=1" \
-                > ".ci-logs/gdb-${i}.log" 2>&1 || true
+                --args bash -lc "PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1" \
+                > "ci-logs/gdb-${i}.log" 2>&1 || true
               exit 1
             fi
           done
@@ -56,8 +56,8 @@ jobs:
         if: always()
         run: |
           set -euo pipefail
-          mkdir -p .ci-logs
-          find .ci-logs -maxdepth 2 -type f -print | sort > .ci-logs/files.txt || true
+          mkdir -p ci-logs
+          find ci-logs -maxdepth 2 -type f -print | sort > ci-logs/files.txt || true
 
       - name: Upload stability diagnostics
         if: always()
@@ -65,4 +65,4 @@ jobs:
         with:
           name: stability-diagnostics
           if-no-files-found: warn
-          path: .ci-logs
+          path: ci-logs
