@@ -32,7 +32,7 @@ jobs:
           mkdir -p ci-logs
           : > ci-logs/started.log
 
-          ITERATIONS=20
+          ITERATIONS=100
           echo "Command: gdb --return-child-result --args bash -lc 'PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1'" > ci-logs/config.log
           echo "Iterations: ${ITERATIONS}" >> ci-logs/config.log
 
