@@ -7,33 +7,33 @@ require "./crython/py2cr/*"
 module Crython
   def self.import(name : String) : PyObject
     debug_log("import:start name=#{name} session_id=#{session_id} active=#{initialized?}")
-    state = LibPython.gil_state_ensure
-    mod_ptr = begin
-      LibPython.import(name)
-    ensure
-      LibPython.gil_state_release(state)
+    mod = Crython.with_gil do
+      mod_ptr = LibPython.import(name)
+      e = LibPython.err_occurred
+      if mod_ptr.null? || !e.null?
+        error_info = extract_python_error
+        debug_log("import:error name=#{name} error=#{error_info}")
+        raise ImportError.new(name, error_info)
+      end
+      PyObject.new(mod_ptr, need_decref: true)
     end
-    e = LibPython.err_occurred
-    if mod_ptr.null? || !e.null?
-      error_info = extract_python_error
-      debug_log("import:error name=#{name} error=#{error_info}")
-      LibPython.err_print
-      raise ImportError.new(name, error_info)
-    end
-    mod = PyObject.new(mod_ptr, need_decref: true)
-    debug_log("import:ok name=#{name} ptr_null=#{mod_ptr.null?}")
+    debug_log("import:ok name=#{name}")
     mod
   end
 
   def self.slice_full : PyObject
-    state = LibPython.gil_state_ensure
-    begin
-      n = LibPython.build_value("")
-      sf = LibPython.slice_new(n, n, n)
-      LibPython.decref(n)
-      PyObject.new(sf, need_decref: true)
-    ensure
-      LibPython.gil_state_release(state)
+    with_gil do
+      n1 = none_newref
+      n2 = none_newref
+      n3 = none_newref
+      begin
+        sf = LibPython.slice_new(n1, n2, n3)
+        PyObject.new(sf, need_decref: true)
+      ensure
+        LibPython.decref(n1)
+        LibPython.decref(n2)
+        LibPython.decref(n3)
+      end
     end
   end
 end

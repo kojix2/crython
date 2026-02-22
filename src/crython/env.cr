@@ -91,6 +91,28 @@ module Crython
     preview.gsub('\n', "\\n").gsub('\r', "\\r")
   end
 
+  # Get a new reference to Python None without using varargs APIs.
+  def self.none_newref : LibPython::PyObject
+    with_gil do
+      builtins = LibPython.import("builtins")
+      if builtins.null?
+        error_info = extract_python_error
+        raise ImportError.new("builtins", error_info)
+      end
+
+      begin
+        none_obj = LibPython.object_get_attr_string(builtins, "None".to_unsafe)
+        if none_obj.null?
+          error_info = extract_python_error
+          raise AttributeError.new("builtins", "None", error_info)
+        end
+        none_obj
+      ensure
+        LibPython.decref(builtins)
+      end
+    end
+  end
+
   # Evaluate Python code with error handling
   def self.eval(code : String) : Nil
     debug_log("eval:start session_id=#{@@session_id} active=#{@@session_active} bytes=#{code.bytesize} preview=#{eval_preview(code)}")
@@ -105,7 +127,9 @@ module Crython
     if r != 0
       error_info = extract_python_error
       debug_log("eval:error rc=#{r} py_err=#{py_err} error=#{error_info}")
-      LibPython.err_print
+      with_gil do
+        LibPython.err_print
+      end
       raise CrythonError.new("Error evaluating Python code#{error_info ? " - #{error_info}" : ""}")
     end
   end

@@ -1,9 +1,7 @@
 struct Nil
   def to_py : Crython::PyObject
-    Crython.with_gil do
-      ptr = Crython::LibPython.build_value("")
-      Crython::PyObject.new(ptr, need_decref: true)
-    end
+    ptr = Crython.none_newref
+    Crython::PyObject.new(ptr, need_decref: true)
   end
 
   def self.new(pyobject : Crython::PyObject) : Nil

@@ -45,7 +45,7 @@ module Crython
         end
 
         # Create an array to hold the converted values
-        none_obj = PyObject.new(LibPython.build_value(""), need_decref: true)
+        none_obj = PyObject.new(Crython.none_newref, need_decref: true)
         values = [] of typeof(element_types[0].new(none_obj))
         if none_obj.need_decref
           LibPython.decref(none_obj.raw)

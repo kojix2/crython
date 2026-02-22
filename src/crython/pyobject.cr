@@ -80,13 +80,19 @@ module Crython
         if kwargs.size > 0
           args_tuple = LibPython.tuple_new(args.size)
           args.each_with_index do |arg, index|
-            value_py = arg.to_py
-            value_raw = value_py.to_unsafe
-
-            if value_py.need_decref
-              value_py.need_decref = false
-            else
+            value_raw = Pointer(Void).null.as(LibPython::PyObject)
+            if arg.is_a?(PyObject)
+              value_raw = arg.as(PyObject).to_unsafe
               LibPython.incref(value_raw)
+            else
+              value_py = arg.to_py
+              value_raw = value_py.to_unsafe
+
+              if value_py.need_decref
+                value_py.need_decref = false
+              else
+                LibPython.incref(value_raw)
+              end
             end
 
             if LibPython.tuple_set_item(args_tuple, index, value_raw) < 0
@@ -107,13 +113,19 @@ module Crython
             # references. PyDict_SetItem does not steal references; it
             # increments the reference counts internally. We must decref the
             # temporaries we own after the call.
-            value_py = v.to_py
-            value_raw = value_py.to_unsafe
-            if LibPython.dict_set_item(kwargs_dict, key, value_py.to_unsafe) < 0
+            value_py = nil
+            value_raw = Pointer(Void).null.as(LibPython::PyObject)
+            if v.is_a?(PyObject)
+              value_raw = v.as(PyObject).to_unsafe
+            else
+              value_py = v.to_py
+              value_raw = value_py.to_unsafe
+            end
+            if LibPython.dict_set_item(kwargs_dict, key, value_raw) < 0
               LibPython.decref(key)
-              if value_py.need_decref
+              if !value_py.nil? && value_py.not_nil!.need_decref
                 LibPython.decref(value_raw)
-                value_py.need_decref = false
+                value_py.not_nil!.need_decref = false
               end
               LibPython.decref(kwargs_dict)
               LibPython.decref(args_tuple)
@@ -122,9 +134,9 @@ module Crython
               raise CallError.new(call.to_s, "Error building kwargs dict - #{error_info}")
             end
             LibPython.decref(key)
-            if value_py.need_decref
+            if !value_py.nil? && value_py.not_nil!.need_decref
               LibPython.decref(value_raw)
-              value_py.need_decref = false
+              value_py.not_nil!.need_decref = false
             end
           end
           ret = LibPython.object_call(attr, args_tuple, kwargs_dict)
@@ -140,13 +152,19 @@ module Crython
           if args.size > 0
             args_tuple = LibPython.tuple_new(args.size)
             args.each_with_index do |arg, index|
-              value_py = arg.to_py
-              value_raw = value_py.to_unsafe
-
-              if value_py.need_decref
-                value_py.need_decref = false
-              else
+              value_raw = Pointer(Void).null.as(LibPython::PyObject)
+              if arg.is_a?(PyObject)
+                value_raw = arg.as(PyObject).to_unsafe
                 LibPython.incref(value_raw)
+              else
+                value_py = arg.to_py
+                value_raw = value_py.to_unsafe
+
+                if value_py.need_decref
+                  value_py.need_decref = false
+                else
+                  LibPython.incref(value_raw)
+                end
               end
 
               if LibPython.tuple_set_item(args_tuple, index, value_raw) < 0
@@ -198,25 +216,37 @@ module Crython
       Crython.with_gil do
         # __getitem__
         if key.size <= 1
-          py_key = key.size == 1 ? key[0].to_py : nil.to_py
-          py_key_raw = py_key.to_unsafe
+          py_key = nil
+          py_key_raw = Pointer(Void).null.as(LibPython::PyObject)
+          if key.size == 1 && key[0].is_a?(PyObject)
+            py_key_raw = key[0].as(PyObject).to_unsafe
+          else
+            py_key = key.size == 1 ? key[0].to_py : nil.to_py
+            py_key_raw = py_key.not_nil!.to_unsafe
+          end
 
           ptr = LibPython.object_get_item(@raw, py_key_raw)
 
-          if py_key.need_decref
+          if !py_key.nil? && py_key.not_nil!.need_decref
             LibPython.decref(py_key_raw)
-            py_key.need_decref = false
+            py_key.not_nil!.need_decref = false
           end
         else
           key_tuple = LibPython.tuple_new(key.size)
           key.each_with_index do |item, index|
-            py_item = item.to_py
-            py_item_raw = py_item.to_unsafe
-
-            if py_item.need_decref
-              py_item.need_decref = false
-            else
+            py_item_raw = Pointer(Void).null.as(LibPython::PyObject)
+            if item.is_a?(PyObject)
+              py_item_raw = item.as(PyObject).to_unsafe
               LibPython.incref(py_item_raw)
+            else
+              py_item = item.to_py
+              py_item_raw = py_item.to_unsafe
+
+              if py_item.need_decref
+                py_item.need_decref = false
+              else
+                LibPython.incref(py_item_raw)
+              end
             end
 
             if LibPython.tuple_set_item(key_tuple, index, py_item_raw) < 0
@@ -243,20 +273,34 @@ module Crython
     def []=(key, value) : Nil
       Crython.with_gil do
         # __setitem__
-        py_key = key.to_py
-        py_value = value.to_py
-        py_key_raw = py_key.to_unsafe
-        py_value_raw = py_value.to_unsafe
+        py_key = nil
+        py_value = nil
+        py_key_raw = Pointer(Void).null.as(LibPython::PyObject)
+        py_value_raw = Pointer(Void).null.as(LibPython::PyObject)
+
+        if key.is_a?(PyObject)
+          py_key_raw = key.as(PyObject).to_unsafe
+        else
+          py_key = key.to_py
+          py_key_raw = py_key.not_nil!.to_unsafe
+        end
+
+        if value.is_a?(PyObject)
+          py_value_raw = value.as(PyObject).to_unsafe
+        else
+          py_value = value.to_py
+          py_value_raw = py_value.not_nil!.to_unsafe
+        end
 
         r = LibPython.object_set_item(@raw, py_key_raw, py_value_raw)
 
-        if py_key.need_decref
+        if !py_key.nil? && py_key.not_nil!.need_decref
           LibPython.decref(py_key_raw)
-          py_key.need_decref = false
+          py_key.not_nil!.need_decref = false
         end
-        if py_value.need_decref
+        if !py_value.nil? && py_value.not_nil!.need_decref
           LibPython.decref(py_value_raw)
-          py_value.need_decref = false
+          py_value.not_nil!.need_decref = false
         end
 
         if r < 0

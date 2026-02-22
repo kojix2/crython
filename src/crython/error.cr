@@ -57,40 +57,46 @@ module Crython
 
   # Whether the Python interpreter raised an error.
   def self.err_occurred? : Bool
-    !LibPython.err_occurred.null?
+    with_gil do
+      !LibPython.err_occurred.null?
+    end
   end
 
   # Clear the current Python error state
   def self.clear_error
-    LibPython.err_clear
+    with_gil do
+      LibPython.err_clear
+    end
   end
 
   # Helper method to extract Python error information
   def self.extract_python_error : String?
-    return nil unless err_occurred?
+    with_gil do
+      return nil if LibPython.err_occurred.null?
 
-    # Get error type and message
-    error_type = LibPython.err_occurred
-    if error_type.null?
-      return nil
+      # Get error type and message
+      error_type = LibPython.err_occurred
+      if error_type.null?
+        return nil
+      end
+
+      # Store the error in a local variable
+      error_type_obj = PyObject.new(error_type)
+      error_name_obj = error_type_obj.attr("__name__")
+      error_type_name = error_name_obj.to_s
+      if error_name_obj.need_decref
+        LibPython.decref(error_name_obj.to_unsafe)
+        error_name_obj.need_decref = false
+      end
+
+      # Get the error message
+      # Note: This is a simplified approach, a more robust implementation would
+      # fetch the actual exception instance and its message
+
+      # Clear the error to avoid interference with future operations
+      LibPython.err_clear
+
+      error_type_name
     end
-
-    # Store the error in a local variable
-    error_type_obj = PyObject.new(error_type)
-    error_name_obj = error_type_obj.attr("__name__")
-    error_type_name = error_name_obj.to_s
-    if error_name_obj.need_decref
-      Crython.with_gil { LibPython.decref(error_name_obj.to_unsafe) }
-      error_name_obj.need_decref = false
-    end
-
-    # Get the error message
-    # Note: This is a simplified approach, a more robust implementation would
-    # fetch the actual exception instance and its message
-
-    # Clear the error to avoid interference with future operations
-    clear_error
-
-    error_type_name
   end
 end
