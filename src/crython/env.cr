@@ -79,7 +79,12 @@ module Crython
 
   # Evaluate Python code with error handling
   def self.eval(code : String) : Nil
-    r = LibPython.run_simple_string(code.to_unsafe)
+    state = LibPython.gil_state_ensure
+    r = begin
+      LibPython.run_simple_string(code.to_unsafe)
+    ensure
+      LibPython.gil_state_release(state)
+    end
     if r != 0
       error_info = extract_python_error
       LibPython.err_print

@@ -7,7 +7,12 @@ require "./crython/py2cr/*"
 module Crython
   def self.import(name : String) : PyObject
     debug_log("import:start name=#{name} session_id=#{session_id} active=#{initialized?}")
-    mod_ptr = LibPython.import(name)
+    state = LibPython.gil_state_ensure
+    mod_ptr = begin
+      LibPython.import(name)
+    ensure
+      LibPython.gil_state_release(state)
+    end
     mod = PyObject.new(mod_ptr)
     e = LibPython.err_occurred
     if !e.null?
@@ -21,9 +26,14 @@ module Crython
   end
 
   def self.slice_full : PyObject
-    n = LibPython.build_value("")
-    sf = LibPython.slice_new(n, n, n)
-    LibPython.decref(n)
-    PyObject.new(sf)
+    state = LibPython.gil_state_ensure
+    begin
+      n = LibPython.build_value("")
+      sf = LibPython.slice_new(n, n, n)
+      LibPython.decref(n)
+      PyObject.new(sf)
+    ensure
+      LibPython.gil_state_release(state)
+    end
   end
 end
