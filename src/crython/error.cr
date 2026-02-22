@@ -77,7 +77,12 @@ module Crython
 
     # Store the error in a local variable
     error_type_obj = PyObject.new(error_type)
-    error_type_name = error_type_obj.attr("__name__").to_s
+    error_name_obj = error_type_obj.attr("__name__")
+    error_type_name = error_name_obj.to_s
+    if error_name_obj.need_decref
+      Crython.with_gil { LibPython.decref(error_name_obj.to_unsafe) }
+      error_name_obj.need_decref = false
+    end
 
     # Get the error message
     # Note: This is a simplified approach, a more robust implementation would

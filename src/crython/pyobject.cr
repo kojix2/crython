@@ -190,7 +190,7 @@ module Crython
           raise CallError.new(call.to_s, error_info)
         end
 
-        PyObject.new(ret.not_nil!)
+        PyObject.new(ret.not_nil!, need_decref: true)
       end
     end
 
@@ -236,7 +236,7 @@ module Crython
           LibPython.err_print
           raise ItemError.new(error_info)
         end
-        PyObject.new(ptr)
+        PyObject.new(ptr, need_decref: true)
       end
     end
 

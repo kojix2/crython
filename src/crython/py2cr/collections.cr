@@ -18,8 +18,9 @@ module Crython
           raise ValueError.new("Failed to get list item at index #{i}#{error_info ? " - #{error_info}" : ""}")
         end
 
-        # We don't need to decref item because list_get_item returns a borrowed reference
-        py_item = PyObject.new(item)
+        # list_get_item returns a borrowed reference. Own it explicitly.
+        LibPython.incref(item)
+        py_item = PyObject.new(item, need_decref: true)
 
         # Convert the item to the specified Crystal type
         result << T.new(py_item)
@@ -41,8 +42,12 @@ module Crython
       end
 
       # Create an array to hold the converted values
-      none_obj = PyObject.new(LibPython.build_value(""))
+      none_obj = PyObject.new(LibPython.build_value(""), need_decref: true)
       values = [] of typeof(element_types[0].new(none_obj))
+      if none_obj.need_decref
+        LibPython.decref(none_obj.raw)
+        none_obj.need_decref = false
+      end
 
       size.times do |i|
         item = LibPython.tuple_get_item(pyobject.raw, i)
@@ -51,8 +56,9 @@ module Crython
           raise ValueError.new("Failed to get tuple item at index #{i}#{error_info ? " - #{error_info}" : ""}")
         end
 
-        # We don't need to decref item because tuple_get_item returns a borrowed reference
-        py_item = PyObject.new(item)
+        # tuple_get_item returns a borrowed reference. Own it explicitly.
+        LibPython.incref(item)
+        py_item = PyObject.new(item, need_decref: true)
 
         # Convert the item to the specified Crystal type
         values << element_types[i].new(py_item)
@@ -108,9 +114,11 @@ module Crython
           raise ValueError.new("Failed to get dict value for key at index #{i}#{error_info ? " - #{error_info}" : ""}")
         end
 
-        # Convert the key and value to the specified Crystal types
-        py_key = PyObject.new(key_item)
-        py_value = PyObject.new(value_item)
+        # dict/list getters return borrowed references. Own them explicitly.
+        LibPython.incref(key_item)
+        LibPython.incref(value_item)
+        py_key = PyObject.new(key_item, need_decref: true)
+        py_value = PyObject.new(value_item, need_decref: true)
 
         result[K.new(py_key)] = V.new(py_value)
       end

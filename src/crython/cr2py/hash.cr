@@ -65,8 +65,10 @@ class Hash(K, V)
 
         hash = Hash(K, V).new
         while Crython::LibPython.dict_next(pyobject, pointerof(pos), pointerof(key_ptr), pointerof(value_ptr)) != 0
-          py_key = Crython::PyObject.new(key_ptr)
-          py_value = Crython::PyObject.new(value_ptr)
+          Crython::LibPython.incref(key_ptr)
+          Crython::LibPython.incref(value_ptr)
+          py_key = Crython::PyObject.new(key_ptr, need_decref: true)
+          py_value = Crython::PyObject.new(value_ptr, need_decref: true)
 
           # Convert key and value to types K and V
           key = K.new(py_key)

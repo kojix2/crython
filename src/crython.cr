@@ -13,14 +13,14 @@ module Crython
     ensure
       LibPython.gil_state_release(state)
     end
-    mod = PyObject.new(mod_ptr)
     e = LibPython.err_occurred
-    if !e.null?
+    if mod_ptr.null? || !e.null?
       error_info = extract_python_error
       debug_log("import:error name=#{name} error=#{error_info}")
       LibPython.err_print
       raise ImportError.new(name, error_info)
     end
+    mod = PyObject.new(mod_ptr, need_decref: true)
     debug_log("import:ok name=#{name} ptr_null=#{mod_ptr.null?}")
     mod
   end
@@ -31,7 +31,7 @@ module Crython
       n = LibPython.build_value("")
       sf = LibPython.slice_new(n, n, n)
       LibPython.decref(n)
-      PyObject.new(sf)
+      PyObject.new(sf, need_decref: true)
     ensure
       LibPython.gil_state_release(state)
     end

@@ -14,7 +14,7 @@ module Crython
 
     def attr(attr : String) : PyObject
       Crython.with_gil do
-        PyObject.new(LibPython.object_get_attr_string(@raw, attr.to_unsafe))
+        PyObject.new(LibPython.object_get_attr_string(@raw, attr.to_unsafe), need_decref: true)
       end
     end
 

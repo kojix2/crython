@@ -49,14 +49,16 @@ class Array(T)
         size = Crython::LibPython.list_size(pyobject)
         Array.new(size) do |index|
           py_item = Crython::LibPython.list_get_item(pyobject, index)
-          py_obj = Crython::PyObject.new(py_item)
+          Crython::LibPython.incref(py_item)
+          py_obj = Crython::PyObject.new(py_item, need_decref: true)
           T.new(py_obj)
         end
       when "<class 'tuple'>"
         size = Crython::LibPython.tuple_size(pyobject)
         Array.new(size) do |index|
           py_item = Crython::LibPython.tuple_get_item(pyobject, index)
-          py_obj = Crython::PyObject.new(py_item)
+          Crython::LibPython.incref(py_item)
+          py_obj = Crython::PyObject.new(py_item, need_decref: true)
           T.new(py_obj)
         end
       else

@@ -89,22 +89,24 @@ end
 class Crython::PyObject
   # Helper method to get Python object type name
   def get_type_name : String
-    type_obj = LibPython.object_type(@raw)
-    if type_obj.null?
-      return "unknown"
-    end
+    Crython.with_gil do
+      type_obj = LibPython.object_type(@raw)
+      if type_obj.null?
+        return "unknown"
+      end
 
-    type_str = LibPython.object_str(type_obj)
-    if type_str.null?
+      type_str = LibPython.object_str(type_obj)
+      if type_str.null?
+        LibPython.decref(type_obj)
+        return "unknown"
+      end
+
+      type_name = String.new(LibPython.unicode_as_utf8(type_str))
+      LibPython.decref(type_str)
       LibPython.decref(type_obj)
-      return "unknown"
+
+      type_name
     end
-
-    type_name = String.new(LibPython.unicode_as_utf8(type_str))
-    LibPython.decref(type_str)
-    LibPython.decref(type_obj)
-
-    type_name
   end
 
   # Access the raw Python object pointer
@@ -129,10 +131,15 @@ class Crython::PyObject
 
   # Convert to Crystal String
   def to_s(io : IO) : Nil
-    s = LibPython.object_str(@raw)
-    ptr = LibPython.unicode_as_utf8(s)
-    io.print String.new(ptr)
-    LibPython.decref(s)
+    Crython.with_gil do
+      s = LibPython.object_str(@raw)
+      begin
+        ptr = LibPython.unicode_as_utf8(s)
+        io.print String.new(ptr)
+      ensure
+        LibPython.decref(s)
+      end
+    end
   end
 
   # Convert to Crystal Bool
@@ -179,8 +186,9 @@ class Crython::PyObject
         raise ValueError.new("Failed to get list item at index #{i}#{error_info ? " - #{error_info}" : ""}")
       end
 
-      # We don't need to decref item because list_get_item returns a borrowed reference
-      py_item = PyObject.new(item)
+      # list_get_item returns a borrowed reference. Own it explicitly.
+      LibPython.incref(item)
+      py_item = PyObject.new(item, need_decref: true)
       result << py_item
     end
 
@@ -199,8 +207,9 @@ class Crython::PyObject
         raise ValueError.new("Failed to get tuple item at index #{i}#{error_info ? " - #{error_info}" : ""}")
       end
 
-      # We don't need to decref item because tuple_get_item returns a borrowed reference
-      py_item = PyObject.new(item)
+      # tuple_get_item returns a borrowed reference. Own it explicitly.
+      LibPython.incref(item)
+      py_item = PyObject.new(item, need_decref: true)
       result << py_item
     end
 
@@ -249,9 +258,11 @@ class Crython::PyObject
         raise ValueError.new("Failed to get dict value for key at index #{i}#{error_info ? " - #{error_info}" : ""}")
       end
 
-      # Convert the key and value to PyObject
-      py_key = PyObject.new(key_item)
-      py_value = PyObject.new(value_item)
+      # dict/list getters return borrowed references. Own them explicitly.
+      LibPython.incref(key_item)
+      LibPython.incref(value_item)
+      py_key = PyObject.new(key_item, need_decref: true)
+      py_value = PyObject.new(value_item, need_decref: true)
 
       result[py_key] = py_value
     end
