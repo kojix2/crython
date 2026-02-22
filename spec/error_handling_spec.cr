@@ -38,30 +38,22 @@ describe "Error handling" do
     pending "NumPy tests are skipped if NumPy is not available" do
       it "raises ItemError when accessing an invalid index" do
         Crython.session do
-          begin
-            np = Crython.import("numpy")
-            array = np.array([1, 2, 3])
-            expect_raises(Crython::ItemError) do
-              # Accessing index 10 which is out of bounds
-              array[10]
-            end
-          rescue Crython::ImportError
-            skip "NumPy is not available"
+          np = Crython.import("numpy")
+          array = np.array([1, 2, 3])
+          expect_raises(Crython::ItemError) do
+            # Accessing index 10 which is out of bounds
+            array[10]
           end
         end
       end
 
       it "raises ItemError when setting an invalid index" do
         Crython.session do
-          begin
-            np = Crython.import("numpy")
-            array = np.array([1, 2, 3])
-            expect_raises(Crython::ItemError) do
-              # Setting index 10 which is out of bounds
-              array[10] = 100
-            end
-          rescue Crython::ImportError
-            skip "NumPy is not available"
+          np = Crython.import("numpy")
+          array = np.array([1, 2, 3])
+          expect_raises(Crython::ItemError) do
+            # Setting index 10 which is out of bounds
+            array[10] = 100
           end
         end
       end
