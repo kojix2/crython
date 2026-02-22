@@ -66,10 +66,13 @@ jobs:
           set -euo pipefail
           mkdir -p .ci-logs
 
+          ITERATIONS=20
+
           CMD="$(make -n test CRYTHON_DEBUG=1 verbose=1 | tail -n1)"
           echo "Resolved test command: $CMD" | tee .ci-logs/resolved-command.log
+          echo "Iterations: ${ITERATIONS}" | tee -a .ci-logs/resolved-command.log
 
-          for i in 1 2 3 4 5; do
+          for i in $(seq 1 ${ITERATIONS}); do
             echo "Iteration $i"
             LOG_FILE=".ci-logs/stability-${i}.log"
 
