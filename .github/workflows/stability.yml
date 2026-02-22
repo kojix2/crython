@@ -24,8 +24,25 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gdb
+      - name: Configure core dump output
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs /tmp/crython-core
+          sudo sysctl -w kernel.core_pattern=/tmp/crython-core/core.%e.%p.%t || true
+          sudo sysctl -w kernel.core_uses_pid=1 || true
+          {
+            echo "core_pattern=$(cat /proc/sys/kernel/core_pattern || true)"
+            echo "core_uses_pid=$(cat /proc/sys/kernel/core_uses_pid || true)"
+          } > ci-logs/core-config.log
       - name: Install dependencies
         run: shards install --without-development --release
+      - name: Build spec binary for postmortem
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          PYTHON_VERSION="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+          LINK_FLAGS="$(python3-config --ldflags) -lpython${PYTHON_VERSION} -lm"
+          crystal spec -v --error-trace --link-flags "${LINK_FLAGS}" -o ci-logs/spec-bin
       - name: Run tests repeatedly
         run: |
           set -euo pipefail
@@ -43,11 +60,14 @@ jobs:
             if ! PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1 2>&1 | tee "$LOG_FILE"; then
               echo "Iteration $i failed" | tee -a "$LOG_FILE"
 
-              SPEC_BIN="$(find /home/runner/.cache/crystal -maxdepth 1 -type f -name 'crystal-run-spec.tmp' | head -n1 || true)"
+              SPEC_BIN="ci-logs/spec-bin"
+              if [ ! -f "${SPEC_BIN}" ]; then
+                SPEC_BIN="$(find /home/runner/.cache/crystal -maxdepth 1 -type f -name 'crystal-run-spec.tmp' | head -n1 || true)"
+              fi
               if [ -z "${SPEC_BIN}" ]; then
                 SPEC_BIN="$(find /home/runner/.cache/crystal -maxdepth 1 -type f -name 'crystal-run-spec.tmp*' ! -name '*.dwarf' | head -n1 || true)"
               fi
-              CORE_FILE="$(find . /tmp /home/runner/work -maxdepth 5 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null | head -n1 || true)"
+              CORE_FILE="$(find /tmp/crython-core /tmp /home/runner/work . -maxdepth 5 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null | head -n1 || true)"
 
               echo "SPEC_BIN=${SPEC_BIN}" | tee -a "$LOG_FILE"
               echo "CORE_FILE=${CORE_FILE}" | tee -a "$LOG_FILE"
@@ -65,7 +85,7 @@ jobs:
 
               cp -f /home/runner/.cache/crystal/crystal-run-spec.tmp ci-logs/ 2>/dev/null || true
               cp -f /home/runner/.cache/crystal/crystal-run-spec.tmp.dwarf ci-logs/ 2>/dev/null || true
-              find . /tmp /home/runner/work -maxdepth 5 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null -exec cp -f {} ci-logs/ \; || true
+              find /tmp/crython-core /tmp /home/runner/work . -maxdepth 5 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null -exec cp -f {} ci-logs/ \; || true
               exit 1
             fi
           done
