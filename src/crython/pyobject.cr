@@ -274,14 +274,22 @@ module Crython
 
     def to_s(io) : Nil
       s = LibPython.object_str(@raw)
-      ptr = LibPython.unicode_as_utf8(s)
-      io.print String.new(ptr)
+      begin
+        ptr = LibPython.unicode_as_utf8(s)
+        io.print String.new(ptr)
+      ensure
+        LibPython.decref(s)
+      end
     end
 
     def inspect(io) : Nil
       s = LibPython.object_repr(@raw)
-      ptr = LibPython.unicode_as_utf8(s)
-      io.print String.new(ptr)
+      begin
+        ptr = LibPython.unicode_as_utf8(s)
+        io.print String.new(ptr)
+      ensure
+        LibPython.decref(s)
+      end
     end
 
     def to_py : PyObject
