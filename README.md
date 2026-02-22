@@ -26,7 +26,12 @@ dependencies:
 
 ## Environment Setup
 
-To find Python libraries, set the `LD_LIBRARY_PATH`:
+Crython can be run either directly with Crystal commands or via `make`.
+
+- `make test` / `make run ...` are convenience shortcuts.
+- They automatically apply Python linker flags and runtime library paths.
+
+When running binaries directly (without `make`), set `LD_LIBRARY_PATH` manually:
 
 ```bash
 export LD_LIBRARY_PATH=$(python3 -c \
@@ -34,6 +39,12 @@ export LD_LIBRARY_PATH=$(python3 -c \
 ```
 
 This command adds the Python library directory to `LD_LIBRARY_PATH`.
+
+### Useful Environment Variables
+
+- `CRYTHON_DEBUG=1`: Enables Crython debug logs.
+- `LD_LIBRARY_PATH=...`: Python shared library search path (mainly needed for direct execution).
+- `LDFLAGS=...`: Override link flags when your Python environment is non-standard.
 
 To use Crython in your Crystal project, add this line:
 
@@ -220,7 +231,15 @@ end
 
 ## Testing
 
-Run tests via the Makefile entrypoint so Python link flags are applied:
+You can run tests either directly or via `make`.
+
+Direct execution (explicit link flags):
+
+```bash
+crystal spec --link-flags "$(python3-config --ldflags) -lpython$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")') -lm"
+```
+
+Or use `make` as a shortcut:
 
 ```bash
 make test
@@ -242,7 +261,7 @@ make test CRYTHON_DEBUG=1
 uv run make test CRYTHON_DEBUG=1
 ```
 
-Direct `crystal spec` is not supported in this project because it may miss Python linker flags.
+Direct `crystal spec` works as long as you pass proper Python link flags.
 
 ## Examples
 
