@@ -36,13 +36,19 @@ jobs:
           } > ci-logs/core-config.log
       - name: Install dependencies
         run: shards install --without-development --release
-      - name: Build spec binary for postmortem
+      - name: Build spec binary
         run: |
           set -euo pipefail
           mkdir -p ci-logs
+          cat > ci-logs/spec_runner.cr <<'CR'
+          require "spec"
+          require "../spec/spec_helper"
+          require "../spec/**/*_spec"
+          CR
+
           PYTHON_VERSION="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
           LINK_FLAGS="$(python3-config --ldflags) -lpython${PYTHON_VERSION} -lm"
-          crystal spec -v --error-trace --link-flags "${LINK_FLAGS}" -o ci-logs/spec-bin
+          crystal build ci-logs/spec_runner.cr -v --error-trace --link-flags "${LINK_FLAGS}" -o ci-logs/spec-bin
       - name: Run tests repeatedly
         run: |
           set -euo pipefail
@@ -50,24 +56,27 @@ jobs:
           : > ci-logs/started.log
 
           ITERATIONS=100
-          echo "Command: PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1" > ci-logs/config.log
+          PYTHON_LIBDIR="$(python3 -c 'import sysconfig; print(sysconfig.get_config_var("LIBDIR") or "")')"
+          echo "Command: env CRYTHON_DEBUG=1 PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug LD_LIBRARY_PATH=${PYTHON_LIBDIR}:\${LD_LIBRARY_PATH} ./ci-logs/spec-bin -v" > ci-logs/config.log
           echo "Iterations: ${ITERATIONS}" >> ci-logs/config.log
           ulimit -c unlimited || true
 
           for i in $(seq 1 ${ITERATIONS}); do
             echo "Iteration $i"
             LOG_FILE="ci-logs/stability-${i}.log"
-            if ! PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1 2>&1 | tee "$LOG_FILE"; then
+            if ! env \
+              CRYTHON_DEBUG=1 \
+              PYTHONFAULTHANDLER=1 \
+              PYTHONMALLOC=debug \
+              LD_LIBRARY_PATH="${PYTHON_LIBDIR}:${LD_LIBRARY_PATH:-}" \
+              ./ci-logs/spec-bin -v 2>&1 | tee "$LOG_FILE"; then
               echo "Iteration $i failed" | tee -a "$LOG_FILE"
 
+              CORE_FILE="$(find /tmp/crython-core /tmp /home/runner/work . -maxdepth 5 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null | head -n1 || true)"
               SPEC_BIN="ci-logs/spec-bin"
               if [ ! -f "${SPEC_BIN}" ]; then
-                SPEC_BIN="$(find /home/runner/.cache/crystal -maxdepth 1 -type f -name 'crystal-run-spec.tmp' | head -n1 || true)"
-              fi
-              if [ -z "${SPEC_BIN}" ]; then
                 SPEC_BIN="$(find /home/runner/.cache/crystal -maxdepth 1 -type f -name 'crystal-run-spec.tmp*' ! -name '*.dwarf' | head -n1 || true)"
               fi
-              CORE_FILE="$(find /tmp/crython-core /tmp /home/runner/work . -maxdepth 5 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null | head -n1 || true)"
 
               echo "SPEC_BIN=${SPEC_BIN}" | tee -a "$LOG_FILE"
               echo "CORE_FILE=${CORE_FILE}" | tee -a "$LOG_FILE"
@@ -81,8 +90,18 @@ jobs:
                   -ex 'x/16i $pc' \
                   "${SPEC_BIN}" "${CORE_FILE}" \
                   > "ci-logs/gdb-core-${i}.log" 2>&1 || true
+              elif [ -n "${CORE_FILE}" ]; then
+                gdb -q -batch \
+                  -ex "set pagination off" \
+                  -ex "info threads" \
+                  -ex "thread apply all bt full" \
+                  -ex "info registers" \
+                  -ex 'x/16i $pc' \
+                  -c "${CORE_FILE}" \
+                  > "ci-logs/gdb-core-${i}.log" 2>&1 || true
               fi
 
+              cp -f ci-logs/spec-bin ci-logs/spec-bin.copy 2>/dev/null || true
               cp -f /home/runner/.cache/crystal/crystal-run-spec.tmp ci-logs/ 2>/dev/null || true
               cp -f /home/runner/.cache/crystal/crystal-run-spec.tmp.dwarf ci-logs/ 2>/dev/null || true
               find /tmp/crython-core /tmp /home/runner/work . -maxdepth 5 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null -exec cp -f {} ci-logs/ \; || true
