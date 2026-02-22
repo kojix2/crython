@@ -13,7 +13,7 @@ Crython is a tool that lets you use [Python](https://github.com/python/cpython) 
 
 ## Installation
 
-- You need Python3. Python3.12 or later is recommended.
+- You need Python3. Python3.14 or later is recommended.
 - Make sure `python3-config --ldflags` works.
 
 Add this to your dependencies:
@@ -303,7 +303,7 @@ end
 `python3-config` usually provides the correct flags for linking. If it doesn't, you can manually set `LDFLAGS` to your environment's library path. For example, if using micromamba:
 
 ```bash
-LDFLAGS="-L/Users/<your-username>/micromamba/envs/crython/lib -lpython3.13" make examples
+LDFLAGS="-L/Users/<your-username>/micromamba/envs/crython/lib -lpython3.14" make examples
 ```
 
 Replace `<your-username>` with your actual username and adjust the path as necessary.
@@ -312,7 +312,7 @@ Replace `<your-username>` with your actual username and adjust the path as neces
 
 ### Library Not Found
 
-If you get an error like `error while loading shared libraries: libpython3.13.so.1.0: cannot open shared object file: No such file or directory`, make sure you've set the `LD_LIBRARY_PATH` correctly:
+If you get an error like `error while loading shared libraries: libpython3.x.so.1.0: cannot open shared object file: No such file or directory`, make sure you've set the `LD_LIBRARY_PATH` correctly:
 
 ```bash
 export LD_LIBRARY_PATH=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))"):$LD_LIBRARY_PATH
