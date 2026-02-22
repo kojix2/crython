@@ -163,9 +163,11 @@ module Crython
         else
           # No args - either call as function or return attribute
           if PyObject.new(attr).callable?
-            # PyFunction_Check is better? since callable can be a class
-            # FIXME: Attr ? Func ? Class ?
-            ret = LibPython.object_call_function(attr, nil)
+            # Use PyObject_Call with an explicit empty tuple to avoid
+            # varargs ABI issues from PyObject_CallFunctionObjArgs.
+            empty_args = LibPython.tuple_new(0)
+            ret = LibPython.object_call(attr, empty_args, Pointer(Void).null.as(LibPython::PyObject))
+            LibPython.decref(empty_args)
             # User should call attr if they want to get the attribute
             # "-".to_py.attr("join")
             LibPython.decref(attr)
