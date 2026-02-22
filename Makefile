@@ -25,6 +25,15 @@ EXAMPLES_TARGETS := $(patsubst examples/%.cr, $(O)/%, $(EXAMPLES_SOURCES))
 
 PYTHON_CFLAGS := $(shell python3-config --cflags)
 PYTHON_LDFLAGS := $(shell python3-config --ldflags)
+PYTHON_LIBDIR := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR') or '')")
+RUNTIME_LD_LIBRARY_PATH := $(if $(PYTHON_LIBDIR),LD_LIBRARY_PATH="$(PYTHON_LIBDIR):$${LD_LIBRARY_PATH}")
+
+EXAMPLE := $(or $(example),$(word 2,$(MAKECMDGOALS)))
+
+ifneq ($(filter run,$(MAKECMDGOALS)),)
+EXTRA_GOALS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+$(foreach goal,$(EXTRA_GOALS),$(eval $(goal):;@:))
+endif
 
 PYTHON_VERSION := $(shell python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 PYTHON_LIB := -lpython$(PYTHON_VERSION)
@@ -32,7 +41,7 @@ PYTHON_LIB := -lpython$(PYTHON_VERSION)
 CFLAGS += $(PYTHON_CFLAGS)
 LDFLAGS += $(PYTHON_LDFLAGS) $(PYTHON_LIB) -lm
 
-.PHONY: all deps test examples doc clean help
+.PHONY: all deps test examples run doc clean help
 
 help:
 	@echo "Available targets:"
@@ -47,9 +56,16 @@ $(EXAMPLES_TARGETS): $(O)/%: examples/%.cr
 	$(BUILD_PATH) crystal build $(FLAGS) $< --link-flags "$(LDFLAGS)" -o $@ --error-trace
 
 test: deps ## Run tests
-	$(BUILD_PATH) crystal spec $(VERBOSE) --link-flags "$(LDFLAGS)"
+	$(RUNTIME_LD_LIBRARY_PATH) $(BUILD_PATH) crystal spec $(VERBOSE) --link-flags "$(LDFLAGS)"
 
 examples: $(DEPS) $(EXAMPLES_TARGETS) ## Build all examples
+
+run: ## Run an example (usage: make run hello args="...")
+	@test -n "$(EXAMPLE)" || (echo "example is required (e.g. make run hello)" && exit 1)
+	@if [ ! -x "$(O)/$(EXAMPLE)" ]; then \
+		$(MAKE) $(O)/$(EXAMPLE); \
+	fi
+	$(RUNTIME_LD_LIBRARY_PATH) ./$(O)/$(EXAMPLE) $(args)
 
 doc: deps ## Generate crython library documentation
 	@echo "Building documentation..."
