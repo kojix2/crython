@@ -179,9 +179,40 @@ module Crython
 
     def [](*key) : PyObject
       # __getitem__
-      key_tuple = LibPython.build_value("O" * key.size, *key.map(&.to_py))
-      ptr = LibPython.object_get_item(@raw, key_tuple)
-      LibPython.decref(key_tuple)
+      if key.size <= 1
+        py_key = key.size == 1 ? key[0].to_py : nil.to_py
+        py_key_raw = py_key.to_unsafe
+
+        ptr = LibPython.object_get_item(@raw, py_key_raw)
+
+        if py_key.need_decref
+          LibPython.decref(py_key_raw)
+          py_key.need_decref = false
+        end
+      else
+        key_tuple = LibPython.tuple_new(key.size)
+        key.each_with_index do |item, index|
+          py_item = item.to_py
+          py_item_raw = py_item.to_unsafe
+
+          if py_item.need_decref
+            py_item.need_decref = false
+          else
+            LibPython.incref(py_item_raw)
+          end
+
+          if LibPython.tuple_set_item(key_tuple, index, py_item_raw) < 0
+            LibPython.decref(py_item_raw)
+            LibPython.decref(key_tuple)
+            error_info = Crython.extract_python_error
+            raise ItemError.new("Error building key tuple - #{error_info}")
+          end
+        end
+
+        ptr = LibPython.object_get_item(@raw, key_tuple)
+        LibPython.decref(key_tuple)
+      end
+
       if ptr.null?
         error_info = Crython.extract_python_error
         LibPython.err_print
@@ -194,9 +225,19 @@ module Crython
       # __setitem__
       py_key = key.to_py
       py_value = value.to_py
-      r = LibPython.object_set_item(@raw, py_key, py_value)
-      LibPython.decref(py_key)
-      LibPython.decref(py_value)
+      py_key_raw = py_key.to_unsafe
+      py_value_raw = py_value.to_unsafe
+
+      r = LibPython.object_set_item(@raw, py_key_raw, py_value_raw)
+
+      if py_key.need_decref
+        LibPython.decref(py_key_raw)
+        py_key.need_decref = false
+      end
+      if py_value.need_decref
+        LibPython.decref(py_value_raw)
+        py_value.need_decref = false
+      end
 
       if r < 0
         error_info = Crython.extract_python_error

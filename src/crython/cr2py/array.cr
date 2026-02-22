@@ -2,13 +2,25 @@ class Array(T)
   def to_py : Crython::PyObject
     list = Crython::LibPython.list_new(self.size)
     self.each_with_index do |item, index|
-      # item.to_py returns a new reference.
-      # PyList_SetItem steals a reference, so after passing the raw pointer
-      # the ownership is transferred to the list. We therefore mark the
-      # wrapper as not needing decref to avoid double free.
+      # PyList_SetItem steals a reference.
+      # If item.to_py returns a borrowed wrapper (need_decref = false),
+      # incref before insertion so ownership transfer is safe.
       py_item = item.to_py
-      Crython::LibPython.list_set_item(list, index, py_item.to_unsafe)
-      py_item.need_decref = false
+      py_item_raw = py_item.to_unsafe
+      if py_item.need_decref
+        py_item.need_decref = false
+      else
+        Crython::LibPython.incref(py_item_raw)
+      end
+
+      if Crython::LibPython.list_set_item(list, index, py_item_raw) < 0
+        Crython::LibPython.decref(py_item_raw)
+        Crython::LibPython.decref(list)
+        if Crython::LibPython.err_occurred
+          Crython::LibPython.err_print
+        end
+        raise "Failed to insert item into list"
+      end
     end
     Crython::PyObject.new(list, need_decref: true)
   end

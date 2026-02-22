@@ -8,21 +8,33 @@ class Hash(K, V)
       # temporary references we own after the call.
       py_key = key.to_py
       py_value = value.to_py
-      result = Crython::LibPython.dict_set_item(dict, py_key.to_unsafe, py_value.to_unsafe)
+      py_key_raw = py_key.to_unsafe
+      py_value_raw = py_value.to_unsafe
+      result = Crython::LibPython.dict_set_item(dict, py_key_raw, py_value_raw)
       # Check if insertion was successful
       if result < 0
-        Crython::LibPython.decref(py_key.to_unsafe)
-        Crython::LibPython.decref(py_value.to_unsafe)
+        if py_key.need_decref
+          Crython::LibPython.decref(py_key_raw)
+          py_key.need_decref = false
+        end
+        if py_value.need_decref
+          Crython::LibPython.decref(py_value_raw)
+          py_value.need_decref = false
+        end
         Crython::LibPython.decref(dict)
         if Crython::LibPython.err_occurred
           Crython::LibPython.err_print
         end
         raise "Failed to insert item into dictionary"
       end
-      Crython::LibPython.decref(py_key.to_unsafe)
-      Crython::LibPython.decref(py_value.to_unsafe)
-      py_key.need_decref = false
-      py_value.need_decref = false
+      if py_key.need_decref
+        Crython::LibPython.decref(py_key_raw)
+        py_key.need_decref = false
+      end
+      if py_value.need_decref
+        Crython::LibPython.decref(py_value_raw)
+        py_value.need_decref = false
+      end
     end
     Crython::PyObject.new(dict, need_decref: true)
   end

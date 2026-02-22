@@ -144,7 +144,11 @@ struct UInt128
   def to_py : Crython::PyObject
     str_repr = self.to_s
     py_str = Crython::LibPython.unicode_from_string(str_repr)
-    ptr = Crython::LibPython.long_from_unicode_object(py_str, 10)
+    ptr = begin
+      Crython::LibPython.long_from_unicode_object(py_str, 10)
+    ensure
+      Crython::LibPython.decref(py_str)
+    end
     Crython::PyObject.new(ptr, need_decref: true)
   end
 
@@ -160,7 +164,11 @@ struct Int128
   def to_py : Crython::PyObject
     str_repr = self.to_s
     py_str = Crython::LibPython.unicode_from_string(str_repr)
-    ptr = Crython::LibPython.long_from_unicode_object(py_str, 10)
+    ptr = begin
+      Crython::LibPython.long_from_unicode_object(py_str, 10)
+    ensure
+      Crython::LibPython.decref(py_str)
+    end
     Crython::PyObject.new(ptr, need_decref: true)
   end
 
