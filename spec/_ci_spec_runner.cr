@@ -1,0 +1,8 @@
+require "spec"
+require "./spec_helper"
+require "./cr_to_py_spec"
+require "./crython_spec"
+require "./error_handling_spec"
+require "./py_to_cr_spec"
+require "./pyobject_spec"
+require "./to_cr_spec"

@@ -40,15 +40,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ci-logs
-          cat > ci-logs/spec_runner.cr <<'CR'
-          require "spec"
-          require "../spec/spec_helper"
-          require "../spec/**/*_spec"
-          CR
+          {
+            echo 'require "spec"'
+            echo 'require "./spec_helper"'
+            find spec -maxdepth 1 -type f -name '*_spec.cr' -printf '%f\n' | sort | while read -r spec_file; do
+              echo "require \"./${spec_file%.*}\""
+            done
+          } > spec/_ci_spec_runner.cr
 
           PYTHON_VERSION="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
           LINK_FLAGS="$(python3-config --ldflags) -lpython${PYTHON_VERSION} -lm"
-          crystal build ci-logs/spec_runner.cr --error-trace --link-flags "${LINK_FLAGS}" -o ci-logs/spec-bin
+          crystal build spec/_ci_spec_runner.cr --error-trace --link-flags "${LINK_FLAGS}" -o ci-logs/spec-bin
+          cp -f spec/_ci_spec_runner.cr ci-logs/spec_runner.cr
       - name: Run tests repeatedly
         run: |
           set -euo pipefail
