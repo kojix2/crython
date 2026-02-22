@@ -255,7 +255,7 @@ Crystal meets Python!</p>
   </svg>
 </a>Installation</h2>
 <ul>
-<li>You need Python3. Python3.12 or later is recommended.</li>
+<li>You need Python3. Python3.14 or later is recommended.</li>
 <li>Make sure <code>python3-config --ldflags</code> works.</li>
 </ul>
 <p>Add this to your dependencies:</p>
@@ -483,7 +483,7 @@ plt.plot([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3<
   </svg>
 </a>Building Examples with Custom Python Library</h2>
 <p><code>python3-config</code> usually provides the correct flags for linking. If it doesn't, you can manually set <code>LDFLAGS</code> to your environment's library path. For example, if using micromamba:</p>
-<pre><code class="language-bash">LDFLAGS=&quot;-L/Users/&lt;your-username&gt;/micromamba/envs/crython/lib -lpython3.13&quot; make examples</code></pre>
+<pre><code class="language-bash">LDFLAGS=&quot;-L/Users/&lt;your-username&gt;/micromamba/envs/crython/lib -lpython3.14&quot; make examples</code></pre>
 <p>Replace <code>&lt;your-username&gt;</code> with your actual username and adjust the path as necessary.</p>
 <h2><a id="troubleshooting" class="anchor" href="#troubleshooting">
   <svg class="octicon-link" aria-hidden="true">
@@ -495,7 +495,7 @@ plt.plot([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3<
     <use href="#octicon-link"/>
   </svg>
 </a>Library Not Found</h3>
-<p>If you get an error like <code>error while loading shared libraries: libpython3.13.so.1.0: cannot open shared object file: No such file or directory</code>, make sure you've set the <code>LD_LIBRARY_PATH</code> correctly:</p>
+<p>If you get an error like <code>error while loading shared libraries: libpython3.x.so.1.0: cannot open shared object file: No such file or directory</code>, make sure you've set the <code>LD_LIBRARY_PATH</code> correctly:</p>
 <pre><code class="language-bash">export LD_LIBRARY_PATH=$(python3 -c &quot;import sysconfig; print(sysconfig.get_config_var('LIBDIR'))&quot;):$LD_LIBRARY_PATH</code></pre>
 <h3><a id="linking-errors" class="anchor" href="#linking-errors">
   <svg class="octicon-link" aria-hidden="true">
