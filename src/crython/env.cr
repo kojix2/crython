@@ -3,6 +3,15 @@ module Crython
     ENV["CRYTHON_DEBUG"]? == "1"
   end
 
+  def self.with_gil(&)
+    state = LibPython.gil_state_ensure
+    begin
+      yield
+    ensure
+      LibPython.gil_state_release(state)
+    end
+  end
+
   def self.debug_log(message : String) : Nil
     STDERR.puts("[crython][debug] #{message}") if debug_enabled?
   end
@@ -85,14 +94,11 @@ module Crython
   # Evaluate Python code with error handling
   def self.eval(code : String) : Nil
     debug_log("eval:start session_id=#{@@session_id} active=#{@@session_active} bytes=#{code.bytesize} preview=#{eval_preview(code)}")
-    state = LibPython.gil_state_ensure
-    result = begin
+    result = with_gil do
       rc = LibPython.run_simple_string(code.to_unsafe)
       py_err = !LibPython.err_occurred.null?
       debug_log("eval:done rc=#{rc} py_err=#{py_err} session_id=#{@@session_id} active=#{@@session_active}")
       {rc, py_err}
-    ensure
-      LibPython.gil_state_release(state)
     end
     r = result[0]
     py_err = result[1]
