@@ -49,6 +49,12 @@ require "complex"
 
 ## Basic Usage
 
+### Session Lifecycle
+
+- Crython initializes the embedded Python runtime once and reuses it.
+- `Crython.session` starts a logical Crython session but does not shut down Python at block end.
+- `Crython.finalize` closes the logical Crython session state.
+
 ### Importing a Python Module
 
 Import a Python module
@@ -77,6 +83,12 @@ Crython.session do
   array = np.array([1, 2, 3])
   puts array
 end
+```
+
+If you need to end a logical Crython session explicitly:
+
+```cr
+Crython.finalize
 ```
 
 ### Type Conversion
@@ -205,6 +217,22 @@ Crython.session do
   end
 end
 ```
+
+## Testing
+
+Run tests via the Makefile entrypoint so Python link flags are applied:
+
+```bash
+make test
+```
+
+Or with uv:
+
+```bash
+uv run make test
+```
+
+Direct `crystal spec` is not supported in this project because it may miss Python linker flags.
 
 ## Examples
 
