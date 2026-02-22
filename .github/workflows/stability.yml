@@ -75,6 +75,11 @@ jobs:
               ./ci-logs/spec-bin -v 2>&1 | tee "$LOG_FILE"; then
               echo "Iteration $i failed" | tee -a "$LOG_FILE"
 
+              awk '
+                /Fatal Python error:|Current thread\x27s C stack trace|Invalid memory access \(signal 11\)/ {capture=1}
+                capture {print}
+              ' "$LOG_FILE" > "ci-logs/bt-${i}.log" || true
+
               CORE_FILE="$(find /tmp/crython-core /tmp /home/runner/work . -maxdepth 5 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null | head -n1 || true)"
               SPEC_BIN="ci-logs/spec-bin"
               if [ ! -f "${SPEC_BIN}" ]; then
