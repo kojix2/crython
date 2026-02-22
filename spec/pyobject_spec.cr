@@ -77,4 +77,29 @@ describe Crython::PyObject do
       end
     end
   end
+
+  describe "multiple assignment" do
+    it "supports destructuring a Python tuple" do
+      Crython.session do
+        Crython.eval("def __crython_pair():\n    return (10, 20)")
+
+        main = Crython.import("__main__")
+        x, y = main.__crython_pair
+
+        x.to_cr.should eq(10)
+        y.to_cr.should eq(20)
+      end
+    end
+
+    it "raises ItemError when destructuring needs more elements than available" do
+      Crython.session do
+        Crython.eval("def __crython_pair():\n    return (10, 20)")
+
+        main = Crython.import("__main__")
+        expect_raises(Crython::ItemError) do
+          _a, _b, _c = main.__crython_pair
+        end
+      end
+    end
+  end
 end
