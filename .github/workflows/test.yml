@@ -138,5 +138,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: stability-diagnostics
-          path: .ci-logs
+          if-no-files-found: warn
+          path: |
+            .ci-logs
+            /home/runner/.cache/crystal/crystal-run-spec.tmp
+            /home/runner/.cache/crystal/crystal-run-spec.tmp.dwarf
+            core
+            core.*
+            **/core
+            **/core.*
 
