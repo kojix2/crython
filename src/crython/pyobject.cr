@@ -37,9 +37,12 @@ module Crython
 
     def finalize
       if @need_decref && Crython.active_session?(@session_id)
-        # puts "Finalizing PyObject with ID: #{@id} and session_id: #{@session_id}"
-        LibPython.decref(@raw)
-        # puts "Finalized PyObject with ID: #{@id} and session_id: #{@session_id}"
+        state = LibPython.gil_state_ensure
+        begin
+          LibPython.decref(@raw)
+        ensure
+          LibPython.gil_state_release(state)
+        end
       elsif @need_decref && Crython.debug_enabled?
         Crython.debug_log("pyobject:finalize skipped session_id=#{@session_id} active_session=#{Crython.active_session?(@session_id)}")
       end
