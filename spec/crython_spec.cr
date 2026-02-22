@@ -42,8 +42,7 @@ describe Crython do
   it "raises error" do
     Crython.session do
       Crython.err_occurred?.should be_false
-      math = Crython.import("math")
-      Crython::LibPython.object_get_attr_string(math.to_unsafe, "non_existent_attribute".to_unsafe)
+      Crython::LibPython.import("nonexistent")
       Crython.err_occurred?.should be_true
       Crython.clear_error
       Crython.err_occurred?.should be_false
