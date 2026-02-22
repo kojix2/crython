@@ -16,6 +16,8 @@ describe Crython do
     Crython.session do
       Crython.initialized?.should be_true
     end
+    Crython.initialized?.should be_true
+    Crython.finalize
     Crython.initialized?.should be_false
   end
 

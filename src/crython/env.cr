@@ -3,20 +3,19 @@ module Crython
   # @session_id (UInt64)
   # ===============================================================
   # Purpose:
-  # - Acts as a unique identifier for each Python interpreter session.
-  # - Increments with each initialization (wraps around on overflow).
+  # - Acts as a unique identifier for each logical Crython session.
+  # - Increments on each `init` call (wraps around on overflow).
   # - Ensures that Python objects managed by Crystal's GC can safely
-  #   determine if the associated Python interpreter is still active.
+  #   determine if the current logical session is still active.
   #
-  # Why it's needed:
-  # - Prevents double-free or invalid memory access when Crystal's GC
-  #   tries to finalize objects after the Python interpreter has been
-  #   shut down (via LibPython.finalize).
-  # - By checking the session_id, we ensure that decref operations
-  #   are only performed if the session is still valid.
+  # Runtime model:
+  # - The embedded Python interpreter is initialized once and reused.
+  # - Crython does not call `Py_Finalize` during normal session flow.
+  # - `finalize` ends the logical Crython session only.
   # ===============================================================
 
   @@session_id : UInt64 = 0
+  @@session_active : Bool = false
 
   def self.session_id : UInt64
     @@session_id
@@ -24,22 +23,24 @@ module Crython
 
   # Initialize a Python interpreter
   def self.init
-    @@session_id = @@session_id &+ 1
-    unless initialized?
+    unless LibPython.is_initialized != 0
       LibPython.init
     end
+    @@session_id = @@session_id &+ 1
+    @@session_active = true
   end
 
-  # Check if Python interpreter is initialized
+  # Check if Crython logical session is initialized
   def self.initialized? : Bool
-    LibPython.is_initialized != 0
+    @@session_active
   end
 
-  # Finalize Python interpreter
+  # Finalize Crython logical session
   def self.finalize
     if initialized?
-      LibPython.finalize
-      @@session_id = 0 # Invalidate ID after finalize
+      @@session_id = 0 # Invalidate first so GC finalizers won't decref during shutdown
+      @@session_active = false
+      # no-op: Python runtime remains initialized and is reused
     end
   end
 
@@ -47,7 +48,6 @@ module Crython
   def self.session(&)
     init
     yield(self)
-    finalize
   end
 
   # Python environment information (cached)
