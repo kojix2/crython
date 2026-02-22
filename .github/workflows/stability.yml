@@ -33,21 +33,21 @@ jobs:
           : > ci-logs/started.log
 
           ITERATIONS=20
-          echo "Command: PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1" > ci-logs/config.log
+          echo "Command: gdb --return-child-result --args bash -lc 'PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1'" > ci-logs/config.log
           echo "Iterations: ${ITERATIONS}" >> ci-logs/config.log
 
           for i in $(seq 1 ${ITERATIONS}); do
             echo "Iteration $i"
             LOG_FILE="ci-logs/stability-${i}.log"
-            if ! PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1 2>&1 | tee "$LOG_FILE"; then
+            if ! gdb -q -batch --return-child-result \
+              -ex "set pagination off" \
+              -ex "run" \
+              -ex "info threads" \
+              -ex "thread apply all bt full" \
+              --args bash -lc "PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1" \
+              > "$LOG_FILE" 2>&1; then
               echo "Iteration $i failed" | tee -a "$LOG_FILE"
-              gdb -q -batch \
-                -ex "set pagination off" \
-                -ex "run" \
-                -ex "info threads" \
-                -ex "thread apply all bt full" \
-                --args bash -lc "PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1" \
-                > "ci-logs/gdb-${i}.log" 2>&1 || true
+              cp "$LOG_FILE" "ci-logs/gdb-${i}.log" || true
               exit 1
             fi
           done
