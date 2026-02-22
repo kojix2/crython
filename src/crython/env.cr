@@ -77,16 +77,28 @@ module Crython
     String.new(LibPython.get_compiler)
   end
 
+  def self.eval_preview(code : String) : String
+    preview = code.size > 120 ? "#{code[0, 120]}..." : code
+    preview.gsub('\n', "\\n").gsub('\r', "\\r")
+  end
+
   # Evaluate Python code with error handling
   def self.eval(code : String) : Nil
+    debug_log("eval:start session_id=#{@@session_id} active=#{@@session_active} bytes=#{code.bytesize} preview=#{eval_preview(code)}")
     state = LibPython.gil_state_ensure
-    r = begin
-      LibPython.run_simple_string(code.to_unsafe)
+    result = begin
+      rc = LibPython.run_simple_string(code.to_unsafe)
+      py_err = !LibPython.err_occurred.null?
+      debug_log("eval:done rc=#{rc} py_err=#{py_err} session_id=#{@@session_id} active=#{@@session_active}")
+      {rc, py_err}
     ensure
       LibPython.gil_state_release(state)
     end
+    r = result[0]
+    py_err = result[1]
     if r != 0
       error_info = extract_python_error
+      debug_log("eval:error rc=#{r} py_err=#{py_err} error=#{error_info}")
       LibPython.err_print
       raise CrythonError.new("Error evaluating Python code#{error_info ? " - #{error_info}" : ""}")
     end
