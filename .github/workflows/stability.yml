@@ -33,21 +33,39 @@ jobs:
           : > ci-logs/started.log
 
           ITERATIONS=100
-          echo "Command: gdb --return-child-result --args bash -lc 'PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1'" > ci-logs/config.log
+          echo "Command: PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1" > ci-logs/config.log
           echo "Iterations: ${ITERATIONS}" >> ci-logs/config.log
+          ulimit -c unlimited || true
 
           for i in $(seq 1 ${ITERATIONS}); do
             echo "Iteration $i"
             LOG_FILE="ci-logs/stability-${i}.log"
-            if ! gdb -q -batch --return-child-result \
-              -ex "set pagination off" \
-              -ex "run" \
-              -ex "info threads" \
-              -ex "thread apply all bt full" \
-              --args bash -lc "PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1" \
-              > "$LOG_FILE" 2>&1; then
+            if ! PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug make test CRYTHON_DEBUG=1 verbose=1 2>&1 | tee "$LOG_FILE"; then
               echo "Iteration $i failed" | tee -a "$LOG_FILE"
-              cp "$LOG_FILE" "ci-logs/gdb-${i}.log" || true
+
+              SPEC_BIN="$(find /home/runner/.cache/crystal -maxdepth 1 -type f -name 'crystal-run-spec.tmp' | head -n1 || true)"
+              if [ -z "${SPEC_BIN}" ]; then
+                SPEC_BIN="$(find /home/runner/.cache/crystal -maxdepth 1 -type f -name 'crystal-run-spec.tmp*' ! -name '*.dwarf' | head -n1 || true)"
+              fi
+              CORE_FILE="$(find . /tmp /home/runner/work -maxdepth 5 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null | head -n1 || true)"
+
+              echo "SPEC_BIN=${SPEC_BIN}" | tee -a "$LOG_FILE"
+              echo "CORE_FILE=${CORE_FILE}" | tee -a "$LOG_FILE"
+
+              if [ -n "${CORE_FILE}" ] && [ -n "${SPEC_BIN}" ]; then
+                gdb -q -batch \
+                  -ex "set pagination off" \
+                  -ex "info threads" \
+                  -ex "thread apply all bt full" \
+                  -ex "info registers" \
+                  -ex 'x/16i $pc' \
+                  "${SPEC_BIN}" "${CORE_FILE}" \
+                  > "ci-logs/gdb-core-${i}.log" 2>&1 || true
+              fi
+
+              cp -f /home/runner/.cache/crystal/crystal-run-spec.tmp ci-logs/ 2>/dev/null || true
+              cp -f /home/runner/.cache/crystal/crystal-run-spec.tmp.dwarf ci-logs/ 2>/dev/null || true
+              find . /tmp /home/runner/work -maxdepth 5 -type f \( -name 'core' -o -name 'core.*' \) 2>/dev/null -exec cp -f {} ci-logs/ \; || true
               exit 1
             fi
           done
