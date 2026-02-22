@@ -124,7 +124,28 @@ module Crython
       else
         # Call with args only
         if args.size > 0
-          ret = LibPython.object_call_function(attr, *args.map(&.to_py), nil)
+          args_tuple = LibPython.tuple_new(args.size)
+          args.each_with_index do |arg, index|
+            value_py = arg.to_py
+            value_raw = value_py.to_unsafe
+
+            if value_py.need_decref
+              value_py.need_decref = false
+            else
+              LibPython.incref(value_raw)
+            end
+
+            if LibPython.tuple_set_item(args_tuple, index, value_raw) < 0
+              LibPython.decref(value_raw)
+              LibPython.decref(args_tuple)
+              LibPython.decref(attr)
+              error_info = Crython.extract_python_error
+              raise CallError.new(call.to_s, "Error building args tuple - #{error_info}")
+            end
+          end
+
+          ret = LibPython.object_call(attr, args_tuple, Pointer(Void).null.as(LibPython::PyObject))
+          LibPython.decref(args_tuple)
           if ret.null?
             error_info = Crython.extract_python_error
             LibPython.decref(attr)
