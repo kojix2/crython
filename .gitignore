@@ -17,3 +17,9 @@
 *.exe
 *.dll
 
+.python-version
+mise.toml
+pyproject.toml
+*.lock
+
+.DS_Store
