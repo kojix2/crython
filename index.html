@@ -325,6 +325,11 @@ puts result  <span class="c"># [2 4 6]</span></code></pre>
   <span class="c"># Write your Python code here</span>
   <span class="t">Crython</span>.eval(<span class="s">&quot;print(&#39;Hello from Python!&#39;)&quot;</span>)
 
+  <span class="c"># Multiple lines of Python code</span>
+  <span class="t">Crython</span>.eval(<span class="s">&lt;&lt;-PYTHON</span>)
+<span class="s">    print(&#39;Hello from Python!&#39;)
+  PYTHON</span>
+
   <span class="c"># Import modules and use them</span>
   np <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;numpy&quot;</span>)
   array <span class="o">=</span> np.array([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>])
