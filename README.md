@@ -89,6 +89,11 @@ Crython.session do
   # Write your Python code here
   Crython.eval("print('Hello from Python!')")
 
+  # Multiple lines of Python code
+  Crython.eval(<<-PYTHON)
+    print('Hello from Python!')
+  PYTHON
+
   # Import modules and use them
   np = Crython.import("numpy")
   array = np.array([1, 2, 3])
