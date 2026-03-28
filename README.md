@@ -30,6 +30,7 @@ Crython can be run either directly with Crystal commands or via `make`.
 
 - `make test` / `make run ...` are convenience shortcuts.
 - They automatically apply Python linker flags and runtime library paths.
+- Run `make doctor` to print detected Python and linker settings when troubleshooting build/runtime issues.
 
 When running binaries directly (without `make`), set `LD_LIBRARY_PATH` manually:
 
