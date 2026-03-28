@@ -44,13 +44,23 @@ PYTHON_LIB := -lpython$(PYTHON_VERSION)
 CFLAGS += $(PYTHON_CFLAGS)
 LDFLAGS += $(PYTHON_LDFLAGS) $(PYTHON_LIB) -lm
 
-.PHONY: all deps test examples run doc clean help
+.PHONY: all deps test examples run doc clean help doctor
 
 help:
 	@echo "Available targets:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 all: deps
+
+doctor: ## Show detected Python/linker/runtime settings
+	@echo "PYTHON=$(PYTHON)"
+	@echo "PYTHON_CONFIG=$(PYTHON_CONFIG)"
+	@echo "PYTHON_VERSION=$(PYTHON_VERSION)"
+	@echo "PYTHON_CFLAGS=$(PYTHON_CFLAGS)"
+	@echo "PYTHON_LDFLAGS=$(PYTHON_LDFLAGS)"
+	@echo "PYTHON_LIBDIR=$(PYTHON_LIBDIR)"
+	@echo "PYTHON_LIB=$(PYTHON_LIB)"
+	@echo "RUNTIME_ENV=$(RUNTIME_ENV)"
 
 deps: ## Build dependencies
 
