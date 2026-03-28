@@ -271,6 +271,7 @@ Crystal meets Python!</p>
 <ul>
 <li><code>make test</code> / <code>make run ...</code> are convenience shortcuts.</li>
 <li>They automatically apply Python linker flags and runtime library paths.</li>
+<li>Run <code>make doctor</code> to print detected Python and linker settings when troubleshooting build/runtime issues.</li>
 </ul>
 <p>When running binaries directly (without <code>make</code>), set <code>LD_LIBRARY_PATH</code> manually:</p>
 <pre><code class="language-bash">export LD_LIBRARY_PATH=$(python3 -c \
