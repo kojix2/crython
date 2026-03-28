@@ -6,6 +6,8 @@ no-debug ?= ## No symbolic debug info
 verbose ?= ## Run specs in verbose mode
 link-flags ?= ## Additional flags to pass to the linker
 CRYTHON_DEBUG ?= 0 ## Set 1 to enable Crython debug logs
+PYTHON ?= $(if $(VIRTUAL_ENV),$(VIRTUAL_ENV)/bin/python,python3) ## Python executable path
+PYTHON := $(strip $(PYTHON))
 
 OS := $(LC_CTYPE=C $(shell uname -s | tr '[:upper:]' '[:lower:]'))
 
@@ -24,9 +26,10 @@ CFLAGS += $(if $(release),-O2)
 EXAMPLES_SOURCES := $(shell find examples -type f -name '*.cr')
 EXAMPLES_TARGETS := $(patsubst examples/%.cr, $(O)/%, $(EXAMPLES_SOURCES))
 
-PYTHON_CFLAGS := $(shell python3-config --cflags)
-PYTHON_LDFLAGS := $(shell python3-config --ldflags)
-PYTHON_LIBDIR := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR') or '')")
+PYTHON_CONFIG ?= $(shell command -v "$(PYTHON)-config" 2>/dev/null || command -v python3-config 2>/dev/null || echo "$(PYTHON)-config")
+PYTHON_CFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
+PYTHON_LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
+PYTHON_LIBDIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR') or '')")
 RUNTIME_LD_LIBRARY_PATH := $(if $(PYTHON_LIBDIR),LD_LIBRARY_PATH="$(PYTHON_LIBDIR):$${LD_LIBRARY_PATH}")
 RUNTIME_CRYTHON_DEBUG := $(if $(filter 1,$(CRYTHON_DEBUG)),CRYTHON_DEBUG=1)
 RUNTIME_ENV := $(strip $(RUNTIME_CRYTHON_DEBUG) $(RUNTIME_LD_LIBRARY_PATH))
@@ -38,7 +41,7 @@ EXTRA_GOALS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(foreach goal,$(EXTRA_GOALS),$(eval $(goal):;@:))
 endif
 
-PYTHON_VERSION := $(shell python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+PYTHON_VERSION := $(shell $(PYTHON) -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 PYTHON_LIB := -lpython$(PYTHON_VERSION)
 
 CFLAGS += $(PYTHON_CFLAGS)
