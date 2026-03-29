@@ -416,13 +416,18 @@ plt.plot([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3<
 <ul>
 <li>Use <code>obj.call(&quot;Abc&quot;)</code> to call a Python attribute whose name is not a valid Crystal method name.</li>
 <li>Use <code>obj.call(&quot;Abc&quot;, arg1, arg2)</code> to call it with positional arguments.</li>
+<li>Prefer <code>call()</code> for uppercase Python attribute names such as class constructors: <code>collections.call(&quot;Counter&quot;, data)</code>.</li>
+<li>Keep <code>obj.method_name(...)</code> for simple lowercase methods like <code>math.sqrt(16.0)</code>.</li>
 <li>Use <code>&quot;-&quot;.to_py.attr(&quot;join&quot;)</code> to get a function attribute.</li>
 <li>Use <code>Crython.slice_full</code> instead of <code>:</code>.</li>
 <li>Use <code>import?</code>, <code>attr?</code>, <code>call?</code> when you want <code>nil</code> instead of exceptions on failure.</li>
 </ul>
 <pre><code class="language-crystal">math <span class="o">=</span> <span class="t">Crython</span>.import?(<span class="s">&quot;math&quot;</span>)
 pi <span class="o">=</span> math.try <span class="o">&amp;</span>.attr?(<span class="s">&quot;pi&quot;</span>)
-pow <span class="o">=</span> math.try <span class="o">&amp;</span>.call?(<span class="s">&quot;pow&quot;</span>, <span class="n">2</span>, <span class="n">3</span>)</code></pre>
+pow <span class="o">=</span> math.try <span class="o">&amp;</span>.call?(<span class="s">&quot;pow&quot;</span>, <span class="n">2</span>, <span class="n">3</span>)
+
+collections <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;collections&quot;</span>)
+counter <span class="o">=</span> collections.call(<span class="s">&quot;Counter&quot;</span>, [<span class="n">1</span>, <span class="n">2</span>, <span class="n">1</span>, <span class="n">3</span>].to_py)</code></pre>
 <h3><a id="error-handling" class="anchor" href="#error-handling">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
