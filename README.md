@@ -24,9 +24,50 @@ dependencies:
     github: kojix2/crython
 ```
 
+## Quick Start (Downstream Project)
+
+Use this when integrating Crython into your own Crystal app (not this repository).
+
+1. Verify your Python toolchain:
+
+```bash
+python3-config --ldflags
+```
+
+2. Create your minimal app:
+
+```cr
+require "crython"
+
+Crython.session do
+  Crython.exec("x = 40 + 2")
+  puts Crython.eval("x").to_cr  # 42
+end
+```
+
+3. Install dependencies and build:
+
+```bash
+shards install
+ver=$(python3 -c 'import sys; print("{}.{}".format(sys.version_info.major, sys.version_info.minor))')
+crystal build src/main.cr -o app \
+  --link-flags "$(python3-config --ldflags) -lpython$ver -lm"
+```
+
+4. Run your app (set runtime library path if needed):
+
+```bash
+export LD_LIBRARY_PATH=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))"):$LD_LIBRARY_PATH
+./app
+```
+
+If this fails, jump to [Troubleshooting](#troubleshooting).
+
 ## Environment Setup
 
 Crython can be run either directly with Crystal commands or via `make`.
+
+The `make` commands below are for this Crython repository itself (development, examples, tests), not for your downstream app.
 
 - `make test` / `make run ...` are convenience shortcuts.
 - They automatically apply Python linker flags and runtime library paths.
