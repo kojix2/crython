@@ -78,6 +78,53 @@ describe Crython::PyObject do
     end
   end
 
+  describe "explicit call()" do
+    it "supports uppercase Python attribute names" do
+      Crython.session do
+        collections = Crython.import("collections")
+        counter = collections.call("Counter", [1, 2, 1, 3].to_py)
+
+        counter.should be_a(Crython::PyObject)
+        counter[1].to_cr.should eq(2)
+        counter[2].to_cr.should eq(1)
+        counter[3].to_cr.should eq(1)
+      end
+    end
+
+    it "supports builtins with positional arguments" do
+      Crython.session do
+        builtins = Crython.import("builtins")
+        result = builtins.call("sum", [1, 2, 3, 4].to_py)
+
+        result.to_cr.should eq(10)
+      end
+    end
+
+    it "shows actionable guidance for uppercase method syntax" do
+      code = <<-CR
+        require "./src/crython"
+
+        Crython.session do
+          collections = Crython.import("collections")
+          collections.Counter([1, 2, 1, 3].to_py)
+        end
+      CR
+
+      stdout = IO::Memory.new
+      stderr = IO::Memory.new
+      status = Process.run(
+        "crystal",
+        ["eval", code, "--no-color"],
+        output: stdout,
+        error: stderr,
+        chdir: File.expand_path("..", __DIR__)
+      )
+
+      status.success?.should be_false
+      (stdout.to_s + stderr.to_s).should contain("Uppercase Python attributes must use call(\"Name\", ...)")
+    end
+  end
+
   describe "multiple assignment" do
     it "supports destructuring a Python tuple" do
       Crython.session do

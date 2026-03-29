@@ -48,18 +48,28 @@ module Crython
       end
     end
 
+    # Convenience syntax for simple Python method calls.
+    # For uppercase attribute names or other complex call sites, prefer
+    # `obj.call("Name", ...)` because Crystal method syntax is stricter
+    # than Python attribute syntax.
     macro method_missing(call)
       {% if call.name.ends_with?("=") %}
         def {{ call.name }}(value)
           __setattr__({{ call.name.stringify }}, value.to_py)
         end
       {% else %}
+        {% if call.name.stringify =~ /^[A-Z]/ %}
+          {% raise "Uppercase Python attributes must use call(\"Name\", ...). Example: obj.call(\"Counter\", args...)" %}
+        {% end %}
         def {{ call.name }}(*args, **kwargs)
           call({{ call.name.stringify }}, *args, **kwargs)
         end
       {% end %}
     end
 
+    # Reliable public API for Python attribute lookup and invocation.
+    # Use this when the Python attribute name is not a natural Crystal
+    # method name, such as class constructors like `Counter`.
     def call(call : (String | Symbol), *args, **kwargs) : PyObject
       Crython.with_gil do
         # Get object type for better error messages

@@ -219,6 +219,8 @@ plt.plot([1, 2, 3], [4, 5, 6], color: "red", marker: "o")
 
 - Use `obj.call("Abc")` to call a Python attribute whose name is not a valid Crystal method name.
 - Use `obj.call("Abc", arg1, arg2)` to call it with positional arguments.
+- Prefer `call()` for uppercase Python attribute names such as class constructors: `collections.call("Counter", data)`.
+- Keep `obj.method_name(...)` for simple lowercase methods like `math.sqrt(16.0)`.
 - Use `"-".to_py.attr("join")` to get a function attribute.
 - Use `Crython.slice_full` instead of `:`.
 - Use `import?`, `attr?`, `call?` when you want `nil` instead of exceptions on failure.
@@ -227,6 +229,9 @@ plt.plot([1, 2, 3], [4, 5, 6], color: "red", marker: "o")
 math = Crython.import?("math")
 pi = math.try &.attr?("pi")
 pow = math.try &.call?("pow", 2, 3)
+
+collections = Crython.import("collections")
+counter = collections.call("Counter", [1, 2, 1, 3].to_py)
 ```
 
 ### Error Handling
