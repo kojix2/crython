@@ -267,12 +267,45 @@ Crystal meets Python!</p>
 <pre><code class="language-yaml">dependencies:
   crython:
     github: kojix2/crython</code></pre>
+<h2><a id="quick-start-downstream-project" class="anchor" href="#quick-start-downstream-project">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Quick Start (Downstream Project)</h2>
+<p>Use this when integrating Crython into your own Crystal app (not this repository).</p>
+<ol>
+<li>Verify your Python toolchain:</li>
+</ol>
+<pre><code class="language-bash">python3-config --ldflags</code></pre>
+<ol start="2">
+<li>Create your minimal app:</li>
+</ol>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;crython&quot;</span>
+
+<span class="t">Crython</span>.session <span class="k">do</span>
+  <span class="t">Crython</span>.exec(<span class="s">&quot;x = 40 + 2&quot;</span>)
+  puts <span class="t">Crython</span>.eval(<span class="s">&quot;x&quot;</span>).to_cr  <span class="c"># 42</span>
+<span class="k">end</span></code></pre>
+<ol start="3">
+<li>Install dependencies and build:</li>
+</ol>
+<pre><code class="language-bash">shards install
+ver=$(python3 -c 'import sys; print(&quot;{}.{}&quot;.format(sys.version_info.major, sys.version_info.minor))')
+crystal build src/main.cr -o app \
+  --link-flags &quot;$(python3-config --ldflags) -lpython$ver -lm&quot;</code></pre>
+<ol start="4">
+<li>Run your app (set runtime library path if needed):</li>
+</ol>
+<pre><code class="language-bash">export LD_LIBRARY_PATH=$(python3 -c &quot;import sysconfig; print(sysconfig.get_config_var('LIBDIR'))&quot;):$LD_LIBRARY_PATH
+./app</code></pre>
+<p>If this fails, jump to <a href="#troubleshooting">Troubleshooting</a>.</p>
 <h2><a id="environment-setup" class="anchor" href="#environment-setup">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>Environment Setup</h2>
 <p>Crython can be run either directly with Crystal commands or via <code>make</code>.</p>
+<p>The <code>make</code> commands below are for this Crython repository itself (development, examples, tests), not for your downstream app.</p>
 <ul>
 <li><code>make test</code> / <code>make run ...</code> are convenience shortcuts.</li>
 <li>They automatically apply Python linker flags and runtime library paths.</li>
