@@ -94,4 +94,13 @@ describe Crython do
       value.to_cr.should eq(10)
     end
   end
+
+  it "marks finalized sessions as sealed" do
+    Crython.init
+    token = Crython.session_token
+    Crython.sealed_session?(token).should be_false
+
+    Crython.finalize
+    Crython.sealed_session?(token).should be_true
+  end
 end

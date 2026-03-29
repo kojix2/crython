@@ -6,7 +6,7 @@ require "./crython/py2cr/*"
 
 module Crython
   def self.import(name : String) : PyObject
-    debug_log("import:start name=#{name} session_id=#{session_id} active=#{initialized?}")
+    debug_log("import:start name=#{name} session_token=#{session_token} active=#{initialized?}")
     mod = Crython.with_gil do
       mod_ptr = LibPython.import(name)
       e = LibPython.err_occurred
@@ -22,7 +22,7 @@ module Crython
   end
 
   def self.import?(name : String) : PyObject?
-    debug_log("import?:start name=#{name} session_id=#{session_id} active=#{initialized?}")
+    debug_log("import?:start name=#{name} session_token=#{session_token} active=#{initialized?}")
     mod = Crython.with_gil do
       mod_ptr = LibPython.import(name)
       e = LibPython.err_occurred

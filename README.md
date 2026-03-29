@@ -66,6 +66,7 @@ require "complex"
 - Crython initializes the embedded Python runtime once and reuses it.
 - `Crython.session` starts a logical Crython session but does not shut down Python at block end.
 - `Crython.finalize` closes the logical Crython session state.
+- Internal session identity uses session tokens.
 
 ### Importing a Python Module
 

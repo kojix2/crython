@@ -16,13 +16,13 @@ module Crython
     property need_decref : Bool
 
     # @id : Int32 = Random.rand(1000000) # Unique identifier for logging
-    @session_id : UInt64 = Crython.session_id
+    @session_token : Crython::SessionToken = Crython.session_token
 
     def initialize(@raw : LibPython::PyObject, @need_decref = false)
       ##############################################################
       # GARBAGE COLLECTION DEBUGGING CODE
       ##############################################################
-      # @session_id = Crython.session_id
+      # @session_token = Crython.session_token
       # value_str = LibPython.object_str(@raw)
       # value_ptr = LibPython.unicode_as_utf8(value_str)
       # type_ptr = LibPython.object_get_attr_string(@raw, "__class__".to_unsafe)
@@ -36,7 +36,7 @@ module Crython
     end
 
     def finalize
-      if @need_decref && Crython.active_session?(@session_id)
+      if @need_decref && Crython.active_session?(@session_token)
         state = LibPython.gil_state_ensure
         begin
           LibPython.decref(@raw)
@@ -44,7 +44,16 @@ module Crython
           LibPython.gil_state_release(state)
         end
       elsif @need_decref && Crython.debug_enabled?
-        Crython.debug_log("pyobject:finalize skipped session_id=#{@session_id} active_session=#{Crython.active_session?(@session_id)}")
+        reason = if !Crython.initialized?
+                   "no-active-session"
+                 elsif @session_token == Crython.session_token
+                   "current-session-inactive"
+                 elsif Crython.sealed_session?(@session_token)
+                   "sealed-previous-session"
+                 else
+                   "different-active-session"
+                 end
+        Crython.debug_log("pyobject:finalize skipped obj_session_token=#{@session_token} current_session_token=#{Crython.session_token} reason=#{reason}")
       end
     end
 
