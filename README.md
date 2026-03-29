@@ -24,9 +24,9 @@ dependencies:
     github: kojix2/crython
 ```
 
-## Quick Start (Downstream Project)
+## Quick Start
 
-Use this when integrating Crython into your own Crystal app (not this repository).
+Use this when integrating Crython into your own Crystal app
 
 1. Verify your Python toolchain:
 
@@ -60,8 +60,6 @@ crystal build src/main.cr -o app \
 export LD_LIBRARY_PATH=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))"):$LD_LIBRARY_PATH
 ./app
 ```
-
-If this fails, jump to [Troubleshooting](#troubleshooting).
 
 ## Environment Setup
 
