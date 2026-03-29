@@ -87,13 +87,17 @@ puts result  # [2 4 6]
 
 ```cr
 Crython.session do
-  # Write your Python code here
-  Crython.eval("print('Hello from Python!')")
+  # Execute Python statements
+  Crython.exec("print('Hello from Python!')")
 
-  # Multiple lines of Python code
-  Crython.eval(<<-PYTHON)
+  # Multiple lines of Python statements
+  Crython.exec(<<-PYTHON)
     print('Hello from Python!')
   PYTHON
+
+  # Evaluate a Python expression and get a PyObject back
+  value = Crython.eval("1 + 2")
+  puts value.to_cr # 3
 
   # Import modules and use them
   np = Crython.import("numpy")
@@ -236,13 +240,43 @@ counter = collections.call("Counter", [1, 2, 1, 3].to_py)
 
 ### Error Handling
 
+`eval` and `exec` have different roles:
+
+- `Crython.eval("...")`: evaluates a Python expression and returns a `PyObject`.
+- `Crython.exec("...")`: executes Python statements and returns `Nil`.
+
+If you pass statements to `eval`, Crython raises an error with guidance to use `exec`.
+
 ```cr
 Crython.session do
   begin
-    # This will raise an error
+    # Expression evaluation error
     Crython.eval("1/0")
   rescue ex
     puts "Python error: #{ex.message}"
+  end
+end
+```
+
+```cr
+Crython.session do
+  # Statement execution
+  Crython.exec("x = 40 + 2")
+
+  # Expression evaluation (returns PyObject)
+  answer = Crython.eval("x")
+  puts answer.to_cr  # 42
+end
+```
+
+```cr
+Crython.session do
+  begin
+    # This is a statement, so eval raises and suggests exec
+    Crython.eval("x = 10")
+  rescue ex
+    puts ex.message
+    # => ... Use Crython.exec for statements
   end
 end
 ```

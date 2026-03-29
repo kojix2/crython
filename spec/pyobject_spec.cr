@@ -4,8 +4,8 @@ describe Crython::PyObject do
   describe "reference management" do
     it "keeps PyObject usable after args-only and kwargs calls" do
       Crython.session do
-        Crython.eval("def __crython_ref_f(x):\n    return None")
-        Crython.eval("def __crython_ref_g(*, x):\n    return None")
+        Crython.exec("def __crython_ref_f(x):\n    return None")
+        Crython.exec("def __crython_ref_g(*, x):\n    return None")
 
         main = Crython.import("__main__")
         obj = [1, 2, 3].to_py
@@ -128,7 +128,7 @@ describe Crython::PyObject do
   describe "multiple assignment" do
     it "supports destructuring a Python tuple" do
       Crython.session do
-        Crython.eval("def __crython_pair():\n    return (10, 20)")
+        Crython.exec("def __crython_pair():\n    return (10, 20)")
 
         main = Crython.import("__main__")
         x, y = main.__crython_pair
@@ -140,7 +140,7 @@ describe Crython::PyObject do
 
     it "raises ItemError when destructuring needs more elements than available" do
       Crython.session do
-        Crython.eval("def __crython_pair():\n    return (10, 20)")
+        Crython.exec("def __crython_pair():\n    return (10, 20)")
 
         main = Crython.import("__main__")
         expect_raises(Crython::ItemError) do

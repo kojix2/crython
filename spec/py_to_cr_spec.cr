@@ -215,7 +215,7 @@ describe Number do
       Crython.session do
         # Create a Python tuple
         py_code = "import sys; sys.modules['__main__'].__dict__['result'] = (1, 2, 3)"
-        Crython.eval(py_code)
+        Crython.exec(py_code)
         sys = Crython.import("sys")
         main_dict = sys.modules["__main__"].__dict__
         pyobject = main_dict["result"]
@@ -234,7 +234,7 @@ describe Number do
       Crython.session do
         # Create a Python dict
         py_code = "import sys; sys.modules['__main__'].__dict__['result'] = {'a': 1, 'b': 2, 'c': 3}"
-        Crython.eval(py_code)
+        Crython.exec(py_code)
         sys = Crython.import("sys")
         main_dict = sys.modules["__main__"].__dict__
         pyobject = main_dict["result"]
@@ -258,7 +258,7 @@ describe Number do
       Crython.session do
         # Create a Python complex
         py_code = "import sys; sys.modules['__main__'].__dict__['result'] = complex(3.14, 2.71)"
-        Crython.eval(py_code)
+        Crython.exec(py_code)
         sys = Crython.import("sys")
         main_dict = sys.modules["__main__"].__dict__
         pyobject = main_dict["result"]
@@ -275,7 +275,7 @@ describe Number do
       Crython.session do
         # Create a Python int that's large but within Int64 range
         py_code = "import sys; sys.modules['__main__'].__dict__['result'] = 2**60"
-        Crython.eval(py_code)
+        Crython.exec(py_code)
         sys = Crython.import("sys")
         main_dict = sys.modules["__main__"].__dict__
         pyobject = main_dict["result"]

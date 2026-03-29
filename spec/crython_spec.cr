@@ -70,4 +70,28 @@ describe Crython do
       mod.should be_nil
     end
   end
+
+  it "evaluates Python expressions and returns a PyObject" do
+    Crython.session do
+      result = Crython.eval("1 + 2")
+      result.should be_a(Crython::PyObject)
+      result.to_cr.should eq(3)
+    end
+  end
+
+  it "raises guidance when eval is used with statements" do
+    Crython.session do
+      expect_raises(Crython::CrythonError, /Use Crython.exec for statements/) do
+        Crython.eval("x = 10")
+      end
+    end
+  end
+
+  it "executes Python statements with exec" do
+    Crython.session do
+      Crython.exec("x = 10")
+      value = Crython.eval("x")
+      value.to_cr.should eq(10)
+    end
+  end
 end

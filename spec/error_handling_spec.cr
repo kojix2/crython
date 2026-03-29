@@ -64,7 +64,7 @@ describe "Error handling" do
     it "raises TypeError when converting incompatible types" do
       Crython.session do
         # Create a Python object with an unsupported type (e.g., a custom class)
-        Crython.eval(<<-PYTHON
+        Crython.exec(<<-PYTHON
         class CustomClass:
             pass
 
@@ -95,7 +95,7 @@ describe "Error handling" do
     it "raises ValueError for integer overflow" do
       Crython.session do
         # Create a Python integer that's too large for Crystal's Int64
-        Crython.eval(<<-PYTHON
+        Crython.exec(<<-PYTHON
         huge_int = 2**100  # Much larger than Int64.MAX
         PYTHON
         )
@@ -130,7 +130,7 @@ describe "Error handling" do
   describe "Nested error handling" do
     it "handles errors in nested Python calls" do
       Crython.session do
-        Crython.eval(<<-PYTHON
+        Crython.exec(<<-PYTHON
         def outer_function():
             return inner_function()
 

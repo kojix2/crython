@@ -1,4 +1,8 @@
 module Crython
+  PY_SINGLE_INPUT = 256
+  PY_FILE_INPUT = 257
+  PY_EVAL_INPUT = 258
+
   def self.debug_enabled? : Bool
     ENV["CRYTHON_DEBUG"]? == "1"
   end
@@ -113,25 +117,75 @@ module Crython
     end
   end
 
-  # Evaluate Python code with error handling
-  def self.eval(code : String) : Nil
-    debug_log("eval:start session_id=#{@@session_id} active=#{@@session_active} bytes=#{code.bytesize} preview=#{eval_preview(code)}")
+  # Execute Python statements with error handling.
+  def self.exec(code : String) : Nil
+    debug_log("exec:start session_id=#{@@session_id} active=#{@@session_active} bytes=#{code.bytesize} preview=#{eval_preview(code)}")
     result = with_gil do
       rc = LibPython.run_simple_string(code.to_unsafe)
       py_err = !LibPython.err_occurred.null?
-      debug_log("eval:done rc=#{rc} py_err=#{py_err} session_id=#{@@session_id} active=#{@@session_active}")
+      debug_log("exec:done rc=#{rc} py_err=#{py_err} session_id=#{@@session_id} active=#{@@session_active}")
       {rc, py_err}
     end
     r = result[0]
     py_err = result[1]
     if r != 0
       error_info = extract_python_error
-      debug_log("eval:error rc=#{r} py_err=#{py_err} error=#{error_info}")
+      debug_log("exec:error rc=#{r} py_err=#{py_err} error=#{error_info}")
       with_gil do
         LibPython.err_print
       end
-      raise CrythonError.new("Error evaluating Python code#{error_info ? " - #{error_info}" : ""}")
+      raise CrythonError.new("Error executing Python code#{error_info ? " - #{error_info}" : ""}")
     end
+  end
+
+  # Evaluate a Python expression and return the result as PyObject.
+  def self.eval(code : String) : PyObject
+    debug_log("eval:start session_id=#{@@session_id} active=#{@@session_active} bytes=#{code.bytesize} preview=#{eval_preview(code)}")
+    result = with_gil do
+      code_obj = LibPython.compile_string(code.to_unsafe, "<crython-eval>".to_unsafe, PY_EVAL_INPUT)
+      if code_obj.null?
+        error_info = extract_python_error
+        msg = "Error evaluating Python expression#{error_info ? " - #{error_info}" : ""}"
+        if error_info && error_info.includes?("SyntaxError")
+          msg += " (Use Crython.exec for statements)"
+        end
+        raise CrythonError.new(msg)
+      end
+
+      begin
+        main_mod = LibPython.import("__main__")
+        if main_mod.null?
+          error_info = extract_python_error
+          raise ImportError.new("__main__", error_info)
+        end
+
+        begin
+          main_dict = LibPython.object_get_attr_string(main_mod, "__dict__".to_unsafe)
+          if main_dict.null?
+            error_info = extract_python_error
+            raise AttributeError.new("__main__", "__dict__", error_info)
+          end
+
+          begin
+            value = LibPython.eval_eval_code(code_obj, main_dict, main_dict)
+            if value.null?
+              error_info = extract_python_error
+              raise CrythonError.new("Error evaluating Python expression#{error_info ? " - #{error_info}" : ""}")
+            end
+            value
+          ensure
+            LibPython.decref(main_dict)
+          end
+        ensure
+          LibPython.decref(main_mod)
+        end
+      ensure
+        LibPython.decref(code_obj)
+      end
+    end
+
+    debug_log("eval:done session_id=#{@@session_id} active=#{@@session_active}")
+    PyObject.new(result, need_decref: true)
   end
 
   # Check if the current session is active

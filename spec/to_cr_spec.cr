@@ -58,7 +58,7 @@ describe Crython::PyObject do
     it "converts Python tuple to Crystal Array-like object" do
       Crython.session do
         # Create a Python tuple
-        Crython.eval("import sys; sys.modules['__main__'].__dict__['result'] = (1, 2, 3)")
+        Crython.exec("import sys; sys.modules['__main__'].__dict__['result'] = (1, 2, 3)")
         sys = Crython.import("sys")
         main_dict = sys.modules["__main__"].__dict__
         pyobject = main_dict["result"]
@@ -72,7 +72,7 @@ describe Crython::PyObject do
     it "converts Python dict to Crystal Hash-like object" do
       Crython.session do
         # Create a Python dict
-        Crython.eval("import sys; sys.modules['__main__'].__dict__['result'] = {'a': 1, 'b': 2, 'c': 3}")
+        Crython.exec("import sys; sys.modules['__main__'].__dict__['result'] = {'a': 1, 'b': 2, 'c': 3}")
         sys = Crython.import("sys")
         main_dict = sys.modules["__main__"].__dict__
         pyobject = main_dict["result"]
@@ -88,7 +88,7 @@ describe Crython::PyObject do
     it "converts Python complex to Crystal Complex" do
       Crython.session do
         # Create a Python complex
-        Crython.eval("import sys; sys.modules['__main__'].__dict__['result'] = complex(3.14, 2.71)")
+        Crython.exec("import sys; sys.modules['__main__'].__dict__['result'] = complex(3.14, 2.71)")
         sys = Crython.import("sys")
         main_dict = sys.modules["__main__"].__dict__
         pyobject = main_dict["result"]
@@ -101,7 +101,7 @@ describe Crython::PyObject do
     it "handles large integers with overflow check" do
       Crython.session do
         # Create a Python int that's large but within Int64 range
-        Crython.eval("import sys; sys.modules['__main__'].__dict__['result'] = 2**60")
+        Crython.exec("import sys; sys.modules['__main__'].__dict__['result'] = 2**60")
         sys = Crython.import("sys")
         main_dict = sys.modules["__main__"].__dict__
         pyobject = main_dict["result"]
