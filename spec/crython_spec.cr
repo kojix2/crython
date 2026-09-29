@@ -102,6 +102,14 @@ describe Crython do
     end
   end
 
+  it "invokes a callable object directly" do
+    with_crython do
+      Crython.exec("def __crython_add(a, b):\n    return a + b")
+      callable = Crython.import("__main__").attr("__crython_add")
+      callable.invoke(20, 22).to_i64.should eq(42)
+    end
+  end
+
   it "initializes idempotently" do
     Crython.init
     Crython.init

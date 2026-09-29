@@ -196,6 +196,11 @@ module Crython
       end
     end
 
+    # Invoke this object itself when it is callable.
+    def invoke(*args, **kwargs) : PyObject
+      call("__call__", *args, **kwargs)
+    end
+
     def call?(call : (String | Symbol), *args, **kwargs) : PyObject?
       call(call, *args, **kwargs)
     rescue AttributeError | CallError

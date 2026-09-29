@@ -257,6 +257,7 @@ plt.plot([1, 2, 3], [4, 5, 6], color: "red", marker: "o")
 
 - Use `obj.call("Abc")` to call a Python attribute whose name is not a valid Crystal method name.
 - Use `obj.call("Abc", arg1, arg2)` to call it with positional arguments.
+- Use `obj.invoke(...)` to call a callable returned by `attr`.
 - Prefer `call()` for uppercase Python attribute names such as class constructors: `collections.call("Counter", data)`.
 - Keep `obj.method_name(...)` for simple lowercase methods like `math.sqrt(16.0)`.
 - Use `"-".to_py.attr("join")` to get a function attribute.
