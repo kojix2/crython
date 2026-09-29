@@ -48,8 +48,9 @@ puts Crython.eval("x").to_cr  # 42
 
 ```bash
 shards install
+PYTHON_CFLAGS="$(python3-config --cflags | sed -E 's/(^|[[:space:]])-arch[[:space:]]+(arm64|x86_64)/\1/g')"
 crystal build src/main.cr -o app \
-  --link-flags "$(python3-config --cflags --embed --ldflags) -lm"
+  --link-flags "$PYTHON_CFLAGS $(python3-config --embed --ldflags) -lm"
 ```
 
 4. Run your app (set runtime library path if needed):
@@ -331,7 +332,8 @@ You can run tests either directly or via `make`.
 Direct execution (explicit link flags):
 
 ```bash
-crystal spec --link-flags "$(python3-config --cflags --embed --ldflags) -lpython$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")') -lm"
+PYTHON_CFLAGS="$(python3-config --cflags | sed -E 's/(^|[[:space:]])-arch[[:space:]]+(arm64|x86_64)/\1/g')"
+crystal spec --link-flags "$PYTHON_CFLAGS $(python3-config --embed --ldflags) -lm"
 ```
 
 Or use `make` as a shortcut:

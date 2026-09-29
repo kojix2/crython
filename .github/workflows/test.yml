@@ -56,7 +56,8 @@ jobs:
           printf '%s\n' 'require "crython"' 'Crython.init' 'abort "unexpected result" unless Crython.eval("6 * 7").to_i64 == 42' > "$CONSUMER/src/main.cr"
           cd "$CONSUMER"
           shards install
-          crystal build src/main.cr --link-flags "$(python3-config --cflags --embed --ldflags) -lm" -o consumer
+          LINK_FLAGS="$(make -C "$GITHUB_WORKSPACE" --no-print-directory print-link-flags)"
+          crystal build src/main.cr --link-flags "$LINK_FLAGS" -o consumer
           PYTHON_LIBDIR="$(python -c 'import sysconfig; print(sysconfig.get_config_var("LIBDIR") or "")')"
           LD_LIBRARY_PATH="$PYTHON_LIBDIR:${LD_LIBRARY_PATH:-}" ./consumer
       - name: Build executables

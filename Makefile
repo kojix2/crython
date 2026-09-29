@@ -29,6 +29,11 @@ EXAMPLES_TARGETS := $(patsubst examples/%.cr, $(O)/%, $(EXAMPLES_SOURCES))
 PYTHON_CONFIG ?= $(PYTHON)-config
 PYTHON_CFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
 PYTHON_LDFLAGS := $(shell $(PYTHON_CONFIG) --embed --ldflags)
+ifeq ($(OS),darwin)
+PYTHON_CFLAGS := $(filter-out -arch arm64 x86_64,$(PYTHON_CFLAGS))
+PYTHON_LDFLAGS := $(filter-out -arch arm64 x86_64,$(PYTHON_LDFLAGS))
+endif
+
 PYTHON_LIBDIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR') or '')")
 RUNTIME_LD_LIBRARY_PATH := $(if $(PYTHON_LIBDIR),LD_LIBRARY_PATH="$(PYTHON_LIBDIR):$${LD_LIBRARY_PATH}")
 RUNTIME_CRYTHON_DEBUG := $(if $(filter 1,$(CRYTHON_DEBUG)),CRYTHON_DEBUG=1)
