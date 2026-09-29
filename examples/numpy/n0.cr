@@ -1,6 +1,6 @@
 require "../../src/crython"
 
-Crython.session do
+Crython.init
   np = Crython.import("numpy")
 
   x1 = np.array([1, 2, 3])
@@ -8,4 +8,3 @@ Crython.session do
 
   y = x1 + x2
   print "#{x1} + #{x2} = #{y}"
-end

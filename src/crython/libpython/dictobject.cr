@@ -1,7 +1,6 @@
 module Crython
   # https://github.com/python/cpython/blob/main/Include/dictobject.h
 
-  @[Link("python3")]
   lib LibPython
     fun dict_new = PyDict_New : PyObject
     fun dict_size = PyDict_Size(d : PyObject) : Int

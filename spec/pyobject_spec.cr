@@ -3,7 +3,7 @@ require "./spec_helper"
 describe Crython::PyObject do
   describe "reference management" do
     it "keeps PyObject usable after args-only and kwargs calls" do
-      Crython.session do
+      with_crython do
         Crython.exec("def __crython_ref_f(x):\n    return None")
         Crython.exec("def __crython_ref_g(*, x):\n    return None")
 
@@ -19,7 +19,7 @@ describe Crython::PyObject do
     end
 
     it "supports single-key [] and []= with PyObject key/value" do
-      Crython.session do
+      with_crython do
         py_dict = ({"a" => 1} of String => Int32).to_py
 
         py_key = "x".to_py
@@ -34,7 +34,7 @@ describe Crython::PyObject do
 
   describe "attr?" do
     it "returns attribute when present" do
-      Crython.session do
+      with_crython do
         math = Crython.import("math")
         pi = math.attr?("pi")
         pi.should be_a(Crython::PyObject)
@@ -43,7 +43,7 @@ describe Crython::PyObject do
     end
 
     it "returns nil when attribute is missing" do
-      Crython.session do
+      with_crython do
         math = Crython.import("math")
         missing = math.attr?("non_existent_attribute")
         missing.should be_nil
@@ -53,7 +53,7 @@ describe Crython::PyObject do
 
   describe "call?" do
     it "returns value when call succeeds" do
-      Crython.session do
+      with_crython do
         math = Crython.import("math")
         result = math.call?("pow", 2, 3)
         result.should be_a(Crython::PyObject)
@@ -62,7 +62,7 @@ describe Crython::PyObject do
     end
 
     it "returns nil when method is missing" do
-      Crython.session do
+      with_crython do
         math = Crython.import("math")
         result = math.call?("non_existent_method")
         result.should be_nil
@@ -70,7 +70,7 @@ describe Crython::PyObject do
     end
 
     it "returns nil when call arguments are invalid" do
-      Crython.session do
+      with_crython do
         math = Crython.import("math")
         result = math.call?("pow")
         result.should be_nil
@@ -80,7 +80,7 @@ describe Crython::PyObject do
 
   describe "explicit call()" do
     it "supports uppercase Python attribute names" do
-      Crython.session do
+      with_crython do
         collections = Crython.import("collections")
         counter = collections.call("Counter", [1, 2, 1, 3].to_py)
 
@@ -92,7 +92,7 @@ describe Crython::PyObject do
     end
 
     it "supports builtins with positional arguments" do
-      Crython.session do
+      with_crython do
         builtins = Crython.import("builtins")
         result = builtins.call("sum", [1, 2, 3, 4].to_py)
 
@@ -104,10 +104,9 @@ describe Crython::PyObject do
       code = <<-CR
         require "./src/crython"
 
-        Crython.session do
-          collections = Crython.import("collections")
-          collections.Counter([1, 2, 1, 3].to_py)
-        end
+        Crython.init
+        collections = Crython.import("collections")
+        collections.Counter([1, 2, 1, 3].to_py)
       CR
 
       stdout = IO::Memory.new
@@ -127,7 +126,7 @@ describe Crython::PyObject do
 
   describe "multiple assignment" do
     it "supports destructuring a Python tuple" do
-      Crython.session do
+      with_crython do
         Crython.exec("def __crython_pair():\n    return (10, 20)")
 
         main = Crython.import("__main__")
@@ -139,7 +138,7 @@ describe Crython::PyObject do
     end
 
     it "raises ItemError when destructuring needs more elements than available" do
-      Crython.session do
+      with_crython do
         Crython.exec("def __crython_pair():\n    return (10, 20)")
 
         main = Crython.import("__main__")

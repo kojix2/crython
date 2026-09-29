@@ -56,7 +56,7 @@ struct UInt8
   def to_py : Crython::PyObject
     Crython.with_gil do
       ptr = Crython::LibPython.long_from_unsigned_long(self)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -71,7 +71,7 @@ struct Int8
   def to_py : Crython::PyObject
     Crython.with_gil do
       ptr = Crython::LibPython.long_from_long(self)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -86,7 +86,7 @@ struct UInt16
   def to_py : Crython::PyObject
     Crython.with_gil do
       ptr = Crython::LibPython.long_from_unsigned_long(self)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -101,7 +101,7 @@ struct Int16
   def to_py : Crython::PyObject
     Crython.with_gil do
       ptr = Crython::LibPython.long_from_long(self)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -116,7 +116,7 @@ struct UInt32
   def to_py : Crython::PyObject
     Crython.with_gil do
       ptr = Crython::LibPython.long_from_unsigned_long(self)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -131,7 +131,7 @@ struct Int32
   def to_py : Crython::PyObject
     Crython.with_gil do
       ptr = Crython::LibPython.long_from_long(self)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -146,7 +146,7 @@ struct UInt64
   def to_py : Crython::PyObject
     Crython.with_gil do
       ptr = Crython::LibPython.long_from_unsigned_long_long(self)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -161,7 +161,7 @@ struct Int64
   def to_py : Crython::PyObject
     Crython.with_gil do
       ptr = Crython::LibPython.long_from_long_long(self)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -182,7 +182,7 @@ struct UInt128
       ensure
         Crython::LibPython.decref(py_str)
       end
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -210,7 +210,7 @@ struct Int128
       ensure
         Crython::LibPython.decref(py_str)
       end
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -232,7 +232,7 @@ struct Float32
   def to_py : Crython::PyObject
     Crython.with_gil do
       ptr = Crython::LibPython.float_from_double(self.to_f64)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -247,7 +247,7 @@ struct Float64
   def to_py : Crython::PyObject
     Crython.with_gil do
       ptr = Crython::LibPython.float_from_double(self)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 

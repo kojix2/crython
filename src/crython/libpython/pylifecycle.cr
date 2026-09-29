@@ -1,7 +1,6 @@
 module Crython
   # https://github.com/python/cpython/blob/main/Include/pylifecycle.h
 
-  @[Link("python3")]
   lib LibPython
     # Initialization and Finalization
     fun init = Py_Initialize

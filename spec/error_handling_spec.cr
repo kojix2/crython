@@ -3,7 +3,7 @@ require "./spec_helper"
 describe "Error handling" do
   describe "ImportError" do
     it "raises ImportError for non-existent module" do
-      Crython.session do
+      with_crython do
         expect_raises(Crython::ImportError, /Error importing module: non_existent_module/) do
           Crython.import("non_existent_module")
         end
@@ -13,7 +13,7 @@ describe "Error handling" do
 
   describe "AttributeError" do
     it "raises AttributeError for non-existent attribute" do
-      Crython.session do
+      with_crython do
         mod = Crython.import("math")
         expect_raises(Crython::AttributeError, /Error accessing attribute 'non_existent_attribute'/) do
           mod.non_existent_attribute
@@ -24,7 +24,7 @@ describe "Error handling" do
 
   describe "CallError" do
     it "raises CallError when calling a method with invalid arguments" do
-      Crython.session do
+      with_crython do
         mod = Crython.import("math")
         expect_raises(Crython::CallError, /Error calling method 'sqrt'/) do
           # sqrt expects a number, not a string
@@ -37,7 +37,7 @@ describe "Error handling" do
   describe "ItemError" do
     pending "NumPy tests are skipped if NumPy is not available" do
       it "raises ItemError when accessing an invalid index" do
-        Crython.session do
+        with_crython do
           np = Crython.import("numpy")
           array = np.array([1, 2, 3])
           expect_raises(Crython::ItemError) do
@@ -48,7 +48,7 @@ describe "Error handling" do
       end
 
       it "raises ItemError when setting an invalid index" do
-        Crython.session do
+        with_crython do
           np = Crython.import("numpy")
           array = np.array([1, 2, 3])
           expect_raises(Crython::ItemError) do
@@ -62,7 +62,7 @@ describe "Error handling" do
 
   describe "TypeError" do
     it "raises TypeError when converting incompatible types" do
-      Crython.session do
+      with_crython do
         # Create a Python object with an unsupported type (e.g., a custom class)
         Crython.exec(<<-PYTHON
         class CustomClass:
@@ -84,7 +84,7 @@ describe "Error handling" do
 
   describe "ValueError" do
     it "raises ValueError for invalid values" do
-      Crython.session do
+      with_crython do
         mod = Crython.import("math")
         expect_raises(Crython::CallError, /ValueError/) do
           mod.sqrt(-1) # sqrt of negative number
@@ -93,7 +93,7 @@ describe "Error handling" do
     end
 
     it "raises ValueError for integer overflow" do
-      Crython.session do
+      with_crython do
         # Create a Python integer that's too large for Crystal's Int64
         Crython.exec(<<-PYTHON
         huge_int = 2**100  # Much larger than Int64.MAX
@@ -113,7 +113,7 @@ describe "Error handling" do
 
   describe "Error information extraction" do
     it "extracts Python error type information" do
-      Crython.session do
+      with_crython do
         begin
           mod = Crython.import("math")
           mod.sqrt("not a number")
@@ -129,7 +129,7 @@ describe "Error handling" do
 
   describe "Nested error handling" do
     it "handles errors in nested Python calls" do
-      Crython.session do
+      with_crython do
         Crython.exec(<<-PYTHON
         def outer_function():
             return inner_function()

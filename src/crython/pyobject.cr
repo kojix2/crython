@@ -5,55 +5,37 @@ module Crython
   class PyObject
     include ObjectProtocol
 
-    # Ownership rules
-    # - `need_decref = true` means this wrapper owns one Python reference.
-    # - `need_decref = false` means borrowed/non-owning wrapper.
-    # - When passing values to a stealing API (e.g. PyTuple_SetItem,
-    #   PyList_SetItem), transfer ownership only if we own the ref;
-    #   otherwise incref before passing.
-    # - When passing values to a non-stealing API (e.g. PyDict_SetItem),
-    #   decref temporary values only if this wrapper owns them.
-    property need_decref : Bool
+    # A wrapper always owns exactly one strong Python reference.
+    getter raw : LibPython::PyObject
 
-    # @id : Int32 = Random.rand(1000000) # Unique identifier for logging
-    @session_token : Crython::SessionToken = Crython.session_token
+    private def initialize(@raw : LibPython::PyObject)
+    end
 
-    def initialize(@raw : LibPython::PyObject, @need_decref = false)
-      ##############################################################
-      # GARBAGE COLLECTION DEBUGGING CODE
-      ##############################################################
-      # @session_token = Crython.session_token
-      # value_str = LibPython.object_str(@raw)
-      # value_ptr = LibPython.unicode_as_utf8(value_str)
-      # type_ptr = LibPython.object_get_attr_string(@raw, "__class__".to_unsafe)
-      # type_name_ptr = LibPython.object_get_attr_string(type_ptr, "__name__".to_unsafe)
-      # type_name = LibPython.unicode_as_utf8(type_name_ptr)
-      # puts "Initialized PyObject with ID: #{@id}, Python Type: #{String.new(type_name)}, Value: #{String.new(value_ptr)}"
-      # LibPython.decref(type_ptr)
-      # LibPython.decref(type_name_ptr)
-      # LibPython.decref(value_str)
-      ###############################################################
+    # Adopt a new reference returned by a CPython API.
+    def self.from_owned(raw : LibPython::PyObject) : PyObject
+      if raw.null?
+        raise CrythonError.new("cannot wrap a null Python object")
+      end
+      new(raw)
+    end
+
+    # Promote a borrowed reference before its owner can be released.
+    def self.from_borrowed(raw : LibPython::PyObject) : PyObject
+      if raw.null?
+        raise CrythonError.new("cannot wrap a null Python object")
+      end
+      Crython.with_gil { LibPython.incref(raw) }
+      new(raw)
     end
 
     def finalize
-      if @need_decref && Crython.active_session?(@session_token)
+      if Crython.initialized?
         state = LibPython.gil_state_ensure
         begin
           LibPython.decref(@raw)
         ensure
           LibPython.gil_state_release(state)
         end
-      elsif @need_decref && Crython.debug_enabled?
-        reason = if !Crython.initialized?
-                   "no-active-session"
-                 elsif @session_token == Crython.session_token
-                   "current-session-inactive"
-                 elsif Crython.sealed_session?(@session_token)
-                   "sealed-previous-session"
-                 else
-                   "different-active-session"
-                 end
-        Crython.debug_log("pyobject:finalize skipped obj_session_token=#{@session_token} current_session_token=#{Crython.session_token} reason=#{reason}")
       end
     end
 
@@ -107,11 +89,7 @@ module Crython
               value_py = arg.to_py
               value_raw = value_py.to_unsafe
 
-              if value_py.need_decref
-                value_py.need_decref = false
-              else
-                LibPython.incref(value_raw)
-              end
+              LibPython.incref(value_raw)
             end
 
             if LibPython.tuple_set_item(args_tuple, index, value_raw) < 0
@@ -142,10 +120,6 @@ module Crython
             end
             if LibPython.dict_set_item(kwargs_dict, key, value_raw) < 0
               LibPython.decref(key)
-              if !value_py.nil? && value_py.not_nil!.need_decref
-                LibPython.decref(value_raw)
-                value_py.not_nil!.need_decref = false
-              end
               LibPython.decref(kwargs_dict)
               LibPython.decref(args_tuple)
               LibPython.decref(attr)
@@ -153,10 +127,6 @@ module Crython
               raise CallError.new(call.to_s, "Error building kwargs dict - #{error_info}")
             end
             LibPython.decref(key)
-            if !value_py.nil? && value_py.not_nil!.need_decref
-              LibPython.decref(value_raw)
-              value_py.not_nil!.need_decref = false
-            end
           end
           ret = LibPython.object_call(attr, args_tuple, kwargs_dict)
           LibPython.decref(args_tuple)
@@ -179,11 +149,7 @@ module Crython
                 value_py = arg.to_py
                 value_raw = value_py.to_unsafe
 
-                if value_py.need_decref
-                  value_py.need_decref = false
-                else
-                  LibPython.incref(value_raw)
-                end
+                LibPython.incref(value_raw)
               end
 
               if LibPython.tuple_set_item(args_tuple, index, value_raw) < 0
@@ -205,7 +171,7 @@ module Crython
             LibPython.decref(attr)
           else
             # No args - either call as function or return attribute
-            if PyObject.new(attr).callable?
+            if LibPython.object_is_callable(attr) != 0
               # Use PyObject_Call with an explicit empty tuple to avoid
               # varargs ABI issues from PyObject_CallFunctionObjArgs.
               empty_args = LibPython.tuple_new(0)
@@ -223,11 +189,10 @@ module Crython
         # Check for errors
         if LibPython.err_occurred
           error_info = Crython.extract_python_error
-          LibPython.err_print
           raise CallError.new(call.to_s, error_info)
         end
 
-        PyObject.new(ret.not_nil!, need_decref: true)
+        PyObject.from_owned(ret.not_nil!)
       end
     end
 
@@ -251,11 +216,6 @@ module Crython
           end
 
           ptr = LibPython.object_get_item(@raw, py_key_raw)
-
-          if !py_key.nil? && py_key.not_nil!.need_decref
-            LibPython.decref(py_key_raw)
-            py_key.not_nil!.need_decref = false
-          end
         else
           key_tuple = LibPython.tuple_new(key.size)
           key.each_with_index do |item, index|
@@ -267,11 +227,7 @@ module Crython
               py_item = item.to_py
               py_item_raw = py_item.to_unsafe
 
-              if py_item.need_decref
-                py_item.need_decref = false
-              else
-                LibPython.incref(py_item_raw)
-              end
+              LibPython.incref(py_item_raw)
             end
 
             if LibPython.tuple_set_item(key_tuple, index, py_item_raw) < 0
@@ -288,10 +244,9 @@ module Crython
 
         if ptr.null?
           error_info = Crython.extract_python_error
-          LibPython.err_print
           raise ItemError.new(error_info)
         end
-        PyObject.new(ptr, need_decref: true)
+        PyObject.from_owned(ptr)
       end
     end
 
@@ -319,18 +274,8 @@ module Crython
 
         r = LibPython.object_set_item(@raw, py_key_raw, py_value_raw)
 
-        if !py_key.nil? && py_key.not_nil!.need_decref
-          LibPython.decref(py_key_raw)
-          py_key.not_nil!.need_decref = false
-        end
-        if !py_value.nil? && py_value.not_nil!.need_decref
-          LibPython.decref(py_value_raw)
-          py_value.not_nil!.need_decref = false
-        end
-
         if r < 0
           error_info = Crython.extract_python_error
-          LibPython.err_print
           raise ItemError.new(error_info)
         end
       end

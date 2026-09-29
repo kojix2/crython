@@ -3,27 +3,18 @@ struct Tuple
     Crython.with_gil do
       tuple = Crython::LibPython.tuple_new(self.size)
       self.each_with_index do |item, index|
-        # PyTuple_SetItem steals a reference.
-        # If item.to_py returns a borrowed wrapper (need_decref = false),
-        # incref before insertion so ownership transfer is safe.
         py_item = item.to_py
         py_item_raw = py_item.to_unsafe
-        if py_item.need_decref
-          py_item.need_decref = false
-        else
-          Crython::LibPython.incref(py_item_raw)
-        end
+        # Keep py_item's own reference and give the stealing API a new one.
+        Crython::LibPython.incref(py_item_raw)
 
         if Crython::LibPython.tuple_set_item(tuple, index, py_item_raw) < 0
-          Crython::LibPython.decref(py_item_raw)
           Crython::LibPython.decref(tuple)
-          if Crython::LibPython.err_occurred
-            Crython::LibPython.err_print
-          end
-          raise "Failed to insert item into tuple"
+          error_info = Crython.extract_python_error
+          raise Crython::CrythonError.new("Failed to insert item into tuple#{error_info ? ": #{error_info}" : ""}")
         end
       end
-      Crython::PyObject.new(tuple, need_decref: true)
+      Crython::PyObject.from_owned(tuple)
     end
   end
 end

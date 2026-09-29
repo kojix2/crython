@@ -88,22 +88,16 @@ module Crython
 
       # Get the exception type name
       if !exc_type_ptr.null?
-        exc_type_obj = PyObject.new(exc_type_ptr)
+        exc_type_obj = PyObject.from_owned(exc_type_ptr)
         error_name_obj = exc_type_obj.attr("__name__")
         error_message = error_name_obj.to_s
-        if error_name_obj.need_decref
-          LibPython.decref(error_name_obj.to_unsafe)
-          error_name_obj.need_decref = false
-        end
-        LibPython.decref(exc_type_ptr)
       end
 
       # Get the exception message
       if !exc_value_ptr.null?
-        exc_value_obj = PyObject.new(exc_value_ptr)
+        exc_value_obj = PyObject.from_owned(exc_value_ptr)
         exc_str = exc_value_obj.to_s
         error_message += ": #{exc_str}" unless exc_str.empty?
-        LibPython.decref(exc_value_ptr)
       end
 
       # Decref traceback if present

@@ -26,9 +26,9 @@ CFLAGS += $(if $(release),-O2)
 EXAMPLES_SOURCES := $(shell find examples -type f -name '*.cr')
 EXAMPLES_TARGETS := $(patsubst examples/%.cr, $(O)/%, $(EXAMPLES_SOURCES))
 
-PYTHON_CONFIG ?= $(shell command -v "$(PYTHON)-config" 2>/dev/null || command -v python3-config 2>/dev/null || echo "$(PYTHON)-config")
+PYTHON_CONFIG ?= $(PYTHON)-config
 PYTHON_CFLAGS := $(shell $(PYTHON_CONFIG) --cflags)
-PYTHON_LDFLAGS := $(shell $(PYTHON_CONFIG) --ldflags)
+PYTHON_LDFLAGS := $(shell $(PYTHON_CONFIG) --embed --ldflags)
 PYTHON_LIBDIR := $(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR') or '')")
 RUNTIME_LD_LIBRARY_PATH := $(if $(PYTHON_LIBDIR),LD_LIBRARY_PATH="$(PYTHON_LIBDIR):$${LD_LIBRARY_PATH}")
 RUNTIME_CRYTHON_DEBUG := $(if $(filter 1,$(CRYTHON_DEBUG)),CRYTHON_DEBUG=1)
@@ -41,11 +41,8 @@ EXTRA_GOALS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(foreach goal,$(EXTRA_GOALS),$(eval $(goal):;@:))
 endif
 
-PYTHON_VERSION := $(shell $(PYTHON) -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-PYTHON_LIB := -lpython$(PYTHON_VERSION)
-
 CFLAGS += $(PYTHON_CFLAGS)
-LDFLAGS += $(PYTHON_LDFLAGS) $(PYTHON_LIB) -lm
+LDFLAGS += $(PYTHON_LDFLAGS) -lm
 
 .PHONY: all deps test examples run doc clean help doctor
 
@@ -58,11 +55,9 @@ all: deps
 doctor: ## Show detected Python/linker/runtime settings
 	@echo "PYTHON=$(PYTHON)"
 	@echo "PYTHON_CONFIG=$(PYTHON_CONFIG)"
-	@echo "PYTHON_VERSION=$(PYTHON_VERSION)"
 	@echo "PYTHON_CFLAGS=$(PYTHON_CFLAGS)"
 	@echo "PYTHON_LDFLAGS=$(PYTHON_LDFLAGS)"
 	@echo "PYTHON_LIBDIR=$(PYTHON_LIBDIR)"
-	@echo "PYTHON_LIB=$(PYTHON_LIB)"
 	@echo "RUNTIME_ENV=$(RUNTIME_ENV)"
 
 deps: ## Build dependencies

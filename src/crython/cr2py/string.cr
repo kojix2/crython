@@ -2,7 +2,7 @@ class String
   def to_py : Crython::PyObject
     Crython.with_gil do
       ptr = Crython::LibPython.unicode_from_string(self)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 
@@ -19,7 +19,7 @@ struct Char
     Crython.with_gil do
       str = self.to_s
       ptr = Crython::LibPython.unicode_from_string(str)
-      Crython::PyObject.new(ptr, need_decref: true)
+      Crython::PyObject.from_owned(ptr)
     end
   end
 

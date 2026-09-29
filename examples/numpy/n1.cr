@@ -1,6 +1,6 @@
 require "../../src/crython"
 
-Crython.session do
+Crython.init
   np = Crython.import("numpy")
   a = np.array([[1, 2, 3],
                 [4, 5, 6]])
@@ -9,4 +9,3 @@ Crython.session do
 
   a[0][0] = 100
   p a
-end

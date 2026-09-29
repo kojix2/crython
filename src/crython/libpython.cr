@@ -7,7 +7,6 @@ module Crython
   # Python C header files.
   # Here, with a few exceptions, we only include Stable ABI functions.
 
-  @[Link("python3")]
   lib LibPython
     alias PyObject = Void*
     alias UInt = LibC::UInt

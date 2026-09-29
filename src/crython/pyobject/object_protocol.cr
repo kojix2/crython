@@ -19,7 +19,7 @@ module Crython
           error_info = Crython.extract_python_error
           raise AttributeError.new("object", attr, error_info)
         end
-        PyObject.new(ptr, need_decref: true)
+        PyObject.from_owned(ptr)
       end
     end
 
@@ -30,7 +30,7 @@ module Crython
           Crython.clear_error
           nil
         else
-          PyObject.new(ptr, need_decref: true)
+          PyObject.from_owned(ptr)
         end
       end
     end
@@ -40,7 +40,6 @@ module Crython
         result = LibPython.object_set_attr_string(@raw, attr.to_unsafe, obj.to_unsafe)
         if result < 0
           error_info = Crython.extract_python_error
-          LibPython.err_print
           raise AttributeError.new("object", attr, error_info)
         end
       end
@@ -58,7 +57,6 @@ module Crython
           cmp
         else
           error_info = Crython.extract_python_error
-          LibPython.err_print
           raise CrythonError.new("Object comparison failed#{error_info ? " - #{error_info}" : ""}")
         end
       end

@@ -1,7 +1,6 @@
 module Crython
   # https://github.com/python/cpython/blob/main/Include/unicodeobject.h
 
-  @[Link("python3")]
   lib LibPython
     fun unicode_is_identifier = PyUnicode_IsIdentifier(str : PyObject) : Int
     fun unicode_from_string_and_size = PyUnicode_FromStringAndSize(str : Char*, size : LibC::SizeT) : PyObject

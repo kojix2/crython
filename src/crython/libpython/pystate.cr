@@ -1,7 +1,6 @@
 module Crython
   # https://github.com/python/cpython/blob/main/Include/pystate.h
 
-  @[Link("python3")]
   lib LibPython
     alias PyGILState_STATE = LibC::Int
 

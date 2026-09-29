@@ -1,7 +1,6 @@
 module Crython
   # https://github.com/python/cpython/blob/main/Include/listobject.h
 
-  @[Link("python3")]
   lib LibPython
     fun list_new = PyList_New(size : Int) : PyObject
     fun list_size = PyList_Size(list : PyObject) : Int

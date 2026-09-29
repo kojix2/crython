@@ -1,7 +1,6 @@
 module Crython
   # https://github.com/python/cpython/blob/main/Include/abstract.h
 
-  @[Link("python3")]
   lib LibPython
     # Object Protocols
     fun object_has_attr_string = PyObject_HasAttrString(o : PyObject, attr : Char*) : Int

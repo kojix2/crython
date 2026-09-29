@@ -1,7 +1,6 @@
 module Crython
   # https://github.com/python/cpython/blob/main/Include/setobject.h
 
-  @[Link("python3")]
   lib LibPython
     fun set_type = PySet_Type : PyObject
     fun frozenset_type = PyFrozenSet_Type : PyObject

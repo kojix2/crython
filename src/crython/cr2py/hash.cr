@@ -3,41 +3,18 @@ class Hash(K, V)
     Crython.with_gil do
       dict = Crython::LibPython.dict_new
       self.each do |key, value|
-        # key.to_py / value.to_py return new references.
-        # PyDict_SetItem does not steal references; it increments the
-        # reference counts of key and value internally. We must decref the
-        # temporary references we own after the call.
         py_key = key.to_py
         py_value = value.to_py
         py_key_raw = py_key.to_unsafe
         py_value_raw = py_value.to_unsafe
         result = Crython::LibPython.dict_set_item(dict, py_key_raw, py_value_raw)
-        # Check if insertion was successful
         if result < 0
-          if py_key.need_decref
-            Crython::LibPython.decref(py_key_raw)
-            py_key.need_decref = false
-          end
-          if py_value.need_decref
-            Crython::LibPython.decref(py_value_raw)
-            py_value.need_decref = false
-          end
           Crython::LibPython.decref(dict)
-          if Crython::LibPython.err_occurred
-            Crython::LibPython.err_print
-          end
-          raise "Failed to insert item into dictionary"
-        end
-        if py_key.need_decref
-          Crython::LibPython.decref(py_key_raw)
-          py_key.need_decref = false
-        end
-        if py_value.need_decref
-          Crython::LibPython.decref(py_value_raw)
-          py_value.need_decref = false
+          error_info = Crython.extract_python_error
+          raise Crython::CrythonError.new("Failed to insert item into dictionary#{error_info ? ": #{error_info}" : ""}")
         end
       end
-      Crython::PyObject.new(dict, need_decref: true)
+      Crython::PyObject.from_owned(dict)
     end
   end
 
@@ -70,8 +47,8 @@ class Hash(K, V)
           while Crython::LibPython.dict_next(pyobject, pointerof(pos), pointerof(key_ptr), pointerof(value_ptr)) != 0
             Crython::LibPython.incref(key_ptr)
             Crython::LibPython.incref(value_ptr)
-            py_key = Crython::PyObject.new(key_ptr, need_decref: true)
-            py_value = Crython::PyObject.new(value_ptr, need_decref: true)
+            py_key = Crython::PyObject.from_owned(key_ptr)
+            py_value = Crython::PyObject.from_owned(value_ptr)
 
             # Convert key and value to types K and V
             key = K.new(py_key)

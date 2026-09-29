@@ -1,6 +1,6 @@
 require "../src/crython"
 
-Crython.session do
+Crython.init
   math = Crython.import?("math")
   if math.nil?
     puts "math import failed"
@@ -15,4 +15,3 @@ Crython.session do
   puts "pi: #{pi ? pi.not_nil!.to_cr : "nil"}"
   puts "2^8 via call?: #{pow ? pow.not_nil!.to_cr : "nil"}"
   puts "missing method via call?: #{missing_method.nil? ? "nil" : "unexpected"}"
-end

@@ -1,7 +1,6 @@
 module Crython
   # https://github.com/python/cpython/blob/main/Include/floatobject.h
 
-  @[Link("python3")]
   lib LibPython
     fun float_check = PyFloat_Check(o : PyObject) : Int
     fun float_check_exact = PyFloat_CheckExact(o : PyObject) : Int

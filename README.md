@@ -14,7 +14,7 @@ Crython is a tool that lets you use [Python](https://github.com/python/cpython) 
 ## Installation
 
 - You need Python3. Python3.14 or later is recommended.
-- Make sure `python3-config --ldflags` works.
+- Make sure `python3-config --embed --ldflags` works.
 
 Add this to your dependencies:
 
@@ -31,7 +31,7 @@ Use this when integrating Crython into your own Crystal app
 1. Verify your Python toolchain:
 
 ```bash
-python3-config --ldflags
+python3-config --embed --ldflags
 ```
 
 2. Create your minimal app:
@@ -39,19 +39,17 @@ python3-config --ldflags
 ```cr
 require "crython"
 
-Crython.session do
+Crython.init
   Crython.exec("x = 40 + 2")
   puts Crython.eval("x").to_cr  # 42
-end
 ```
 
 3. Install dependencies and build:
 
 ```bash
 shards install
-ver=$(python3 -c 'import sys; print("{}.{}".format(sys.version_info.major, sys.version_info.minor))')
 crystal build src/main.cr -o app \
-  --link-flags "$(python3-config --ldflags) -lpython$ver -lm"
+  --link-flags "$(python3-config --embed --ldflags) -lm"
 ```
 
 4. Run your app (set runtime library path if needed):
@@ -100,12 +98,13 @@ require "complex"
 
 ## Basic Usage
 
-### Session Lifecycle
+### Runtime Lifecycle
 
-- Crython initializes the embedded Python runtime once and reuses it.
-- `Crython.session` starts a logical Crython session but does not shut down Python at block end.
-- `Crython.finalize` closes the logical Crython session state.
-- Internal session identity uses session tokens.
+- Crython initializes one embedded Python runtime per process and reuses it until process exit.
+- Call `Crython.init` once before using the library.
+- Python globals, imported modules, and definitions persist across calls. Crython does not support interpreter finalization or reinitialization.
+
+`session` was deliberately removed. CPython exposes finalization APIs, but an embedding library cannot safely promise that `Py_Finalize*` followed by reinitialization will reset every extension module, Python-owned resource, or live `PyObject` wrapper. A per-block `session` would therefore either falsely imply that it resets Python or leave state alive across its boundary. Crython instead exposes the honest lifecycle: initialize once, reuse one interpreter for the process, and treat Python globals as process-lifetime state.
 
 ### Importing a Python Module
 
@@ -126,7 +125,7 @@ puts result  # [2 4 6]
 ### Embedding Python Code
 
 ```cr
-Crython.session do
+Crython.init
   # Execute Python statements
   Crython.exec("print('Hello from Python!')")
 
@@ -143,14 +142,9 @@ Crython.session do
   np = Crython.import("numpy")
   array = np.array([1, 2, 3])
   puts array
-end
 ```
 
-If you need to end a logical Crython session explicitly:
-
-```cr
-Crython.finalize
-```
+Crython does not expose session finalization or reset.
 
 ### Type Conversion
 
@@ -288,29 +282,27 @@ counter = collections.call("Counter", [1, 2, 1, 3].to_py)
 If you pass statements to `eval`, Crython raises an error with guidance to use `exec`.
 
 ```cr
-Crython.session do
+Crython.init
   begin
     # Expression evaluation error
     Crython.eval("1/0")
   rescue ex
     puts "Python error: #{ex.message}"
   end
-end
 ```
 
 ```cr
-Crython.session do
+Crython.init
   # Statement execution
   Crython.exec("x = 40 + 2")
 
   # Expression evaluation (returns PyObject)
   answer = Crython.eval("x")
   puts answer.to_cr  # 42
-end
 ```
 
 ```cr
-Crython.session do
+Crython.init
   begin
     # This is a statement, so eval raises and suggests exec
     Crython.eval("x = 10")
@@ -318,7 +310,6 @@ Crython.session do
     puts ex.message
     # => ... Use Crython.exec for statements
   end
-end
 ```
 
 ## Testing
@@ -328,7 +319,7 @@ You can run tests either directly or via `make`.
 Direct execution (explicit link flags):
 
 ```bash
-crystal spec --link-flags "$(python3-config --ldflags) -lpython$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")') -lm"
+crystal spec --link-flags "$(python3-config --embed --ldflags) -lpython$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")') -lm"
 ```
 
 Or use `make` as a shortcut:
@@ -372,7 +363,7 @@ Then run:
 ### NumPy Example
 
 ```cr
-Crython.session do
+Crython.init
   np = Crython.import("numpy")
 
   x1 = np.array([1, 2, 3])
@@ -380,13 +371,12 @@ Crython.session do
 
   y = x1 + x2
   puts "#{x1} + #{x2} = #{y}"  # [1 2 3] + [4 5 6] = [5 7 9]
-end
 ```
 
 ### Matplotlib Example
 
 ```cr
-Crython.session do
+Crython.init
   plt = Crython.import("matplotlib.pyplot")
 
   # Create data
@@ -401,7 +391,6 @@ Crython.session do
 
   # Show plot
   plt.show
-end
 ```
 
 ## Known Limitations
@@ -431,7 +420,7 @@ export LD_LIBRARY_PATH=$(python3 -c "import sysconfig; print(sysconfig.get_confi
 
 ### Linking Errors
 
-If you encounter linking errors during compilation, check that `python3-config --ldflags` returns the correct flags for your Python installation.
+If you encounter linking errors during compilation, check that `python3-config --embed --ldflags` returns the correct flags for your Python installation.
 
 ## Contributing
 

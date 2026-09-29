@@ -21,7 +21,7 @@ module Crython
 
           # list_get_item returns a borrowed reference. Own it explicitly.
           LibPython.incref(item)
-          py_item = PyObject.new(item, need_decref: true)
+          py_item = PyObject.from_owned(item)
 
           # Convert the item to the specified Crystal type
           result << T.new(py_item)
@@ -45,12 +45,8 @@ module Crython
         end
 
         # Create an array to hold the converted values
-        none_obj = PyObject.new(Crython.none_newref, need_decref: true)
+        none_obj = PyObject.from_owned(Crython.none_newref)
         values = [] of typeof(element_types[0].new(none_obj))
-        if none_obj.need_decref
-          LibPython.decref(none_obj.raw)
-          none_obj.need_decref = false
-        end
 
         size.times do |i|
           item = LibPython.tuple_get_item(pyobject.raw, i)
@@ -61,7 +57,7 @@ module Crython
 
           # tuple_get_item returns a borrowed reference. Own it explicitly.
           LibPython.incref(item)
-          py_item = PyObject.new(item, need_decref: true)
+          py_item = PyObject.from_owned(item)
 
           # Convert the item to the specified Crystal type
           values << element_types[i].new(py_item)
@@ -122,8 +118,8 @@ module Crython
           # dict/list getters return borrowed references. Own them explicitly.
           LibPython.incref(key_item)
           LibPython.incref(value_item)
-          py_key = PyObject.new(key_item, need_decref: true)
-          py_value = PyObject.new(value_item, need_decref: true)
+          py_key = PyObject.from_owned(key_item)
+          py_value = PyObject.from_owned(value_item)
 
           result[K.new(py_key)] = V.new(py_value)
         end

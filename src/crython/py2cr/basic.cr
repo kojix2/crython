@@ -201,7 +201,7 @@ class Crython::PyObject
 
         # list_get_item returns a borrowed reference. Own it explicitly.
         LibPython.incref(item)
-        py_item = PyObject.new(item, need_decref: true)
+        py_item = PyObject.from_owned(item)
         result << py_item
       end
 
@@ -224,7 +224,7 @@ class Crython::PyObject
 
         # tuple_get_item returns a borrowed reference. Own it explicitly.
         LibPython.incref(item)
-        py_item = PyObject.new(item, need_decref: true)
+        py_item = PyObject.from_owned(item)
         result << py_item
       end
 
@@ -278,8 +278,8 @@ class Crython::PyObject
         # dict/list getters return borrowed references. Own them explicitly.
         LibPython.incref(key_item)
         LibPython.incref(value_item)
-        py_key = PyObject.new(key_item, need_decref: true)
-        py_value = PyObject.new(value_item, need_decref: true)
+        py_key = PyObject.from_owned(key_item)
+        py_value = PyObject.from_owned(value_item)
 
         result[py_key] = py_value
       end

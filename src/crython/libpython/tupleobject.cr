@@ -1,7 +1,6 @@
 module Crython
   # https://github.com/python/cpython/blob/main/Include/tupleobject.h
 
-  @[Link("python3")]
   lib LibPython
     fun tuple_new = PyTuple_New(size : Int) : PyObject
     fun tuple_size = PyTuple_Size(t : PyObject) : Int

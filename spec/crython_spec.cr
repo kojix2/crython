@@ -8,39 +8,37 @@ describe Crython do
   it "loads" do
     Crython.init
     Crython.initialized?.should be_true
-    Crython.finalize
-    Crython.initialized?.should be_false
+    Crython.initialized?.should be_true
   end
 
   it "embeds Python" do
-    Crython.session do
+    with_crython do
       Crython.initialized?.should be_true
     end
     Crython.initialized?.should be_true
-    Crython.finalize
-    Crython.initialized?.should be_false
+    Crython.initialized?.should be_true
   end
 
   it "gets Python version" do
-    Crython.session do
+    with_crython do
       Crython.python_version.should be_a(String)
     end
   end
 
   it "gets Python build info" do
-    Crython.session do
+    with_crython do
       Crython.python_build_info.should be_a(String)
     end
   end
 
   it "gets Python compiler" do
-    Crython.session do
+    with_crython do
       Crython.python_compiler.should be_a(String)
     end
   end
 
   it "raises error" do
-    Crython.session do
+    with_crython do
       Crython.err_occurred?.should be_false
       math = Crython.import("math")
       Crython::LibPython.object_get_attr_string(math.to_unsafe, "non_existent_attribute".to_unsafe)
@@ -51,28 +49,28 @@ describe Crython do
   end
 
   it "imports a Python module" do
-    Crython.session do
+    with_crython do
       mod = Crython.import("math")
       mod.should be_a(Crython::PyObject)
     end
   end
 
   it "imports a Python module with import?" do
-    Crython.session do
+    with_crython do
       mod = Crython.import?("math")
       mod.should be_a(Crython::PyObject)
     end
   end
 
   it "returns nil with import? for non-existent module" do
-    Crython.session do
+    with_crython do
       mod = Crython.import?("non_existent_module")
       mod.should be_nil
     end
   end
 
   it "evaluates Python expressions and returns a PyObject" do
-    Crython.session do
+    with_crython do
       result = Crython.eval("1 + 2")
       result.should be_a(Crython::PyObject)
       result.to_cr.should eq(3)
@@ -80,7 +78,7 @@ describe Crython do
   end
 
   it "raises guidance when eval is used with statements" do
-    Crython.session do
+    with_crython do
       expect_raises(Crython::CrythonError, /Use Crython.exec for statements/) do
         Crython.eval("x = 10")
       end
@@ -88,19 +86,16 @@ describe Crython do
   end
 
   it "executes Python statements with exec" do
-    Crython.session do
+    with_crython do
       Crython.exec("x = 10")
       value = Crython.eval("x")
       value.to_cr.should eq(10)
     end
   end
 
-  it "marks finalized sessions as sealed" do
+  it "initializes idempotently" do
     Crython.init
-    token = Crython.session_token
-    Crython.sealed_session?(token).should be_false
-
-    Crython.finalize
-    Crython.sealed_session?(token).should be_true
+    Crython.init
+    Crython.eval("40 + 2").to_i64.should eq(42)
   end
 end

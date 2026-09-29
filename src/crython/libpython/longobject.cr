@@ -1,7 +1,6 @@
 module Crython
   # https://github.com/python/cpython/blob/main/Include/longobject.h
 
-  @[Link("python3")]
   lib LibPython
     fun long_check = PyLong_Check(obj : PyObject) : Int
     fun long_check_exact = PyLong_CheckExact(obj : PyObject) : Int
