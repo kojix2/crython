@@ -94,7 +94,7 @@ module Crython
       call(call, *args, **kwargs)
     rescue error : AttributeError
       python_error = error.python_error
-      return nil if python_error && python_error.type_name == "AttributeError" && python_error.name == call.to_s
+      return if python_error && python_error.type_name == "AttributeError" && python_error.name == call.to_s
       raise error
     end
 
@@ -271,12 +271,12 @@ module Crython
                            "!=" => "__ne__",
                          } %}
 
-      def {{op.id}}(other : PyObject) : PyObject
-        {{method.id}}(other)
+      def {{ op.id }}(other : PyObject) : PyObject
+        {{ method.id }}(other)
       end
 
-      def {{op.id}}(other) : PyObject
-        {{method.id}}(other.to_py)
+      def {{ op.id }}(other) : PyObject
+        {{ method.id }}(other.to_py)
       end
 
     {% end %}

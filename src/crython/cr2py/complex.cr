@@ -4,7 +4,7 @@ struct Complex
   def to_py : Crython::PyObject
     Crython.with_gil do
       # Return a new reference. Clone to prevent Crystal garbage collection.
-      ptr = Crython::LibPython.complex_from_doubles(self.real.clone, self.imag.clone)
+      ptr = Crython::LibPython.complex_from_doubles(real.clone, imag.clone)
       Crython::PyObject.from_owned(ptr)
     end
   end

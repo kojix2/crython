@@ -1,10 +1,10 @@
 require "../../src/crython"
 
 Crython.init
-  np = Crython.import("numpy")
+np = Crython.import("numpy")
 
-  x1 = np.array([1, 2, 3])
-  x2 = np.array([4, 5, 6])
+x1 = np.array([1, 2, 3])
+x2 = np.array([4, 5, 6])
 
-  y = x1 + x2
-  print "#{x1} + #{x2} = #{y}"
+y = x1 + x2
+print "#{x1} + #{x2} = #{y}"

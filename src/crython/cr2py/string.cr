@@ -1,7 +1,7 @@
 class String
   def to_py : Crython::PyObject
     Crython.with_gil do
-      ptr = Crython::LibPython.unicode_from_string_and_size(self.to_unsafe, self.bytesize)
+      ptr = Crython::LibPython.unicode_from_string_and_size(to_unsafe, bytesize)
       Crython::PyObject.from_owned(ptr)
     end
   end
@@ -19,7 +19,7 @@ end
 struct Char
   def to_py : Crython::PyObject
     Crython.with_gil do
-      str = self.to_s
+      str = to_s
       ptr = Crython::LibPython.unicode_from_string_and_size(str.to_unsafe, str.bytesize)
       Crython::PyObject.from_owned(ptr)
     end

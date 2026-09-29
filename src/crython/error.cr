@@ -92,10 +92,10 @@ module Crython
   # Capture and clear the current Python exception while the GIL is held.
   def self.capture_python_error : PythonErrorInfo?
     with_gil do
-      return nil if LibPython.err_occurred.null?
+      return if LibPython.err_occurred.null?
 
       raised = LibPython.err_get_raised_exception
-      return nil if raised.null?
+      return if raised.null?
       type_object = Pointer(Void).null.as(LibPython::PyObject)
       begin
         type_object = LibPython.object_get_attr_string(raised, "__class__".to_unsafe)
@@ -127,7 +127,7 @@ module Crython
     value = LibPython.object_get_attr_string(object, name.to_unsafe)
     if value.null?
       LibPython.err_clear
-      return nil
+      return
     end
     begin
       result = exception_object_string(value)
@@ -154,12 +154,12 @@ module Crython
   end
 
   private def self.exception_object_string(object : LibPython::PyObject) : String?
-    return nil if object.null?
+    return if object.null?
 
     string = LibPython.object_str(object)
     if string.null?
       LibPython.err_clear
-      return nil
+      return
     end
 
     begin
@@ -167,7 +167,7 @@ module Crython
       ptr = LibPython.unicode_as_utf8_and_size(string, pointerof(bytesize))
       if ptr.null?
         LibPython.err_clear
-        return nil
+        return
       end
       String.new(ptr, bytesize.to_i)
     ensure

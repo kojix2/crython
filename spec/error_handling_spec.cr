@@ -65,11 +65,11 @@ describe "Error handling" do
       with_crython do
         # Create a Python object with an unsupported type (e.g., a custom class)
         Crython.exec(<<-PYTHON
-        class CustomClass:
-            pass
+          class CustomClass:
+              pass
 
-        custom_obj = CustomClass()
-        PYTHON
+          custom_obj = CustomClass()
+          PYTHON
         )
 
         mod = Crython.import("__main__")
@@ -96,8 +96,8 @@ describe "Error handling" do
       with_crython do
         # Create a Python integer that's too large for Crystal's Int64
         Crython.exec(<<-PYTHON
-        huge_int = 2**100  # Much larger than Int64.MAX
-        PYTHON
+          huge_int = 2**100  # Much larger than Int64.MAX
+          PYTHON
         )
 
         mod = Crython.import("__main__")
@@ -114,15 +114,13 @@ describe "Error handling" do
   describe "Error information extraction" do
     it "extracts Python error type information" do
       with_crython do
-        begin
-          mod = Crython.import("math")
-          mod.sqrt("not a number")
-        rescue e : Crython::CallError
-          # Convert message to string to handle nil case
-          message = e.message.to_s
-          message.should_not eq("")
-          message.should contain("TypeError")
-        end
+        mod = Crython.import("math")
+        mod.sqrt("not a number")
+      rescue e : Crython::CallError
+        # Convert message to string to handle nil case
+        message = e.message.to_s
+        message.should_not eq("")
+        message.should contain("TypeError")
       end
     end
   end
@@ -131,12 +129,12 @@ describe "Error handling" do
     it "handles errors in nested Python calls" do
       with_crython do
         Crython.exec(<<-PYTHON
-        def outer_function():
-            return inner_function()
+          def outer_function():
+              return inner_function()
 
-        def inner_function():
-            raise ValueError("Inner function error")
-        PYTHON
+          def inner_function():
+              raise ValueError("Inner function error")
+          PYTHON
         )
 
         mod = Crython.import("__main__")

@@ -113,9 +113,9 @@ describe Number do
     it "converts from Python" do
       with_crython do
         py_true = true.to_py
-        Bool.new(py_true).should eq(true)
+        Bool.new(py_true).should be_true
         py_false = false.to_py
-        Bool.new(py_false).should eq(false)
+        Bool.new(py_false).should be_false
       end
     end
 
@@ -123,8 +123,8 @@ describe Number do
       with_crython do
         py_true = true.to_py
         py_false = false.to_py
-        py_true.to_cr.should eq(true)
-        py_false.to_cr.should eq(false)
+        py_true.to_cr.should be_true
+        py_false.to_cr.should be_false
       end
     end
   end
@@ -133,14 +133,14 @@ describe Number do
     it "converts from Python" do
       with_crython do
         pyobject = nil.to_py
-        Nil.new(pyobject).should eq(nil)
+        Nil.new(pyobject).should be_nil
       end
     end
 
     it "to_cr" do
       with_crython do
         pyobject = nil.to_py
-        pyobject.to_cr.should eq(nil)
+        pyobject.to_cr.should be_nil
       end
     end
   end
@@ -183,9 +183,9 @@ describe Number do
       with_crython do
         py_true = true.to_py
         py_false = false.to_py
-        py_true.to_cr.should eq(true)
+        py_true.to_cr.should be_true
         py_true.to_cr.should be_a(Bool)
-        py_false.to_cr.should eq(false)
+        py_false.to_cr.should be_false
         py_false.to_cr.should be_a(Bool)
       end
     end
@@ -193,7 +193,7 @@ describe Number do
     it "converts Python None to Crystal nil" do
       with_crython do
         pyobject = nil.to_py
-        pyobject.to_cr.should eq(nil)
+        pyobject.to_cr.should be_nil
         pyobject.to_cr.should be_a(Nil)
       end
     end
@@ -245,11 +245,11 @@ describe Number do
         hash.size.should eq(3)
 
         # Get keys and convert them to strings for comparison
-        keys = hash.keys.map { |k| k.to_cr.as(String) }.sort
+        keys = hash.keys.map { |k| k.to_cr.as(String) }.sort!
         keys.should eq(["a", "b", "c"])
 
         # Check values
-        values = hash.values.map { |v| v.to_cr.as(Int64) }.sort
+        values = hash.values.map { |v| v.to_cr.as(Int64) }.sort!
         values.should eq([1, 2, 3])
       end
     end

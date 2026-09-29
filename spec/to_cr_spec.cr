@@ -30,11 +30,11 @@ describe Crython::PyObject do
       with_crython do
         py_true = true.to_py
         py_true.to_cr.should be_a(Bool)
-        py_true.to_cr.should eq(true)
+        py_true.to_cr.should be_true
 
         py_false = false.to_py
         py_false.to_cr.should be_a(Bool)
-        py_false.to_cr.should eq(false)
+        py_false.to_cr.should be_false
       end
     end
 
@@ -42,7 +42,7 @@ describe Crython::PyObject do
       with_crython do
         pyobject = nil.to_py
         pyobject.to_cr.should be_a(Nil)
-        pyobject.to_cr.should eq(nil)
+        pyobject.to_cr.should be_nil
       end
     end
 

@@ -175,7 +175,7 @@ end
 struct UInt128
   def to_py : Crython::PyObject
     Crython.with_gil do
-      str_repr = self.to_s
+      str_repr = to_s
       py_str = Crython::LibPython.unicode_from_string(str_repr)
       ptr = begin
         Crython::LibPython.long_from_unicode_object(py_str, 10)
@@ -203,7 +203,7 @@ end
 struct Int128
   def to_py : Crython::PyObject
     Crython.with_gil do
-      str_repr = self.to_s
+      str_repr = to_s
       py_str = Crython::LibPython.unicode_from_string(str_repr)
       ptr = begin
         Crython::LibPython.long_from_unicode_object(py_str, 10)
@@ -231,7 +231,7 @@ end
 struct Float32
   def to_py : Crython::PyObject
     Crython.with_gil do
-      ptr = Crython::LibPython.float_from_double(self.to_f64)
+      ptr = Crython::LibPython.float_from_double(to_f64)
       Crython::PyObject.from_owned(ptr)
     end
   end

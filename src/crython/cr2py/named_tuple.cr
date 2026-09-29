@@ -9,7 +9,7 @@ struct NamedTuple
 
       complete = false
       begin
-        self.each do |key, value|
+        each do |key, value|
           py_key = key.to_py
           py_value = value.to_py
           if Crython::LibPython.dict_set_item(dict, py_key.to_unsafe, py_value.to_unsafe) < 0

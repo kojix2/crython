@@ -1,7 +1,7 @@
 struct Tuple
   def to_py : Crython::PyObject
     Crython.with_gil do
-      tuple = Crython::LibPython.tuple_new(self.size)
+      tuple = Crython::LibPython.tuple_new(size)
       if tuple.null?
         error_info = Crython.extract_python_error
         raise Crython::CrythonError.new("Failed to create tuple#{error_info ? ": #{error_info}" : ""}")
@@ -9,7 +9,7 @@ struct Tuple
 
       complete = false
       begin
-        self.each_with_index do |item, index|
+        each_with_index do |item, index|
           py_item = item.to_py
           py_item_raw = py_item.to_unsafe
           # Keep py_item's own reference and give the stealing API a new one.

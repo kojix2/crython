@@ -1,7 +1,7 @@
 class Array(T)
   def to_py : Crython::PyObject
     Crython.with_gil do
-      list = Crython::LibPython.list_new(self.size)
+      list = Crython::LibPython.list_new(size)
       if list.null?
         error_info = Crython.extract_python_error
         raise Crython::CrythonError.new("Failed to create list#{error_info ? ": #{error_info}" : ""}")
@@ -9,7 +9,7 @@ class Array(T)
 
       complete = false
       begin
-        self.each_with_index do |item, index|
+        each_with_index do |item, index|
           py_item = item.to_py
           py_item_raw = py_item.to_unsafe
           # Keep py_item's own reference and give the stealing API a new one.

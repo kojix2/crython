@@ -61,7 +61,7 @@ describe Crython::PyObject do
         math = Crython.import("math")
         pi = math.attr?("pi")
         pi.should be_a(Crython::PyObject)
-        pi.not_nil!.to_cr.should be_a(Float64)
+        pi.as(Crython::PyObject).to_cr.should be_a(Float64)
       end
     end
 
@@ -80,7 +80,7 @@ describe Crython::PyObject do
         math = Crython.import("math")
         result = math.call?("pow", 2, 3)
         result.should be_a(Crython::PyObject)
-        result.not_nil!.to_cr.should eq(8.0)
+        result.as(Crython::PyObject).to_cr.should eq(8.0)
       end
     end
 
@@ -138,7 +138,7 @@ describe Crython::PyObject do
         Crython.init
         collections = Crython.import("collections")
         collections.Counter([1, 2, 1, 3].to_py)
-      CR
+        CR
 
       stdout = IO::Memory.new
       stderr = IO::Memory.new

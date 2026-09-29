@@ -8,6 +8,8 @@ end
 
 private def release_weakref_target : Nil
   object = Crython.eval("__crython_release_target")
+  object.to_unsafe
+  nil
   Crython.exec("del __crython_release_target")
 end
 
@@ -107,10 +109,10 @@ describe Crython do
   it "exposes Python exception details and traceback" do
     with_crython do
       error = expect_raises(Crython::CrythonError) { Crython.eval("1 / 0") }
-      details = error.python_error.not_nil!
+      details = error.python_error.as(Crython::PythonErrorInfo)
       details.type_name.should eq("ZeroDivisionError")
       details.message.should contain("division by zero")
-      details.traceback.not_nil!.should contain("ZeroDivisionError")
+      details.traceback.as(String).should contain("ZeroDivisionError")
     end
   end
 
@@ -226,34 +228,34 @@ describe Crython do
   it "keeps internal optional-operation and display exceptions structured and clears Python state" do
     with_crython do
       Crython.exec(<<-PYTHON
-      import sys
-      class CrythonFailingFinder:
-          def find_spec(self, fullname, path=None, target=None):
-              if fullname == "__crython_internal_import_failure":
-                  raise RuntimeError("import body failure")
-      sys.meta_path.insert(0, CrythonFailingFinder())
-      class CrythonFailingProperty:
-          @property
-          def value(self):
-              raise RuntimeError("property failure")
-      def __crython_failing_call():
-          raise RuntimeError("call failure")
-      class CrythonFailingDisplay:
-          def __str__(self):
-              raise RuntimeError("display failure")
-      __crython_property = CrythonFailingProperty()
-      __crython_display = CrythonFailingDisplay()
-      PYTHON
+        import sys
+        class CrythonFailingFinder:
+            def find_spec(self, fullname, path=None, target=None):
+                if fullname == "__crython_internal_import_failure":
+                    raise RuntimeError("import body failure")
+        sys.meta_path.insert(0, CrythonFailingFinder())
+        class CrythonFailingProperty:
+            @property
+            def value(self):
+                raise RuntimeError("property failure")
+        def __crython_failing_call():
+            raise RuntimeError("call failure")
+        class CrythonFailingDisplay:
+            def __str__(self):
+                raise RuntimeError("display failure")
+        __crython_property = CrythonFailingProperty()
+        __crython_display = CrythonFailingDisplay()
+        PYTHON
       )
       import_error = expect_raises(Crython::ImportError) { Crython.import?("__crython_internal_import_failure") }
-      import_error.python_error.not_nil!.type_name.should eq("RuntimeError")
+      import_error.python_error.as(Crython::PythonErrorInfo).type_name.should eq("RuntimeError")
       main = Crython.import("__main__")
       property_error = expect_raises(Crython::AttributeError) { main.attr("__crython_property").attr?("value") }
-      property_error.python_error.not_nil!.message.should contain("property failure")
+      property_error.python_error.as(Crython::PythonErrorInfo).message.should contain("property failure")
       call_error = expect_raises(Crython::CallError) { main.call?("__crython_failing_call") }
-      call_error.python_error.not_nil!.message.should contain("call failure")
+      call_error.python_error.as(Crython::PythonErrorInfo).message.should contain("call failure")
       display_error = expect_raises(Crython::CrythonError) { main.attr("__crython_display").to_s }
-      display_error.python_error.not_nil!.message.should contain("display failure")
+      display_error.python_error.as(Crython::PythonErrorInfo).message.should contain("display failure")
       Crython.err_occurred?.should be_false
       Crython.eval("6 * 7").to_i64.should eq(42)
     end
