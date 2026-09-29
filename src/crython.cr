@@ -11,9 +11,10 @@ module Crython
       mod_ptr = LibPython.import(name)
       e = LibPython.err_occurred
       if mod_ptr.null? || !e.null?
-        error_info = extract_python_error
+        python_error = capture_python_error
+        error_info = python_error.try &.to_s
         debug_log("import:error name=#{name} error=#{error_info}")
-        raise ImportError.new(name, error_info)
+        raise ImportError.new(name, error_info, python_error)
       end
       PyObject.from_owned(mod_ptr)
     end

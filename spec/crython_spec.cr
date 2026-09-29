@@ -99,6 +99,16 @@ describe Crython do
     end
   end
 
+  it "exposes Python exception details and traceback" do
+    with_crython do
+      error = expect_raises(Crython::CrythonError) { Crython.eval("1 / 0") }
+      details = error.python_error.not_nil!
+      details.type_name.should eq("ZeroDivisionError")
+      details.message.should contain("division by zero")
+      details.traceback.not_nil!.should contain("ZeroDivisionError")
+    end
+  end
+
   it "clears Python error state after exception extraction" do
     with_crython do
       expect_raises(Crython::CrythonError, /ZeroDivisionError: division by zero/) do

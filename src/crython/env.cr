@@ -126,10 +126,11 @@ module Crython
   private def self.execute_code(code : String, input_mode : Int32, filename : String, operation : String, syntax_hint : String? = nil) : LibPython::PyObject
     code_obj = LibPython.compile_string(code.to_unsafe, filename.to_unsafe, input_mode)
     if code_obj.null?
-      error_info = extract_python_error
+      python_error = capture_python_error
+      error_info = python_error.try &.to_s
       message = "Error #{operation}#{error_info ? " - #{error_info}" : ""}"
       message += syntax_hint.not_nil! if syntax_hint && error_info && error_info.includes?("SyntaxError")
-      raise CrythonError.new(message)
+      raise CrythonError.new(message, python_error)
     end
 
     begin
@@ -147,7 +148,8 @@ module Crython
         begin
           value = LibPython.eval_eval_code(code_obj, main_dict, main_dict)
           if value.null?
-            raise CrythonError.new("Error #{operation}#{(error_info = extract_python_error) ? " - #{error_info}" : ""}")
+            python_error = capture_python_error
+            raise CrythonError.new("Error #{operation}#{python_error ? " - #{python_error}" : ""}", python_error)
           end
           value
         ensure
