@@ -1,5 +1,11 @@
 require "./spec_helper"
 
+private class FailingToPy
+  def to_py : Crython::PyObject
+    raise Crython::CrythonError.new("intentional conversion failure")
+  end
+end
+
 describe Crython do
   it "has a version" do
     Crython::VERSION.should be_a(String)
@@ -108,6 +114,19 @@ describe Crython do
       expect_raises(Crython::CrythonError, /SystemExit/) do
         Crython.exec("raise SystemExit(7)")
       end
+      Crython.eval("6 * 7").to_i64.should eq(42)
+    end
+  end
+
+  it "cleans up partially constructed containers after conversion failure" do
+    with_crython do
+      failing = FailingToPy.new
+
+      expect_raises(Crython::CrythonError, /intentional conversion failure/) { [1, failing].to_py }
+      expect_raises(Crython::CrythonError, /intentional conversion failure/) { {1, failing}.to_py }
+      expect_raises(Crython::CrythonError, /intentional conversion failure/) { {"ok" => 1, "bad" => failing}.to_py }
+      expect_raises(Crython::CrythonError, /intentional conversion failure/) { NamedTuple.new(ok: 1, bad: failing).to_py }
+
       Crython.eval("6 * 7").to_i64.should eq(42)
     end
   end

@@ -2,19 +2,30 @@ class Array(T)
   def to_py : Crython::PyObject
     Crython.with_gil do
       list = Crython::LibPython.list_new(self.size)
-      self.each_with_index do |item, index|
-        py_item = item.to_py
-        py_item_raw = py_item.to_unsafe
-        # Keep py_item's own reference and give the stealing API a new one.
-        Crython::LibPython.incref(py_item_raw)
-
-        if Crython::LibPython.list_set_item(list, index, py_item_raw) < 0
-          Crython::LibPython.decref(list)
-          error_info = Crython.extract_python_error
-          raise Crython::CrythonError.new("Failed to insert item into list#{error_info ? ": #{error_info}" : ""}")
-        end
+      if list.null?
+        error_info = Crython.extract_python_error
+        raise Crython::CrythonError.new("Failed to create list#{error_info ? ": #{error_info}" : ""}")
       end
-      Crython::PyObject.from_owned(list)
+
+      complete = false
+      begin
+        self.each_with_index do |item, index|
+          py_item = item.to_py
+          py_item_raw = py_item.to_unsafe
+          # Keep py_item's own reference and give the stealing API a new one.
+          Crython::LibPython.incref(py_item_raw)
+
+          # PyList_SetItem steals this reference even when it fails.
+          if Crython::LibPython.list_set_item(list, index, py_item_raw) < 0
+            error_info = Crython.extract_python_error
+            raise Crython::CrythonError.new("Failed to insert item into list#{error_info ? ": #{error_info}" : ""}")
+          end
+        end
+        complete = true
+        Crython::PyObject.from_owned(list)
+      ensure
+        Crython::LibPython.decref(list) unless complete
+      end
     end
   end
 
