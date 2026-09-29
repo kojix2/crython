@@ -92,74 +92,62 @@ module Crython
     end
   end
 
-  # Execute Python statements with error handling.
+  # Execute Python statements in the shared __main__ namespace.
   def self.exec(code : String) : Nil
     debug_log("exec:start bytes=#{code.bytesize} preview=#{eval_preview(code)}")
-    result = with_gil do
-      rc = LibPython.run_simple_string(code.to_unsafe)
-      py_err = !LibPython.err_occurred.null?
-      debug_log("exec:done rc=#{rc} py_err=#{py_err}")
-      {rc, py_err}
+    with_gil do
+      result = execute_code(code, PY_FILE_INPUT, "<crython-exec>", "executing Python code")
+      LibPython.decref(result)
     end
-    r = result[0]
-    py_err = result[1]
-    if r != 0
-      error_info = extract_python_error
-      debug_log("exec:error rc=#{r} py_err=#{py_err} error=#{error_info}")
-      with_gil do
-      end
-      raise CrythonError.new("Error executing Python code#{error_info ? " - #{error_info}" : ""}")
-    end
+    debug_log("exec:done")
   end
 
-  # Evaluate a Python expression and return the result as PyObject.
+  # Evaluate a Python expression in the shared __main__ namespace.
   def self.eval(code : String) : PyObject
     debug_log("eval:start bytes=#{code.bytesize} preview=#{eval_preview(code)}")
     result = with_gil do
-      code_obj = LibPython.compile_string(code.to_unsafe, "<crython-eval>".to_unsafe, PY_EVAL_INPUT)
-      if code_obj.null?
-        error_info = extract_python_error
-        msg = "Error evaluating Python expression#{error_info ? " - #{error_info}" : ""}"
-        if error_info && error_info.includes?("SyntaxError")
-          msg += " (Use Crython.exec for statements)"
-        end
-        raise CrythonError.new(msg)
+      execute_code(code, PY_EVAL_INPUT, "<crython-eval>", "evaluating Python expression", " (Use Crython.exec for statements)")
+    end
+    debug_log("eval:done")
+    PyObject.from_owned(result)
+  end
+
+  private def self.execute_code(code : String, input_mode : Int32, filename : String, operation : String, syntax_hint : String? = nil) : LibPython::PyObject
+    code_obj = LibPython.compile_string(code.to_unsafe, filename.to_unsafe, input_mode)
+    if code_obj.null?
+      error_info = extract_python_error
+      message = "Error #{operation}#{error_info ? " - #{error_info}" : ""}"
+      message += syntax_hint.not_nil! if syntax_hint && error_info && error_info.includes?("SyntaxError")
+      raise CrythonError.new(message)
+    end
+
+    begin
+      main_mod = LibPython.import("__main__")
+      if main_mod.null?
+        raise ImportError.new("__main__", extract_python_error)
       end
 
       begin
-        main_mod = LibPython.import("__main__")
-        if main_mod.null?
-          error_info = extract_python_error
-          raise ImportError.new("__main__", error_info)
+        main_dict = LibPython.object_get_attr_string(main_mod, "__dict__".to_unsafe)
+        if main_dict.null?
+          raise AttributeError.new("__main__", "__dict__", extract_python_error)
         end
 
         begin
-          main_dict = LibPython.object_get_attr_string(main_mod, "__dict__".to_unsafe)
-          if main_dict.null?
-            error_info = extract_python_error
-            raise AttributeError.new("__main__", "__dict__", error_info)
+          value = LibPython.eval_eval_code(code_obj, main_dict, main_dict)
+          if value.null?
+            raise CrythonError.new("Error #{operation}#{(error_info = extract_python_error) ? " - #{error_info}" : ""}")
           end
-
-          begin
-            value = LibPython.eval_eval_code(code_obj, main_dict, main_dict)
-            if value.null?
-              error_info = extract_python_error
-              raise CrythonError.new("Error evaluating Python expression#{error_info ? " - #{error_info}" : ""}")
-            end
-            value
-          ensure
-            LibPython.decref(main_dict)
-          end
+          value
         ensure
-          LibPython.decref(main_mod)
+          LibPython.decref(main_dict)
         end
       ensure
-        LibPython.decref(code_obj)
+        LibPython.decref(main_mod)
       end
+    ensure
+      LibPython.decref(code_obj)
     end
-
-    debug_log("eval:done")
-    PyObject.from_owned(result)
   end
 
   private def self.ensure_initialized! : Nil

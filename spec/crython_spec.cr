@@ -93,6 +93,15 @@ describe Crython do
     end
   end
 
+  it "turns SystemExit into a Crython error and remains usable" do
+    with_crython do
+      expect_raises(Crython::CrythonError, /SystemExit/) do
+        Crython.exec("raise SystemExit(7)")
+      end
+      Crython.eval("6 * 7").to_i64.should eq(42)
+    end
+  end
+
   it "initializes idempotently" do
     Crython.init
     Crython.init
