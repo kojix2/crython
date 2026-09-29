@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="generator" content="Crystal Docs 1.20.3">
 <meta name="crystal_docs.project_version" content="dev">
 <meta name="crystal_docs.project_name" content="crython">
 
@@ -102,6 +102,11 @@
       
     </li>
   
+  <li class=" " data-id="crython/Crython/InitializationError" data-name="crython::initializationerror">
+      <a href="Crython/InitializationError.html">InitializationError</a>
+      
+    </li>
+  
   <li class=" " data-id="crython/Crython/ItemError" data-name="crython::itemerror">
       <a href="Crython/ItemError.html">ItemError</a>
       
@@ -114,11 +119,6 @@
   
   <li class=" " data-id="crython/Crython/PyObject" data-name="crython::pyobject">
       <a href="Crython/PyObject.html">PyObject</a>
-      
-    </li>
-  
-  <li class=" " data-id="crython/Crython/SessionToken" data-name="crython::sessiontoken">
-      <a href="Crython/SessionToken.html">SessionToken</a>
       
     </li>
   
@@ -261,7 +261,7 @@ Crystal meets Python!</p>
 </a>Installation</h2>
 <ul>
 <li>You need Python3. Python3.14 or later is recommended.</li>
-<li>Make sure <code>python3-config --ldflags</code> works.</li>
+<li>Make sure <code>python3-config --embed --ldflags</code> works.</li>
 </ul>
 <p>Add this to your dependencies:</p>
 <pre><code class="language-yaml">dependencies:
@@ -276,23 +276,21 @@ Crystal meets Python!</p>
 <ol>
 <li>Verify your Python toolchain:</li>
 </ol>
-<pre><code class="language-bash">python3-config --ldflags</code></pre>
+<pre><code class="language-bash">python3-config --embed --ldflags</code></pre>
 <ol start="2">
 <li>Create your minimal app:</li>
 </ol>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;crython&quot;</span>
 
-<span class="t">Crython</span>.session <span class="k">do</span>
+<span class="t">Crython</span>.init
   <span class="t">Crython</span>.exec(<span class="s">&quot;x = 40 + 2&quot;</span>)
-  puts <span class="t">Crython</span>.eval(<span class="s">&quot;x&quot;</span>).to_cr  <span class="c"># 42</span>
-<span class="k">end</span></code></pre>
+  puts <span class="t">Crython</span>.eval(<span class="s">&quot;x&quot;</span>).to_cr  <span class="c"># 42</span></code></pre>
 <ol start="3">
 <li>Install dependencies and build:</li>
 </ol>
 <pre><code class="language-bash">shards install
-ver=$(python3 -c 'import sys; print(&quot;{}.{}&quot;.format(sys.version_info.major, sys.version_info.minor))')
 crystal build src/main.cr -o app \
-  --link-flags &quot;$(python3-config --ldflags) -lpython$ver -lm&quot;</code></pre>
+  --link-flags &quot;$(python3-config --embed --ldflags) -lm&quot;</code></pre>
 <ol start="4">
 <li>Run your app (set runtime library path if needed):</li>
 </ol>
@@ -333,17 +331,17 @@ crystal build src/main.cr -o app \
     <use href="#octicon-link"/>
   </svg>
 </a>Basic Usage</h2>
-<h3><a id="session-lifecycle" class="anchor" href="#session-lifecycle">
+<h3><a id="runtime-lifecycle" class="anchor" href="#runtime-lifecycle">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Session Lifecycle</h3>
+</a>Runtime Lifecycle</h3>
 <ul>
-<li>Crython initializes the embedded Python runtime once and reuses it.</li>
-<li><code>Crython.session</code> starts a logical Crython session but does not shut down Python at block end.</li>
-<li><code>Crython.finalize</code> closes the logical Crython session state.</li>
-<li>Internal session identity uses session tokens.</li>
+<li>Crython initializes one embedded Python runtime per process and reuses it until process exit.</li>
+<li>Call <code>Crython.init</code> once before using the library.</li>
+<li>Python globals, imported modules, and definitions persist across calls. Crython does not support interpreter finalization or reinitialization.</li>
 </ul>
+<p><code>session</code> was deliberately removed. CPython exposes finalization APIs, but an embedding library cannot safely promise that <code>Py_Finalize*</code> followed by reinitialization will reset every extension module, Python-owned resource, or live <code>PyObject</code> wrapper. A per-block <code>session</code> would therefore either falsely imply that it resets Python or leave state alive across its boundary. Crython instead exposes the honest lifecycle: initialize once, reuse one interpreter for the process, and treat Python globals as process-lifetime state.</p>
 <h3><a id="importing-a-python-module" class="anchor" href="#importing-a-python-module">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -360,7 +358,7 @@ puts result  <span class="c"># [2 4 6]</span></code></pre>
     <use href="#octicon-link"/>
   </svg>
 </a>Embedding Python Code</h3>
-<pre><code class="language-crystal"><span class="t">Crython</span>.session <span class="k">do</span>
+<pre><code class="language-crystal"><span class="t">Crython</span>.init
   <span class="c"># Execute Python statements</span>
   <span class="t">Crython</span>.exec(<span class="s">&quot;print(&#39;Hello from Python!&#39;)&quot;</span>)
 
@@ -376,10 +374,8 @@ puts result  <span class="c"># [2 4 6]</span></code></pre>
   <span class="c"># Import modules and use them</span>
   np <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;numpy&quot;</span>)
   array <span class="o">=</span> np.array([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>])
-  puts array
-<span class="k">end</span></code></pre>
-<p>If you need to end a logical Crython session explicitly:</p>
-<pre><code class="language-crystal"><span class="t">Crython</span>.finalize</code></pre>
+  puts array</code></pre>
+<p>Crython does not expose session finalization or reset.</p>
 <h3><a id="type-conversion" class="anchor" href="#type-conversion">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -458,6 +454,7 @@ plt.plot([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3<
 <ul>
 <li>Use <code>obj.call(&quot;Abc&quot;)</code> to call a Python attribute whose name is not a valid Crystal method name.</li>
 <li>Use <code>obj.call(&quot;Abc&quot;, arg1, arg2)</code> to call it with positional arguments.</li>
+<li>Use <code>obj.invoke(...)</code> to call a callable returned by <code>attr</code>.</li>
 <li>Prefer <code>call()</code> for uppercase Python attribute names such as class constructors: <code>collections.call(&quot;Counter&quot;, data)</code>.</li>
 <li>Keep <code>obj.method_name(...)</code> for simple lowercase methods like <code>math.sqrt(16.0)</code>.</li>
 <li>Use <code>&quot;-&quot;.to_py.attr(&quot;join&quot;)</code> to get a function attribute.</li>
@@ -481,31 +478,28 @@ counter <span class="o">=</span> collections.call(<span class="s">&quot;Counter&
 <li><code>Crython.exec(&quot;...&quot;)</code>: executes Python statements and returns <code><a href="Nil.html">Nil</a></code>.</li>
 </ul>
 <p>If you pass statements to <code>eval</code>, Crython raises an error with guidance to use <code>exec</code>.</p>
-<pre><code class="language-crystal"><span class="t">Crython</span>.session <span class="k">do</span>
+<pre><code class="language-crystal"><span class="t">Crython</span>.init
   <span class="k">begin</span>
     <span class="c"># Expression evaluation error</span>
     <span class="t">Crython</span>.eval(<span class="s">&quot;1/0&quot;</span>)
   <span class="k">rescue</span> ex
     puts <span class="s">&quot;Python error: </span><span class="i">#{</span>ex.message<span class="i">}</span><span class="s">&quot;</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre>
-<pre><code class="language-crystal"><span class="t">Crython</span>.session <span class="k">do</span>
+  <span class="k">end</span></code></pre>
+<pre><code class="language-crystal"><span class="t">Crython</span>.init
   <span class="c"># Statement execution</span>
   <span class="t">Crython</span>.exec(<span class="s">&quot;x = 40 + 2&quot;</span>)
 
   <span class="c"># Expression evaluation (returns PyObject)</span>
   answer <span class="o">=</span> <span class="t">Crython</span>.eval(<span class="s">&quot;x&quot;</span>)
-  puts answer.to_cr  <span class="c"># 42</span>
-<span class="k">end</span></code></pre>
-<pre><code class="language-crystal"><span class="t">Crython</span>.session <span class="k">do</span>
+  puts answer.to_cr  <span class="c"># 42</span></code></pre>
+<pre><code class="language-crystal"><span class="t">Crython</span>.init
   <span class="k">begin</span>
     <span class="c"># This is a statement, so eval raises and suggests exec</span>
     <span class="t">Crython</span>.eval(<span class="s">&quot;x = 10&quot;</span>)
   <span class="k">rescue</span> ex
     puts ex.message
     <span class="c"># =&gt; ... Use Crython.exec for statements</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre>
+  <span class="k">end</span></code></pre>
 <h2><a id="testing" class="anchor" href="#testing">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -513,7 +507,7 @@ counter <span class="o">=</span> collections.call(<span class="s">&quot;Counter&
 </a>Testing</h2>
 <p>You can run tests either directly or via <code>make</code>.</p>
 <p>Direct execution (explicit link flags):</p>
-<pre><code class="language-bash">crystal spec --link-flags &quot;$(python3-config --ldflags) -lpython$(python3 -c 'import sys; print(f&quot;{sys.version_info.major}.{sys.version_info.minor}&quot;)') -lm&quot;</code></pre>
+<pre><code class="language-bash">crystal spec --link-flags &quot;$(python3-config --embed --ldflags) -lpython$(python3 -c 'import sys; print(f&quot;{sys.version_info.major}.{sys.version_info.minor}&quot;)') -lm&quot;</code></pre>
 <p>Or use <code>make</code> as a shortcut:</p>
 <pre><code class="language-bash">make test</code></pre>
 <p>Or with uv:</p>
@@ -536,21 +530,20 @@ counter <span class="o">=</span> collections.call(<span class="s">&quot;Counter&
     <use href="#octicon-link"/>
   </svg>
 </a>NumPy Example</h3>
-<pre><code class="language-crystal"><span class="t">Crython</span>.session <span class="k">do</span>
+<pre><code class="language-crystal"><span class="t">Crython</span>.init
   np <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;numpy&quot;</span>)
 
   x1 <span class="o">=</span> np.array([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>])
   x2 <span class="o">=</span> np.array([<span class="n">4</span>, <span class="n">5</span>, <span class="n">6</span>])
 
   y <span class="o">=</span> x1 <span class="o">+</span> x2
-  puts <span class="s">&quot;</span><span class="i">#{</span>x1<span class="i">}</span><span class="s"> + </span><span class="i">#{</span>x2<span class="i">}</span><span class="s"> = </span><span class="i">#{</span>y<span class="i">}</span><span class="s">&quot;</span>  <span class="c"># [1 2 3] + [4 5 6] = [5 7 9]</span>
-<span class="k">end</span></code></pre>
+  puts <span class="s">&quot;</span><span class="i">#{</span>x1<span class="i">}</span><span class="s"> + </span><span class="i">#{</span>x2<span class="i">}</span><span class="s"> = </span><span class="i">#{</span>y<span class="i">}</span><span class="s">&quot;</span>  <span class="c"># [1 2 3] + [4 5 6] = [5 7 9]</span></code></pre>
 <h3><a id="matplotlib-example" class="anchor" href="#matplotlib-example">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>Matplotlib Example</h3>
-<pre><code class="language-crystal"><span class="t">Crython</span>.session <span class="k">do</span>
+<pre><code class="language-crystal"><span class="t">Crython</span>.init
   plt <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;matplotlib.pyplot&quot;</span>)
 
   <span class="c"># Create data</span>
@@ -564,8 +557,7 @@ counter <span class="o">=</span> collections.call(<span class="s">&quot;Counter&
   plt.ylabel(<span class="s">&quot;Square&quot;</span>)
 
   <span class="c"># Show plot</span>
-  plt.show
-<span class="k">end</span></code></pre>
+  plt.show</code></pre>
 <h2><a id="known-limitations" class="anchor" href="#known-limitations">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -600,7 +592,7 @@ counter <span class="o">=</span> collections.call(<span class="s">&quot;Counter&
     <use href="#octicon-link"/>
   </svg>
 </a>Linking Errors</h3>
-<p>If you encounter linking errors during compilation, check that <code>python3-config --ldflags</code> returns the correct flags for your Python installation.</p>
+<p>If you encounter linking errors during compilation, check that <code>python3-config --embed --ldflags</code> returns the correct flags for your Python installation.</p>
 <h2><a id="contributing" class="anchor" href="#contributing">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="generator" content="Crystal Docs 1.20.3">
 <meta name="crystal_docs.project_version" content="dev">
 <meta name="crystal_docs.project_name" content="crython">
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="crython">
-  <title>Crython::SessionToken - crython dev</title>
+  <title>Crython::InitializationError - crython dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -102,6 +102,11 @@
       
     </li>
   
+  <li class=" current" data-id="crython/Crython/InitializationError" data-name="crython::initializationerror">
+      <a href="../Crython/InitializationError.html">InitializationError</a>
+      
+    </li>
+  
   <li class=" " data-id="crython/Crython/ItemError" data-name="crython::itemerror">
       <a href="../Crython/ItemError.html">ItemError</a>
       
@@ -114,11 +119,6 @@
   
   <li class=" " data-id="crython/Crython/PyObject" data-name="crython::pyobject">
       <a href="../Crython/PyObject.html">PyObject</a>
-      
-    </li>
-  
-  <li class=" current" data-id="crython/Crython/SessionToken" data-name="crython::sessiontoken">
-      <a href="../Crython/SessionToken.html">SessionToken</a>
       
     </li>
   
@@ -242,13 +242,13 @@
 <h1 class="type-name">
 
   <span class="kind">
-    struct
-  </span> Crython::<wbr>SessionToken
+    class
+  </span> Crython::<wbr>InitializationError
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Crython/SessionToken.html">Crython::SessionToken</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Crython/InitializationError.html">Crython::InitializationError</a></li><li class="superclass"><a href="../Crython/CrythonError.html">Crython::CrythonError</a></li><li class="superclass">Exception</li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -278,7 +278,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/env.cr#L4" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/env.cr#L10" target="_blank">
         crython/env.cr
       </a>
     
@@ -290,61 +290,12 @@
 
 
   
-  <h2>
-    <a id="constructors" class="anchor" href="#constructors">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructors
-  </h2>
-  <ul class="list-summary">
-    
-      <li class="entry-summary">
-        <a href="#new%28id%3AUInt64%2Cgeneration%3AUInt64%29-class-method" class="signature"><strong>.new</strong>(id : UInt64, generation : UInt64)</a>
-        
-      </li>
-    
-  </ul>
-
 
   
 
   
 
   
-  <h2>
-    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Instance Method Summary
-  </h2>
-  <ul class="list-summary">
-    
-      <li class="entry-summary">
-        <a href="#clone-instance-method" class="signature"><strong>#clone</strong></a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#copy_with%28id_id%3D%40id%2Cgeneration_generation%3D%40generation%29-instance-method" class="signature"><strong>#copy_with</strong>(id _id = @id, generation _generation = @generation)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#generation%3AUInt64-instance-method" class="signature"><strong>#generation</strong> : UInt64</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#id%3AUInt64-instance-method" class="signature"><strong>#id</strong> : UInt64</a>
-        
-      </li>
-    
-  </ul>
-
 
 
   <div class="methods-inherited">
@@ -388,111 +339,28 @@
 
 
     
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
   </div>
 
   
-  <h2>
-    <a id="constructor-detail" class="anchor" href="#constructor-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructor Detail
-  </h2>
-  
-    <div class="entry-detail" id="new(id:UInt64,generation:UInt64)-class-method">
-      <div class="signature">
-        
-        def self.<strong>new</strong>(id : <a href="../UInt64.html">UInt64</a>, generation : <a href="../UInt64.html">UInt64</a>)
-
-        <a class="method-permalink" href="#new%28id%3AUInt64%2Cgeneration%3AUInt64%29-class-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/env.cr#L4" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-
 
   
 
   
 
   
-  <h2>
-    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Instance Method Detail
-  </h2>
-  
-    <div class="entry-detail" id="clone-instance-method">
-      <div class="signature">
-        
-        def <strong>clone</strong>
-
-        <a class="method-permalink" href="#clone-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/env.cr#L4" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="copy_with(id_id=@id,generation_generation=@generation)-instance-method">
-      <div class="signature">
-        
-        def <strong>copy_with</strong>(id _id = @id, generation _generation = @generation)
-
-        <a class="method-permalink" href="#copy_with%28id_id%3D%40id%2Cgeneration_generation%3D%40generation%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/env.cr#L4" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="generation:UInt64-instance-method">
-      <div class="signature">
-        
-        def <strong>generation</strong> : <a href="../UInt64.html">UInt64</a>
-
-        <a class="method-permalink" href="#generation%3AUInt64-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="id:UInt64-instance-method">
-      <div class="signature">
-        
-        def <strong>id</strong> : <a href="../UInt64.html">UInt64</a>
-
-        <a class="method-permalink" href="#id%3AUInt64-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-      </div>
-    </div>
-  
-
 
 
 </div>

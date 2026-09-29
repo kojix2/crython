@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="generator" content="Crystal Docs 1.20.3">
 <meta name="crystal_docs.project_version" content="dev">
 <meta name="crystal_docs.project_name" content="crython">
 
@@ -102,6 +102,11 @@
       
     </li>
   
+  <li class=" " data-id="crython/Crython/InitializationError" data-name="crython::initializationerror">
+      <a href="Crython/InitializationError.html">InitializationError</a>
+      
+    </li>
+  
   <li class=" " data-id="crython/Crython/ItemError" data-name="crython::itemerror">
       <a href="Crython/ItemError.html">ItemError</a>
       
@@ -114,11 +119,6 @@
   
   <li class=" " data-id="crython/Crython/PyObject" data-name="crython::pyobject">
       <a href="Crython/PyObject.html">PyObject</a>
-      
-    </li>
-  
-  <li class=" " data-id="crython/Crython/SessionToken" data-name="crython::sessiontoken">
-      <a href="Crython/SessionToken.html">SessionToken</a>
       
     </li>
   
@@ -352,6 +352,7 @@ expose the invalid UTF-8 byte sequences. In particular, <code>Regex</code>'s und
 engine may reject strings that are not valid UTF-8, or it may invoke undefined
 behavior on invalid strings. If this is undesired, <code>#scrub</code> could be used to
 remove the offending byte sequences first.</p>
+<p><span class="flag purple">NOTE</span>  This type cannot be inherited due to its special memory representation.</p>
 
 
 
@@ -392,7 +393,7 @@ remove the offending byte sequences first.</p>
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/cr2py/string.cr#L1" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/cr2py/string.cr#L1" target="_blank">
         crython/cr2py/string.cr
       </a>
     
@@ -510,7 +511,7 @@ remove the offending byte sequences first.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/cr2py/string.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/cr2py/string.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -542,7 +543,7 @@ remove the offending byte sequences first.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/cr2py/string.cr#L2" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/cr2py/string.cr#L2" target="_blank">View source</a>]
         
       </div>
     </div>

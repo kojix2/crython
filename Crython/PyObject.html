@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="generator" content="Crystal Docs 1.20.3">
 <meta name="crystal_docs.project_version" content="dev">
 <meta name="crystal_docs.project_name" content="crython">
 
@@ -102,6 +102,11 @@
       
     </li>
   
+  <li class=" " data-id="crython/Crython/InitializationError" data-name="crython::initializationerror">
+      <a href="../Crython/InitializationError.html">InitializationError</a>
+      
+    </li>
+  
   <li class=" " data-id="crython/Crython/ItemError" data-name="crython::itemerror">
       <a href="../Crython/ItemError.html">ItemError</a>
       
@@ -114,11 +119,6 @@
   
   <li class=" current" data-id="crython/Crython/PyObject" data-name="crython::pyobject">
       <a href="../Crython/PyObject.html">PyObject</a>
-      
-    </li>
-  
-  <li class=" " data-id="crython/Crython/SessionToken" data-name="crython::sessiontoken">
-      <a href="../Crython/SessionToken.html">SessionToken</a>
       
     </li>
   
@@ -303,21 +303,21 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L101" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L102" target="_blank">
         crython/py2cr/basic.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/collections.cr#L142" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/collections.cr#L138" target="_blank">
         crython/py2cr/collections.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L5" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L5" target="_blank">
         crython/pyobject.cr
       </a>
     
@@ -340,7 +340,16 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28raw%3ALibPython%3A%3APyObject%2Cneed_decref%3ABool%3Dfalse%29-class-method" class="signature"><strong>.new</strong>(raw : LibPython::PyObject, need_decref : Bool = <span class="n">false</span>)</a>
+        <a href="#from_borrowed%28raw%3ALibPython%3A%3APyObject%29%3APyObject-class-method" class="signature"><strong>.from_borrowed</strong>(raw : LibPython::PyObject) : PyObject</a>
+        
+          <div class="summary"><p>Promote a borrowed reference before its owner can be released.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#from_owned%28raw%3ALibPython%3A%3APyObject%29%3APyObject-class-method" class="signature"><strong>.from_owned</strong>(raw : LibPython::PyObject) : PyObject</a>
+        
+          <div class="summary"><p>Adopt a new reference returned by a CPython API.</p></div>
         
       </li>
     
@@ -555,16 +564,9 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#need_decref%3ABool-instance-method" class="signature"><strong>#need_decref</strong> : Bool</a>
+        <a href="#invoke%28%2Aargs%2C%2A%2Akwargs%29%3APyObject-instance-method" class="signature"><strong>#invoke</strong>(*args, **kwargs) : PyObject</a>
         
-          <div class="summary"><p>Ownership rules - <code>need_decref = true</code> means this wrapper owns one Python reference.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#need_decref%3D%28need_decref%3ABool%29-instance-method" class="signature"><strong>#need_decref=</strong>(need_decref : Bool)</a>
-        
-          <div class="summary"><p>Ownership rules - <code>need_decref = true</code> means this wrapper owns one Python reference.</p></div>
+          <div class="summary"><p>Invoke this object itself when it is callable.</p></div>
         
       </li>
     
@@ -770,18 +772,44 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(raw:LibPython::PyObject,need_decref:Bool=false)-class-method">
+    <div class="entry-detail" id="from_borrowed(raw:LibPython::PyObject):PyObject-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(raw : LibPython::PyObject, need_decref : <a href="../Bool.html">Bool</a> = <span class="n">false</span>)
+        def self.<strong>from_borrowed</strong>(raw : LibPython::PyObject) : <a href="../Crython/PyObject.html">PyObject</a>
 
-        <a class="method-permalink" href="#new%28raw%3ALibPython%3A%3APyObject%2Cneed_decref%3ABool%3Dfalse%29-class-method">#</a>
+        <a class="method-permalink" href="#from_borrowed%28raw%3ALibPython%3A%3APyObject%29%3APyObject-class-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Promote a borrowed reference before its owner can be released.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L23" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="from_owned(raw:LibPython::PyObject):PyObject-class-method">
+      <div class="signature">
+        
+        def self.<strong>from_owned</strong>(raw : LibPython::PyObject) : <a href="../Crython/PyObject.html">PyObject</a>
+
+        <a class="method-permalink" href="#from_owned%28raw%3ALibPython%3A%3APyObject%29%3APyObject-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Adopt a new reference returned by a CPython API.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -819,7 +847,7 @@ than Python attribute syntax.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L64" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L46" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -847,7 +875,7 @@ than Python attribute syntax.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -875,7 +903,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -891,7 +919,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -907,7 +935,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -923,7 +951,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -939,7 +967,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -955,7 +983,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -971,7 +999,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -987,7 +1015,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1003,7 +1031,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1019,7 +1047,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1035,7 +1063,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1051,7 +1079,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1067,7 +1095,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1083,7 +1111,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1099,7 +1127,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1115,7 +1143,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1131,7 +1159,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1147,7 +1175,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1163,7 +1191,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1179,7 +1207,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1204,7 +1232,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1220,7 +1248,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1236,7 +1264,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1252,7 +1280,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1268,7 +1296,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1284,7 +1312,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L240" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L180" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1300,7 +1328,7 @@ way to do it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L298" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L227" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1323,7 +1351,7 @@ method name, such as class constructors like <code>Counter</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L82" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L64" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1339,7 +1367,7 @@ method name, such as class constructors like <code>Counter</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L234" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L95" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1355,7 +1383,7 @@ method name, such as class constructors like <code>Counter</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L31" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1376,7 +1404,7 @@ method name, such as class constructors like <code>Counter</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L103" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L104" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1392,67 +1420,28 @@ method name, such as class constructors like <code>Counter</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L377" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L298" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="need_decref:Bool-instance-method">
+    <div class="entry-detail" id="invoke(*args,**kwargs):PyObject-instance-method">
       <div class="signature">
         
-        def <strong>need_decref</strong> : <a href="../Bool.html">Bool</a>
+        def <strong>invoke</strong>(*args, **kwargs) : <a href="../Crython/PyObject.html">PyObject</a>
 
-        <a class="method-permalink" href="#need_decref%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#invoke%28%2Aargs%2C%2A%2Akwargs%29%3APyObject-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Ownership rules</p>
-<ul>
-<li><code>need_decref = true</code> means this wrapper owns one Python reference.</li>
-<li><code>need_decref = false</code> means borrowed/non-owning wrapper.</li>
-<li>When passing values to a stealing API (e.g. PyTuple_SetItem,
-PyList_SetItem), transfer ownership only if we own the ref;
-otherwise incref before passing.</li>
-<li>When passing values to a non-stealing API (e.g. PyDict_SetItem),
-decref temporary values only if this wrapper owns them.</li>
-</ul>
+          <p>Invoke this object itself when it is callable.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L16" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="need_decref=(need_decref:Bool)-instance-method">
-      <div class="signature">
-        
-        def <strong>need_decref=</strong>(need_decref : <a href="../Bool.html">Bool</a>)
-
-        <a class="method-permalink" href="#need_decref%3D%28need_decref%3ABool%29-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Ownership rules</p>
-<ul>
-<li><code>need_decref = true</code> means this wrapper owns one Python reference.</li>
-<li><code>need_decref = false</code> means borrowed/non-owning wrapper.</li>
-<li>When passing values to a stealing API (e.g. PyTuple_SetItem,
-PyList_SetItem), transfer ownership only if we own the ref;
-otherwise incref before passing.</li>
-<li>When passing values to a non-stealing API (e.g. PyDict_SetItem),
-decref temporary values only if this wrapper owns them.</li>
-</ul>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L89" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1473,7 +1462,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L125" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L126" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1494,7 +1483,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/collections.cr#L144" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/collections.cr#L140" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1515,7 +1504,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L158" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L163" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1536,7 +1525,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L296" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L301" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1557,7 +1546,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L163" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L168" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1578,7 +1567,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L236" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L241" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1599,7 +1588,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L140" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L141" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1620,7 +1609,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/collections.cr#L149" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/collections.cr#L145" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1641,7 +1630,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L130" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L131" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1662,7 +1651,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L135" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L136" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1683,7 +1672,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L190" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L195" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1699,7 +1688,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L389" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L312" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1720,7 +1709,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L145" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L146" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1736,7 +1725,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/pyobject.cr#L365" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/pyobject.cr#L284" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1757,7 +1746,7 @@ decref temporary values only if this wrapper owns them.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/476f74722b0fae8f7493e042f48c9163022dd26b/src/crython/py2cr/basic.cr#L213" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/py2cr/basic.cr#L218" target="_blank">View source</a>]
         
       </div>
     </div>
