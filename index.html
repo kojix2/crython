@@ -288,8 +288,8 @@ Crystal meets Python!</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;crython&quot;</span>
 
 <span class="t">Crython</span>.init
-  <span class="t">Crython</span>.exec(<span class="s">&quot;x = 40 + 2&quot;</span>)
-  puts <span class="t">Crython</span>.eval(<span class="s">&quot;x&quot;</span>).to_cr  <span class="c"># 42</span></code></pre>
+<span class="t">Crython</span>.exec(<span class="s">&quot;x = 40 + 2&quot;</span>)
+puts <span class="t">Crython</span>.eval(<span class="s">&quot;x&quot;</span>).to_cr  <span class="c"># 42</span></code></pre>
 <ol start="3">
 <li>Install dependencies and build:</li>
 </ol>
@@ -364,22 +364,22 @@ puts result  <span class="c"># [2 4 6]</span></code></pre>
   </svg>
 </a>Embedding Python Code</h3>
 <pre><code class="language-crystal"><span class="t">Crython</span>.init
-  <span class="c"># Execute Python statements</span>
-  <span class="t">Crython</span>.exec(<span class="s">&quot;print(&#39;Hello from Python!&#39;)&quot;</span>)
+<span class="c"># Execute Python statements</span>
+<span class="t">Crython</span>.exec(<span class="s">&quot;print(&#39;Hello from Python!&#39;)&quot;</span>)
 
-  <span class="c"># Multiple lines of Python statements</span>
-  <span class="t">Crython</span>.exec(<span class="s">&lt;&lt;-PYTHON</span>)
-<span class="s">    print(&#39;Hello from Python!&#39;)
-  PYTHON</span>
+<span class="c"># Multiple lines of Python statements</span>
+<span class="t">Crython</span>.exec(<span class="s">&lt;&lt;-PYTHON</span>)
+<span class="s">  print(&#39;Hello from Python!&#39;)
+PYTHON</span>
 
-  <span class="c"># Evaluate a Python expression and get a PyObject back</span>
-  value <span class="o">=</span> <span class="t">Crython</span>.eval(<span class="s">&quot;1 + 2&quot;</span>)
-  puts value.to_cr <span class="c"># 3</span>
+<span class="c"># Evaluate a Python expression and get a PyObject back</span>
+value <span class="o">=</span> <span class="t">Crython</span>.eval(<span class="s">&quot;1 + 2&quot;</span>)
+puts value.to_cr <span class="c"># 3</span>
 
-  <span class="c"># Import modules and use them</span>
-  np <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;numpy&quot;</span>)
-  array <span class="o">=</span> np.array([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>])
-  puts array</code></pre>
+<span class="c"># Import modules and use them</span>
+np <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;numpy&quot;</span>)
+array <span class="o">=</span> np.array([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>])
+puts array</code></pre>
 <p>Crython does not expose session finalization or reset.</p>
 <h3><a id="type-conversion" class="anchor" href="#type-conversion">
   <svg class="octicon-link" aria-hidden="true">
@@ -484,6 +484,7 @@ counter <span class="o">=</span> collections.call(<span class="s">&quot;Counter&
 </ul>
 <p>If you pass statements to <code>eval</code>, Crython raises an error with guidance to use <code>exec</code>.
 Python-originated failures expose <code>CrythonError#python_error</code>, including the Python exception type, message, and formatted traceback.</p>
+<p>The snippets below assume Crython has already been initialized.</p>
 <pre><code class="language-crystal"><span class="k">begin</span>
   <span class="t">Crython</span>.eval(<span class="s">&quot;1 / 0&quot;</span>)
 <span class="k">rescue</span> error : <span class="t">Crython</span><span class="t">::</span><span class="t">CrythonError</span>
@@ -492,28 +493,25 @@ Python-originated failures expose <code>CrythonError#python_error</code>, includ
     puts details.traceback
   <span class="k">end</span>
 <span class="k">end</span></code></pre>
-<pre><code class="language-crystal"><span class="t">Crython</span>.init
-  <span class="k">begin</span>
-    <span class="c"># Expression evaluation error</span>
-    <span class="t">Crython</span>.eval(<span class="s">&quot;1/0&quot;</span>)
-  <span class="k">rescue</span> ex
-    puts <span class="s">&quot;Python error: </span><span class="i">#{</span>ex.message<span class="i">}</span><span class="s">&quot;</span>
-  <span class="k">end</span></code></pre>
-<pre><code class="language-crystal"><span class="t">Crython</span>.init
-  <span class="c"># Statement execution</span>
-  <span class="t">Crython</span>.exec(<span class="s">&quot;x = 40 + 2&quot;</span>)
+<pre><code class="language-crystal"><span class="k">begin</span>
+  <span class="c"># Expression evaluation error</span>
+  <span class="t">Crython</span>.eval(<span class="s">&quot;1/0&quot;</span>)
+<span class="k">rescue</span> ex
+  puts <span class="s">&quot;Python error: </span><span class="i">#{</span>ex.message<span class="i">}</span><span class="s">&quot;</span>
+<span class="k">end</span></code></pre>
+<pre><code class="language-crystal"><span class="c"># Statement execution</span>
+<span class="t">Crython</span>.exec(<span class="s">&quot;x = 40 + 2&quot;</span>)
 
-  <span class="c"># Expression evaluation (returns PyObject)</span>
-  answer <span class="o">=</span> <span class="t">Crython</span>.eval(<span class="s">&quot;x&quot;</span>)
-  puts answer.to_cr  <span class="c"># 42</span></code></pre>
-<pre><code class="language-crystal"><span class="t">Crython</span>.init
-  <span class="k">begin</span>
-    <span class="c"># This is a statement, so eval raises and suggests exec</span>
-    <span class="t">Crython</span>.eval(<span class="s">&quot;x = 10&quot;</span>)
-  <span class="k">rescue</span> ex
-    puts ex.message
-    <span class="c"># =&gt; ... Use Crython.exec for statements</span>
-  <span class="k">end</span></code></pre>
+<span class="c"># Expression evaluation (returns PyObject)</span>
+answer <span class="o">=</span> <span class="t">Crython</span>.eval(<span class="s">&quot;x&quot;</span>)
+puts answer.to_cr  <span class="c"># 42</span></code></pre>
+<pre><code class="language-crystal"><span class="k">begin</span>
+  <span class="c"># This is a statement, so eval raises and suggests exec</span>
+  <span class="t">Crython</span>.eval(<span class="s">&quot;x = 10&quot;</span>)
+<span class="k">rescue</span> ex
+  puts ex.message
+  <span class="c"># =&gt; ... Use Crython.exec for statements</span>
+<span class="k">end</span></code></pre>
 <h2><a id="testing" class="anchor" href="#testing">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -545,33 +543,33 @@ Python-originated failures expose <code>CrythonError#python_error</code>, includ
   </svg>
 </a>NumPy Example</h3>
 <pre><code class="language-crystal"><span class="t">Crython</span>.init
-  np <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;numpy&quot;</span>)
+np <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;numpy&quot;</span>)
 
-  x1 <span class="o">=</span> np.array([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>])
-  x2 <span class="o">=</span> np.array([<span class="n">4</span>, <span class="n">5</span>, <span class="n">6</span>])
+x1 <span class="o">=</span> np.array([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>])
+x2 <span class="o">=</span> np.array([<span class="n">4</span>, <span class="n">5</span>, <span class="n">6</span>])
 
-  y <span class="o">=</span> x1 <span class="o">+</span> x2
-  puts <span class="s">&quot;</span><span class="i">#{</span>x1<span class="i">}</span><span class="s"> + </span><span class="i">#{</span>x2<span class="i">}</span><span class="s"> = </span><span class="i">#{</span>y<span class="i">}</span><span class="s">&quot;</span>  <span class="c"># [1 2 3] + [4 5 6] = [5 7 9]</span></code></pre>
+y <span class="o">=</span> x1 <span class="o">+</span> x2
+puts <span class="s">&quot;</span><span class="i">#{</span>x1<span class="i">}</span><span class="s"> + </span><span class="i">#{</span>x2<span class="i">}</span><span class="s"> = </span><span class="i">#{</span>y<span class="i">}</span><span class="s">&quot;</span>  <span class="c"># [1 2 3] + [4 5 6] = [5 7 9]</span></code></pre>
 <h3><a id="matplotlib-example" class="anchor" href="#matplotlib-example">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>Matplotlib Example</h3>
 <pre><code class="language-crystal"><span class="t">Crython</span>.init
-  plt <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;matplotlib.pyplot&quot;</span>)
+plt <span class="o">=</span> <span class="t">Crython</span>.import(<span class="s">&quot;matplotlib.pyplot&quot;</span>)
 
-  <span class="c"># Create data</span>
-  x <span class="o">=</span> [<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>, <span class="n">4</span>, <span class="n">5</span>]
-  y <span class="o">=</span> [<span class="n">1</span>, <span class="n">4</span>, <span class="n">9</span>, <span class="n">16</span>, <span class="n">25</span>]
+<span class="c"># Create data</span>
+x <span class="o">=</span> [<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>, <span class="n">4</span>, <span class="n">5</span>]
+y <span class="o">=</span> [<span class="n">1</span>, <span class="n">4</span>, <span class="n">9</span>, <span class="n">16</span>, <span class="n">25</span>]
 
-  <span class="c"># Create plot</span>
-  plt.plot(x, y, marker: <span class="s">&quot;o&quot;</span>, linestyle: <span class="s">&quot;--&quot;</span>)
-  plt.title(<span class="s">&quot;Square Numbers&quot;</span>)
-  plt.xlabel(<span class="s">&quot;Number&quot;</span>)
-  plt.ylabel(<span class="s">&quot;Square&quot;</span>)
+<span class="c"># Create plot</span>
+plt.plot(x, y, marker: <span class="s">&quot;o&quot;</span>, linestyle: <span class="s">&quot;--&quot;</span>)
+plt.title(<span class="s">&quot;Square Numbers&quot;</span>)
+plt.xlabel(<span class="s">&quot;Number&quot;</span>)
+plt.ylabel(<span class="s">&quot;Square&quot;</span>)
 
-  <span class="c"># Show plot</span>
-  plt.show</code></pre>
+<span class="c"># Show plot</span>
+plt.show</code></pre>
 <h2><a id="known-limitations" class="anchor" href="#known-limitations">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
