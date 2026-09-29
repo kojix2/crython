@@ -122,6 +122,11 @@
       
     </li>
   
+  <li class=" " data-id="crython/Crython/PythonErrorInfo" data-name="crython::pythonerrorinfo">
+      <a href="../Crython/PythonErrorInfo.html">PythonErrorInfo</a>
+      
+    </li>
+  
   <li class=" " data-id="crython/Crython/TypeError" data-name="crython::typeerror">
       <a href="../Crython/TypeError.html">TypeError</a>
       
@@ -289,7 +294,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/error.cr#L16" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/da7a9989928b0c7a5749febefce482fab736f8c3/src/crython/error.cr#L36" target="_blank">
         crython/error.cr
       </a>
     
@@ -312,7 +317,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28object_type%3AString%2Cattribute_name%3AString%2Coriginal_error%3AString%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(object_type : String, attribute_name : String, original_error : String | Nil = <span class="n">nil</span>)</a>
+        <a href="#new%28object_type%3AString%2Cattribute_name%3AString%2Coriginal_error%3AString%7CNil%3Dnil%2Cpython_error%3APythonErrorInfo%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(object_type : String, attribute_name : String, original_error : String | Nil = <span class="n">nil</span>, python_error : PythonErrorInfo | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -330,8 +335,26 @@
     
       
 
+  <h3>Instance methods inherited from class <code><a href="../Crython/CrythonError.html">Crython::CrythonError</a></code></h3>
+  
+  
+    <a href="../Crython/CrythonError.html#python_error%3APythonErrorInfo%7CNil-instance-method" class="tooltip">
+      <span>python_error : PythonErrorInfo | Nil</span>
+    python_error</a>
+    
+  
+
 
       
+
+  <h3>Constructor methods inherited from class <code><a href="../Crython/CrythonError.html">Crython::CrythonError</a></code></h3>
+  
+  
+    <a href="../Crython/CrythonError.html#new%28message%3AString%2Cpython_error%3APythonErrorInfo%7CNil%3Dnil%29-class-method" class="tooltip">
+      <span>new(message : String, python_error : PythonErrorInfo | Nil = <span class="n">nil</span>)</span>
+    new</a>
+    
+  
 
 
       
@@ -392,18 +415,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(object_type:String,attribute_name:String,original_error:String|Nil=nil)-class-method">
+    <div class="entry-detail" id="new(object_type:String,attribute_name:String,original_error:String|Nil=nil,python_error:PythonErrorInfo|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(object_type : <a href="../String.html">String</a>, attribute_name : <a href="../String.html">String</a>, original_error : <a href="../String.html">String</a> | <a href="../Nil.html">Nil</a> = <span class="n">nil</span>)
+        def self.<strong>new</strong>(object_type : <a href="../String.html">String</a>, attribute_name : <a href="../String.html">String</a>, original_error : <a href="../String.html">String</a> | <a href="../Nil.html">Nil</a> = <span class="n">nil</span>, python_error : <a href="../Crython/PythonErrorInfo.html">PythonErrorInfo</a> | <a href="../Nil.html">Nil</a> = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28object_type%3AString%2Cattribute_name%3AString%2Coriginal_error%3AString%7CNil%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28object_type%3AString%2Cattribute_name%3AString%2Coriginal_error%3AString%7CNil%3Dnil%2Cpython_error%3APythonErrorInfo%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/b860bf18bcd4d2cfaf2b1c5970f4878ecf5061d3/src/crython/error.cr#L17" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/da7a9989928b0c7a5749febefce482fab736f8c3/src/crython/error.cr#L37" target="_blank">View source</a>]
         
       </div>
     </div>

@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="crython">
-  <title>Crython::CallError - crython dev</title>
+  <title>Crython::PythonErrorInfo - crython dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -87,7 +87,7 @@
       
     </li>
   
-  <li class=" current" data-id="crython/Crython/CallError" data-name="crython::callerror">
+  <li class=" " data-id="crython/Crython/CallError" data-name="crython::callerror">
       <a href="../Crython/CallError.html">CallError</a>
       
     </li>
@@ -122,7 +122,7 @@
       
     </li>
   
-  <li class=" " data-id="crython/Crython/PythonErrorInfo" data-name="crython::pythonerrorinfo">
+  <li class=" current" data-id="crython/Crython/PythonErrorInfo" data-name="crython::pythonerrorinfo">
       <a href="../Crython/PythonErrorInfo.html">PythonErrorInfo</a>
       
     </li>
@@ -247,27 +247,16 @@
 <h1 class="type-name">
 
   <span class="kind">
-    class
-  </span> Crython::<wbr>CallError
+    struct
+  </span> Crython::<wbr>PythonErrorInfo
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Crython/CallError.html">Crython::CallError</a></li><li class="superclass"><a href="../Crython/CrythonError.html">Crython::CrythonError</a></li><li class="superclass">Exception</li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Crython/PythonErrorInfo.html">Crython::PythonErrorInfo</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
-
-  <h2>
-    <a id="overview" class="anchor" href="#overview">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Overview
-  </h2>
-
-  <p>Raised when an error occurs while calling a Python method</p>
 
 
 
@@ -294,7 +283,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crython/blob/da7a9989928b0c7a5749febefce482fab736f8c3/src/crython/error.cr#L45" target="_blank">
+      <a href="https://github.com/kojix2/crython/blob/da7a9989928b0c7a5749febefce482fab736f8c3/src/crython/error.cr#L2" target="_blank">
         crython/error.cr
       </a>
     
@@ -317,7 +306,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28method_name%3AString%2Coriginal_error%3AString%7CNil%3Dnil%2Cpython_error%3APythonErrorInfo%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(method_name : String, original_error : String | Nil = <span class="n">nil</span>, python_error : PythonErrorInfo | Nil = <span class="n">nil</span>)</a>
+        <a href="#new%28type_name%3AString%2Cmessage%3AString%2Ctraceback%3AString%7CNil%2Cname%3AString%7CNil%29-class-method" class="signature"><strong>.new</strong>(type_name : String, message : String, traceback : String | Nil, name : String | Nil)</a>
         
       </li>
     
@@ -329,40 +318,48 @@
   
 
   
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#message%3AString-instance-method" class="signature"><strong>#message</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#name%3AString%7CNil-instance-method" class="signature"><strong>#name</strong> : String | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_s%28io%3AIO%29%3ANil-instance-method" class="signature"><strong>#to_s</strong>(io : IO) : Nil</a>
+        
+          <div class="summary"><p>Same as <code>#inspect(io)</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#traceback%3AString%7CNil-instance-method" class="signature"><strong>#traceback</strong> : String | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#type_name%3AString-instance-method" class="signature"><strong>#type_name</strong> : String</a>
+        
+      </li>
+    
+  </ul>
+
 
 
   <div class="methods-inherited">
-    
-      
-
-  <h3>Instance methods inherited from class <code><a href="../Crython/CrythonError.html">Crython::CrythonError</a></code></h3>
-  
-  
-    <a href="../Crython/CrythonError.html#python_error%3APythonErrorInfo%7CNil-instance-method" class="tooltip">
-      <span>python_error : PythonErrorInfo | Nil</span>
-    python_error</a>
-    
-  
-
-
-      
-
-  <h3>Constructor methods inherited from class <code><a href="../Crython/CrythonError.html">Crython::CrythonError</a></code></h3>
-  
-  
-    <a href="../Crython/CrythonError.html#new%28message%3AString%2Cpython_error%3APythonErrorInfo%7CNil%3Dnil%29-class-method" class="tooltip">
-      <span>new(message : String, python_error : PythonErrorInfo | Nil = <span class="n">nil</span>)</span>
-    new</a>
-    
-  
-
-
-      
-
-
-      
-
-
     
       
 
@@ -415,18 +412,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(method_name:String,original_error:String|Nil=nil,python_error:PythonErrorInfo|Nil=nil)-class-method">
+    <div class="entry-detail" id="new(type_name:String,message:String,traceback:String|Nil,name:String|Nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(method_name : <a href="../String.html">String</a>, original_error : <a href="../String.html">String</a> | <a href="../Nil.html">Nil</a> = <span class="n">nil</span>, python_error : <a href="../Crython/PythonErrorInfo.html">PythonErrorInfo</a> | <a href="../Nil.html">Nil</a> = <span class="n">nil</span>)
+        def self.<strong>new</strong>(type_name : <a href="../String.html">String</a>, message : <a href="../String.html">String</a>, traceback : <a href="../String.html">String</a> | <a href="../Nil.html">Nil</a>, name : <a href="../String.html">String</a> | <a href="../Nil.html">Nil</a>)
 
-        <a class="method-permalink" href="#new%28method_name%3AString%2Coriginal_error%3AString%7CNil%3Dnil%2Cpython_error%3APythonErrorInfo%7CNil%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28type_name%3AString%2Cmessage%3AString%2Ctraceback%3AString%7CNil%2Cname%3AString%7CNil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crython/blob/da7a9989928b0c7a5749febefce482fab736f8c3/src/crython/error.cr#L46" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crython/blob/da7a9989928b0c7a5749febefce482fab736f8c3/src/crython/error.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -438,6 +435,105 @@
   
 
   
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="message:String-instance-method">
+      <div class="signature">
+        
+        def <strong>message</strong> : <a href="../String.html">String</a>
+
+        <a class="method-permalink" href="#message%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/da7a9989928b0c7a5749febefce482fab736f8c3/src/crython/error.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="name:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>name</strong> : <a href="../String.html">String</a> | <a href="../Nil.html">Nil</a>
+
+        <a class="method-permalink" href="#name%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/da7a9989928b0c7a5749febefce482fab736f8c3/src/crython/error.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_s(io:IO):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>to_s</strong>(io : IO) : <a href="../Nil.html">Nil</a>
+
+        <a class="method-permalink" href="#to_s%28io%3AIO%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from struct Struct
+            </div>
+          
+          <p>Same as <code>#inspect(io)</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/da7a9989928b0c7a5749febefce482fab736f8c3/src/crython/error.cr#L11" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="traceback:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>traceback</strong> : <a href="../String.html">String</a> | <a href="../Nil.html">Nil</a>
+
+        <a class="method-permalink" href="#traceback%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/da7a9989928b0c7a5749febefce482fab736f8c3/src/crython/error.cr#L5" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="type_name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>type_name</strong> : <a href="../String.html">String</a>
+
+        <a class="method-permalink" href="#type_name%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crython/blob/da7a9989928b0c7a5749febefce482fab736f8c3/src/crython/error.cr#L3" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
 
 </div>
