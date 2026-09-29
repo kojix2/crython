@@ -3,8 +3,9 @@ module Crython
     getter type_name : String
     getter message : String
     getter traceback : String?
+    getter name : String?
 
-    def initialize(@type_name : String, @message : String, @traceback : String?)
+    def initialize(@type_name : String, @message : String, @traceback : String?, @name : String?)
     end
 
     def to_s(io : IO) : Nil
@@ -110,7 +111,7 @@ module Crython
             LibCrythonRuntime.free_string(traceback_ptr)
           end
         end
-        PythonErrorInfo.new(type_name, message, traceback)
+        PythonErrorInfo.new(type_name, message, traceback, exception_attribute_string(raised, "name"))
       ensure
         LibPython.decref(type_object) unless type_object.null?
         LibPython.decref(raised)
@@ -120,6 +121,20 @@ module Crython
 
   def self.extract_python_error : String?
     capture_python_error.try(&.to_s)
+  end
+
+  private def self.exception_attribute_string(object : LibPython::PyObject, name : String) : String?
+    value = LibPython.object_get_attr_string(object, name.to_unsafe)
+    if value.null?
+      LibPython.err_clear
+      return nil
+    end
+    begin
+      result = exception_object_string(value)
+      result == "None" ? nil : result
+    ensure
+      LibPython.decref(value)
+    end
   end
 
   private def self.exception_type_name(exception_type : LibPython::PyObject) : String

@@ -28,9 +28,13 @@ module Crython
       mod_ptr = LibPython.import(name)
       e = LibPython.err_occurred
       if mod_ptr.null? || !e.null?
-        error_info = extract_python_error
-        debug_log("import?:nil name=#{name} error=#{error_info}")
-        nil
+        python_error = capture_python_error
+        if python_error && python_error.type_name == "ModuleNotFoundError" && python_error.name == name
+          debug_log("import?:nil name=#{name} error=#{python_error}")
+          nil
+        else
+          raise ImportError.new(name, python_error.try(&.to_s), python_error)
+        end
       else
         PyObject.from_owned(mod_ptr)
       end

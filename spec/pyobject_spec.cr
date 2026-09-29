@@ -92,11 +92,10 @@ describe Crython::PyObject do
       end
     end
 
-    it "returns nil when call arguments are invalid" do
+    it "raises when a present callable rejects its arguments" do
       with_crython do
         math = Crython.import("math")
-        result = math.call?("pow")
-        result.should be_nil
+        expect_raises(Crython::CallError, /TypeError/) { math.call?("pow") }
       end
     end
   end

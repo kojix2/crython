@@ -16,8 +16,8 @@ module Crython
       Crython.with_gil do
         ptr = LibPython.object_get_attr_string(@raw, attr.to_unsafe)
         if ptr.null?
-          error_info = Crython.extract_python_error
-          raise AttributeError.new("object", attr, error_info)
+          python_error = Crython.capture_python_error
+          raise AttributeError.new("object", attr, python_error.try(&.to_s), python_error)
         end
         PyObject.from_owned(ptr)
       end
@@ -27,8 +27,12 @@ module Crython
       Crython.with_gil do
         ptr = LibPython.object_get_attr_string(@raw, attr.to_unsafe)
         if ptr.null?
-          Crython.clear_error
-          nil
+          python_error = Crython.capture_python_error
+          if python_error && python_error.type_name == "AttributeError" && python_error.name == attr
+            nil
+          else
+            raise AttributeError.new("object", attr, python_error.try(&.to_s), python_error)
+          end
         else
           PyObject.from_owned(ptr)
         end

@@ -63,8 +63,8 @@ module Crython
       Crython.with_gil do
         attr = LibPython.object_get_attr_string(@raw, call.to_s.to_unsafe)
         if attr.null?
-          error_info = Crython.extract_python_error
-          raise AttributeError.new("object", call.to_s, error_info)
+          python_error = Crython.capture_python_error
+          raise AttributeError.new("object", call.to_s, python_error.try(&.to_s), python_error)
         end
 
         begin
@@ -92,8 +92,10 @@ module Crython
 
     def call?(call : (String | Symbol), *args, **kwargs) : PyObject?
       call(call, *args, **kwargs)
-    rescue AttributeError | CallError
-      nil
+    rescue error : AttributeError
+      python_error = error.python_error
+      return nil if python_error && python_error.type_name == "AttributeError" && python_error.name == call.to_s
+      raise error
     end
 
     private def invoke_raw(callable : LibPython::PyObject, name : String, args, kwargs) : LibPython::PyObject
