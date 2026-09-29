@@ -69,43 +69,65 @@ module Crython
     end
   end
 
-  # Helper method to extract Python error information
+  # Extract the current Python exception while the GIL is held, then clear
+  # it from CPython and release every owned reference before returning.
   def self.extract_python_error : String?
     with_gil do
       return nil if LibPython.err_occurred.null?
 
-      # Fetch the exception type, value, and traceback
-      exc_type_ptr = uninitialized LibPython::PyObject
-      exc_value_ptr = uninitialized LibPython::PyObject
-      exc_tb_ptr = uninitialized LibPython::PyObject
+      exc_type = Pointer(Void).null.as(LibPython::PyObject)
+      exc_value = Pointer(Void).null.as(LibPython::PyObject)
+      exc_traceback = Pointer(Void).null.as(LibPython::PyObject)
+      LibPython.err_fetch(pointerof(exc_type), pointerof(exc_value), pointerof(exc_traceback))
+      LibPython.err_normalize_exception(pointerof(exc_type), pointerof(exc_value), pointerof(exc_traceback))
 
-      LibPython.err_fetch(pointerof(exc_type_ptr), pointerof(exc_value_ptr), pointerof(exc_tb_ptr))
-
-      # Normalize the exception
-      LibPython.err_normalize_exception(pointerof(exc_type_ptr), pointerof(exc_value_ptr), pointerof(exc_tb_ptr))
-
-      error_message = ""
-
-      # Get the exception type name
-      if !exc_type_ptr.null?
-        exc_type_obj = PyObject.from_owned(exc_type_ptr)
-        error_name_obj = exc_type_obj.attr("__name__")
-        error_message = error_name_obj.to_s
+      begin
+        type_name = exception_type_name(exc_type)
+        message = exception_object_string(exc_value)
+        message && !message.empty? ? "#{type_name}: #{message}" : type_name
+      ensure
+        LibPython.decref(exc_traceback) unless exc_traceback.null?
+        LibPython.decref(exc_value) unless exc_value.null?
+        LibPython.decref(exc_type) unless exc_type.null?
       end
+    end
+  end
 
-      # Get the exception message
-      if !exc_value_ptr.null?
-        exc_value_obj = PyObject.from_owned(exc_value_ptr)
-        exc_str = exc_value_obj.to_s
-        error_message += ": #{exc_str}" unless exc_str.empty?
+  private def self.exception_type_name(exception_type : LibPython::PyObject) : String
+    return "PythonError" if exception_type.null?
+
+    name = LibPython.object_get_attr_string(exception_type, "__name__".to_unsafe)
+    if name.null?
+      LibPython.err_clear
+      return "PythonError"
+    end
+
+    begin
+      exception_object_string(name) || "PythonError"
+    ensure
+      LibPython.decref(name)
+    end
+  end
+
+  private def self.exception_object_string(object : LibPython::PyObject) : String?
+    return nil if object.null?
+
+    string = LibPython.object_str(object)
+    if string.null?
+      LibPython.err_clear
+      return nil
+    end
+
+    begin
+      bytesize = uninitialized LibC::SSizeT
+      ptr = LibPython.unicode_as_utf8_and_size(string, pointerof(bytesize))
+      if ptr.null?
+        LibPython.err_clear
+        return nil
       end
-
-      # Decref traceback if present
-      if !exc_tb_ptr.null?
-        LibPython.decref(exc_tb_ptr)
-      end
-
-      error_message.empty? ? nil : error_message
+      String.new(ptr, bytesize.to_i)
+    ensure
+      LibPython.decref(string)
     end
   end
 end

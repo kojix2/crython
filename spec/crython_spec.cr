@@ -93,6 +93,16 @@ describe Crython do
     end
   end
 
+  it "clears Python error state after exception extraction" do
+    with_crython do
+      expect_raises(Crython::CrythonError, /ZeroDivisionError: division by zero/) do
+        Crython.eval("1 / 0")
+      end
+      Crython.err_occurred?.should be_false
+      Crython.eval("6 * 7").to_i64.should eq(42)
+    end
+  end
+
   it "turns SystemExit into a Crython error and remains usable" do
     with_crython do
       expect_raises(Crython::CrythonError, /SystemExit/) do
