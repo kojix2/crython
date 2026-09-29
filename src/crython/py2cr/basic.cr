@@ -5,7 +5,7 @@ module Crython
     def self.to_int32(pyobject : PyObject) : Int32
       Crython.with_gil do
         type_name = pyobject.get_type_name
-        unless type_name == "<class 'int'>"
+        unless LibCrythonRuntime.long_check(pyobject.raw) != 0
           raise TypeError.new(type_name, "Int32", "Expected Python int")
         end
 
@@ -24,7 +24,7 @@ module Crython
     def self.to_int64(pyobject : PyObject) : Int64
       Crython.with_gil do
         type_name = pyobject.get_type_name
-        unless type_name == "<class 'int'>"
+        unless LibCrythonRuntime.long_check(pyobject.raw) != 0
           raise TypeError.new(type_name, "Int64", "Expected Python int")
         end
 
@@ -43,7 +43,7 @@ module Crython
     def self.to_float64(pyobject : PyObject) : Float64
       Crython.with_gil do
         type_name = pyobject.get_type_name
-        unless type_name == "<class 'float'>"
+        unless LibCrythonRuntime.float_check(pyobject.raw) != 0
           raise TypeError.new(type_name, "Float64", "Expected Python float")
         end
 
@@ -62,7 +62,7 @@ module Crython
     def self.to_string(pyobject : PyObject) : String
       Crython.with_gil do
         type_name = pyobject.get_type_name
-        unless type_name == "<class 'str'>"
+        unless LibCrythonRuntime.unicode_check(pyobject.raw) != 0
           raise TypeError.new(type_name, "String", "Expected Python str")
         end
 
@@ -80,7 +80,7 @@ module Crython
     def self.to_bool(pyobject : PyObject) : Bool
       Crython.with_gil do
         type_name = pyobject.get_type_name
-        unless type_name == "<class 'bool'>"
+        unless LibCrythonRuntime.bool_check(pyobject.raw) != 0
           raise TypeError.new(type_name, "Bool", "Expected Python bool")
         end
 
@@ -92,7 +92,7 @@ module Crython
     def self.is_none?(pyobject : PyObject) : Bool
       Crython.with_gil do
         type_name = pyobject.get_type_name
-        type_name == "<class 'NoneType'>"
+        LibCrythonRuntime.none_check(pyobject.raw) != 0
       end
     end
   end
@@ -146,12 +146,19 @@ class Crython::PyObject
   def to_s(io : IO) : Nil
     Crython.with_gil do
       s = LibPython.object_str(@raw)
+      if s.null?
+        python_error = Crython.capture_python_error
+        raise CrythonError.new("Error converting Python object to string#{python_error ? " - #{python_error}" : ""}", python_error)
+      end
       begin
         bytesize = uninitialized LibC::SSizeT
 
         ptr = LibPython.unicode_as_utf8_and_size(s, pointerof(bytesize))
 
-        raise ValueError.new("Failed to convert Python string to UTF-8") if ptr.null?
+        if ptr.null?
+          python_error = Crython.capture_python_error
+          raise CrythonError.new("Error converting Python object to string#{python_error ? " - #{python_error}" : ""}", python_error)
+        end
         io.print String.new(ptr, bytesize.to_i)
       ensure
         LibPython.decref(s)
@@ -164,30 +171,30 @@ class Crython::PyObject
     Crython::Py2Cr.to_bool(self)
   end
 
-  # Convert to appropriate Crystal type
+  # Convert to an appropriate Crystal type, accepting Python subclasses.
   def to_cr
-    type_name = get_type_name
-    case type_name
-    when "<class 'int'>"
-      to_i64
-    when "<class 'float'>"
-      to_f64
-    when "<class 'str'>"
-      to_s
-    when "<class 'bool'>"
-      to_b
-    when "<class 'NoneType'>"
-      nil
-    when "<class 'list'>"
-      to_list
-    when "<class 'tuple'>"
-      to_tuple
-    when "<class 'dict'>"
-      to_dict
-    when "<class 'complex'>"
-      to_complex
-    else
-      raise TypeError.new(type_name, "Crystal type", "Unsupported Python type")
+    Crython.with_gil do
+      if LibCrythonRuntime.bool_check(@raw) != 0
+        to_b
+      elsif LibCrythonRuntime.long_check(@raw) != 0
+        to_i64
+      elsif LibCrythonRuntime.float_check(@raw) != 0
+        to_f64
+      elsif LibCrythonRuntime.unicode_check(@raw) != 0
+        to_s
+      elsif LibCrythonRuntime.none_check(@raw) != 0
+        nil
+      elsif LibCrythonRuntime.list_check(@raw) != 0
+        to_list
+      elsif LibCrythonRuntime.tuple_check(@raw) != 0
+        to_tuple
+      elsif LibCrythonRuntime.dict_check(@raw) != 0
+        to_dict
+      elsif LibCrythonRuntime.complex_check(@raw) != 0
+        to_complex
+      else
+        raise TypeError.new(get_type_name, "Crystal type", "Unsupported Python type")
+      end
     end
   end
 

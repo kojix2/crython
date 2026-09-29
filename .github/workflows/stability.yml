@@ -17,7 +17,7 @@ jobs:
           crystal: latest
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.x
+          python-version: "3.14"
       - run: |
           pip3 install matplotlib seaborn
       - name: Install gdb
@@ -61,6 +61,7 @@ jobs:
 
           ITERATIONS=100
           PYTHON_LIBDIR="$(make --no-print-directory print-python-libdir)"
+          CRYTHON_LINK_FLAGS="$(make --no-print-directory print-link-flags)"
           echo "Command: env CRYTHON_DEBUG=1 PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug LD_LIBRARY_PATH=${PYTHON_LIBDIR}:\${LD_LIBRARY_PATH} ./ci-logs/spec-bin -v" > ci-logs/config.log
           echo "Iterations: ${ITERATIONS}" >> ci-logs/config.log
           ulimit -c unlimited || true
@@ -72,6 +73,7 @@ jobs:
               CRYTHON_DEBUG=1 \
               PYTHONFAULTHANDLER=1 \
               PYTHONMALLOC=debug \
+              CRYTHON_LINK_FLAGS="$CRYTHON_LINK_FLAGS" \
               LD_LIBRARY_PATH="${PYTHON_LIBDIR}:${LD_LIBRARY_PATH:-}" \
               ./ci-logs/spec-bin -v 2>&1 | tee "$LOG_FILE"; then
               echo "Iteration $i failed" | tee -a "$LOG_FILE"

@@ -6,6 +6,11 @@ private class FailingToPy
   end
 end
 
+private def release_weakref_target : Nil
+  object = Crython.eval("__crython_release_target")
+  Crython.exec("del __crython_release_target")
+end
+
 describe Crython do
   it "has a version" do
     Crython::VERSION.should be_a(String)
@@ -179,5 +184,94 @@ describe Crython do
     Crython.init
     Crython.init
     Crython.eval("40 + 2").to_i64.should eq(42)
+  end
+  it "rejects Python work from a non-owner OS thread" do
+    with_crython do
+      result = Channel(Bool).new
+      thread = Thread.new do
+        result.send begin
+          Crython.eval("40 + 2")
+          false
+        rescue Crython::InitializationError
+          true
+        end
+      end
+      result.receive.should be_true
+      thread.join
+    end
+  end
+
+  it "releases deferred Python references at the next Python boundary" do
+    with_crython do
+      Crython.exec("import weakref; __crython_release_target = type('CrythonReleaseTarget', (), {})(); __crython_release_ref = weakref.ref(__crython_release_target)")
+      Crython.eval("__crython_release_ref() is None").to_b.should be_false
+      release_weakref_target
+      GC.collect
+      Crython.eval("__crython_release_ref() is None").to_b.should be_true
+    end
+  end
+
+  it "rejects a different executable and an externally initialized interpreter in child processes" do
+    project_root = File.expand_path("..", __DIR__)
+    children = ["before", "normal", "different", "external"]
+    children << "venv" if ENV["CRYTHON_TEST_VENV"]?
+    link_flags = ENV["CRYTHON_LINK_FLAGS"]? || raise "CRYTHON_LINK_FLAGS must be set when running initialization child specs"
+    children.each do |code|
+      output = IO::Memory.new
+      error = IO::Memory.new
+      status = Process.run("crystal", ["run", "spec/initialization_child.cr", "--link-flags", link_flags, "--", code], output: output, error: error, chdir: project_root)
+      status.success?.should be_true, output.to_s + error.to_s
+    end
+  end
+  it "keeps internal optional-operation and display exceptions structured and clears Python state" do
+    with_crython do
+      Crython.exec(<<-PYTHON
+      import sys
+      class CrythonFailingFinder:
+          def find_spec(self, fullname, path=None, target=None):
+              if fullname == "__crython_internal_import_failure":
+                  raise RuntimeError("import body failure")
+      sys.meta_path.insert(0, CrythonFailingFinder())
+      class CrythonFailingProperty:
+          @property
+          def value(self):
+              raise RuntimeError("property failure")
+      def __crython_failing_call():
+          raise RuntimeError("call failure")
+      class CrythonFailingDisplay:
+          def __str__(self):
+              raise RuntimeError("display failure")
+      __crython_property = CrythonFailingProperty()
+      __crython_display = CrythonFailingDisplay()
+      PYTHON
+      )
+      import_error = expect_raises(Crython::ImportError) { Crython.import?("__crython_internal_import_failure") }
+      import_error.python_error.not_nil!.type_name.should eq("RuntimeError")
+      main = Crython.import("__main__")
+      property_error = expect_raises(Crython::AttributeError) { main.attr("__crython_property").attr?("value") }
+      property_error.python_error.not_nil!.message.should contain("property failure")
+      call_error = expect_raises(Crython::CallError) { main.call?("__crython_failing_call") }
+      call_error.python_error.not_nil!.message.should contain("call failure")
+      display_error = expect_raises(Crython::CrythonError) { main.attr("__crython_display").to_s }
+      display_error.python_error.not_nil!.message.should contain("display failure")
+      Crython.err_occurred?.should be_false
+      Crython.eval("6 * 7").to_i64.should eq(42)
+    end
+  end
+
+  it "converts Python container subclasses, empty containers, and numeric boundaries" do
+    with_crython do
+      Crython.exec("class CrythonList(list):\n    pass\nclass CrythonTuple(tuple):\n    pass\nclass CrythonDict(dict):\n    pass")
+      main = Crython.import("__main__")
+      main.call("CrythonList", [1].to_py).to_cr.as(Array(Crython::PyObject)).size.should eq(1)
+      main.call("CrythonTuple", [1].to_py).to_cr.as(Array(Crython::PyObject)).size.should eq(1)
+      main.call("CrythonDict", {"a" => 1}.to_py).to_cr.as(Hash(Crython::PyObject, Crython::PyObject)).size.should eq(1)
+      Crython.eval("[]").to_cr.as(Array(Crython::PyObject)).size.should eq(0)
+      Crython.eval("()").to_cr.as(Array(Crython::PyObject)).size.should eq(0)
+      Crython.eval("{}").to_cr.as(Hash(Crython::PyObject, Crython::PyObject)).size.should eq(0)
+      Crython.eval("-1").to_i64.should eq(-1)
+      expect_raises(Crython::ValueError, /overflow/) { Crython.eval("2**63").to_i64 }
+      Crython.err_occurred?.should be_false
+    end
   end
 end

@@ -43,8 +43,8 @@ module Crython
       Crython.with_gil do
         result = LibPython.object_set_attr_string(@raw, attr.to_unsafe, obj.to_unsafe)
         if result < 0
-          error_info = Crython.extract_python_error
-          raise AttributeError.new("object", attr, error_info)
+          python_error = Crython.capture_python_error
+          raise AttributeError.new("object", attr, python_error.try(&.to_s), python_error)
         end
       end
     end
@@ -53,8 +53,8 @@ module Crython
       Crython.with_gil do
         result = LibPython.object_del_attr_string(@raw, attr.to_unsafe)
         if result < 0
-          error_info = Crython.extract_python_error
-          raise AttributeError.new("object", attr, error_info)
+          python_error = Crython.capture_python_error
+          raise AttributeError.new("object", attr, python_error.try(&.to_s), python_error)
         end
         true
       end

@@ -59,12 +59,17 @@ print-python-libdir:
 	@printf "%s\n" "$(PYTHON_LIBDIR)"
 
 doctor: ## Show detected Python/linker/runtime settings
+	@$(PYTHON_CONFIG) --cflags >/dev/null || (echo "error: $(PYTHON_CONFIG) --cflags failed" >&2; exit 1)
+	@$(PYTHON_CONFIG) --embed --ldflags >/dev/null || (echo "error: $(PYTHON_CONFIG) --embed --ldflags failed" >&2; exit 1)
+	@test -n "$(PYTHON_CFLAGS)" || (echo "error: $(PYTHON_CONFIG) --cflags returned no flags" >&2; exit 1)
+	@test -n "$(PYTHON_LDFLAGS)" || (echo "error: $(PYTHON_CONFIG) --embed --ldflags returned no flags" >&2; exit 1)
 	@echo "PYTHON=$(PYTHON)"
 	@echo "PYTHON_CONFIG=$(PYTHON_CONFIG)"
 	@echo "PYTHON_CFLAGS=$(PYTHON_CFLAGS)"
 	@echo "PYTHON_LDFLAGS=$(PYTHON_LDFLAGS)"
 	@echo "PYTHON_LIBDIR=$(PYTHON_LIBDIR)"
 	@echo "RUNTIME_ENV=$(RUNTIME_ENV)"
+	@$(RUNTIME_ENV) $(BUILD_PATH) crystal run tools/doctor.cr --link-flags "$(LDFLAGS)"
 
 deps: ## Build dependencies
 
@@ -73,7 +78,7 @@ $(EXAMPLES_TARGETS): $(O)/%: examples/%.cr
 	$(BUILD_PATH) crystal build $(FLAGS) $< --link-flags "$(LDFLAGS)" -o $@ --error-trace
 
 test: deps ## Run tests
-	$(RUNTIME_ENV) $(BUILD_PATH) crystal spec $(VERBOSE) --link-flags "$(LDFLAGS)"
+	$(RUNTIME_ENV) CRYTHON_LINK_FLAGS="$(LDFLAGS)" $(BUILD_PATH) crystal spec $(VERBOSE) --link-flags "$(LDFLAGS)"
 
 examples: $(DEPS) $(EXAMPLES_TARGETS) ## Build all examples
 

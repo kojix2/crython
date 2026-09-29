@@ -104,8 +104,8 @@ module Crython
       begin
         result = LibPython.object_call(callable, args_tuple, kwargs_dict)
         if result.null?
-          error_info = Crython.extract_python_error
-          raise CallError.new(name, error_info)
+          python_error = Crython.capture_python_error
+          raise CallError.new(name, python_error.try(&.to_s), python_error)
         end
         result
       ensure
@@ -217,8 +217,8 @@ module Crython
         end
 
         if ptr.null?
-          error_info = Crython.extract_python_error
-          raise ItemError.new(error_info)
+          python_error = Crython.capture_python_error
+          raise ItemError.new(python_error.try(&.to_s), python_error)
         end
         PyObject.from_owned(ptr)
       end
@@ -249,8 +249,8 @@ module Crython
         r = LibPython.object_set_item(@raw, py_key_raw, py_value_raw)
 
         if r < 0
-          error_info = Crython.extract_python_error
-          raise ItemError.new(error_info)
+          python_error = Crython.capture_python_error
+          raise ItemError.new(python_error.try(&.to_s), python_error)
         end
       end
     end

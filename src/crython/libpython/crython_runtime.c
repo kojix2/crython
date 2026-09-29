@@ -106,3 +106,12 @@ done:
     if (PyErr_Occurred()) PyErr_Clear();
     return result;
 }
+int crython_list_check(PyObject *object) { return PyList_Check(object); }
+int crython_tuple_check(PyObject *object) { return PyTuple_Check(object); }
+int crython_dict_check(PyObject *object) { return PyDict_Check(object); }
+int crython_long_check(PyObject *object) { return PyLong_Check(object); }
+int crython_float_check(PyObject *object) { return PyFloat_Check(object); }
+int crython_unicode_check(PyObject *object) { return PyUnicode_Check(object); }
+int crython_bool_check(PyObject *object) { return PyBool_Check(object); }
+int crython_none_check(PyObject *object) { return object == Py_None; }
+int crython_complex_check(PyObject *object) { return PyComplex_Check(object); }

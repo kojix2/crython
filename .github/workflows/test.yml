@@ -8,12 +8,20 @@ on:
   #   - cron: "51 3 * * 6" # Runs at 03:51, only on Saturday
 jobs:
   test:
-    name: ${{ matrix.os }}
+    name: ${{ matrix.os }} (Python ${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}-latest
+    env:
+      PYTHON: python3
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu", "macos"]
+        include:
+          - os: ubuntu
+            python-version: "3.12"
+          - os: ubuntu
+            python-version: "3.14"
+          - os: macos
+            python-version: "3.14"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,7 +31,14 @@ jobs:
           crystal: latest
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.x
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare venv import probe
+        run: |
+          set -euo pipefail
+          VENV_DIR="$RUNNER_TEMP/crython-venv"
+          python -m venv "$VENV_DIR"
+          "$VENV_DIR/bin/python" -c 'import pathlib, sysconfig; pathlib.Path(sysconfig.get_paths()["purelib"], "crython_venv_probe.py").write_text("value = 42\n")'
+          echo "CRYTHON_TEST_VENV=$VENV_DIR/bin/python" >> "$GITHUB_ENV"
       - run: |
           pip3 install matplotlib seaborn
       - name: Install dependencies
@@ -32,6 +47,18 @@ jobs:
         run: make
       - name: Run tests
         run: make test
+      - name: Verify downstream require auto-links the runtime shim
+        run: |
+          set -euo pipefail
+          CONSUMER="$RUNNER_TEMP/crython-consumer"
+          mkdir -p "$CONSUMER/src"
+          printf '%s\n' "name: crython_consumer" "version: 0.1.0" "dependencies:" "  crython:" "    path: $GITHUB_WORKSPACE" > "$CONSUMER/shard.yml"
+          printf '%s\n' 'require "crython"' 'Crython.init' 'abort "unexpected result" unless Crython.eval("6 * 7").to_i64 == 42' > "$CONSUMER/src/main.cr"
+          cd "$CONSUMER"
+          shards install
+          crystal build src/main.cr --link-flags "$(python3-config --cflags --embed --ldflags) -lm" -o consumer
+          PYTHON_LIBDIR="$(python -c 'import sysconfig; print(sysconfig.get_config_var("LIBDIR") or "")')"
+          LD_LIBRARY_PATH="$PYTHON_LIBDIR:${LD_LIBRARY_PATH:-}" ./consumer
       - name: Build executables
         run: |
           make examples

@@ -28,71 +28,50 @@ class Hash(K, V)
 
   def self.new(pyobject : Crython::PyObject) : Hash(K, V)
     Crython.with_gil do
-      # Check if it's a dict
-      type_obj = Crython::LibPython.object_type(pyobject)
-      if type_obj.null?
-        raise "Failed to get type object"
-      end
+      if Crython::LibCrythonRuntime.dict_check(pyobject.raw) != 0
+        key_ptr = Crython::LibPython::PyObject.null
+        value_ptr = Crython::LibPython::PyObject.null
+        pos = 0_i64
 
-      begin
-        type_str = Crython::LibPython.object_str(type_obj)
-        if type_str.null?
-          raise "Failed to get type name"
+        hash = Hash(K, V).new
+        while Crython::LibPython.dict_next(pyobject, pointerof(pos), pointerof(key_ptr), pointerof(value_ptr)) != 0
+          Crython::LibPython.incref(key_ptr)
+          Crython::LibPython.incref(value_ptr)
+          py_key = Crython::PyObject.from_owned(key_ptr)
+          py_value = Crython::PyObject.from_owned(value_ptr)
+
+          # Convert key and value to types K and V
+          key = K.new(py_key)
+          value = V.new(py_value)
+
+          hash[key] = value
         end
+        hash
+      else
+        # Try to convert to hash using to_cr
+        py_hash = pyobject.to_cr
+        if py_hash.is_a?(Hash)
+          # Convert each key and value to types K and V
+          result_hash = Hash(K, V).new
+          py_hash.each do |k, v|
+            key = if k.is_a?(Crython::PyObject)
+                    K.new(k)
+                  else
+                    k.as(K)
+                  end
 
-        begin
-          type_name = String.new(Crython::LibPython.unicode_as_utf8(type_str))
-        ensure
-          Crython::LibPython.decref(type_str)
-        end
-
-        if type_name == "<class 'dict'>"
-          key_ptr = Crython::LibPython::PyObject.null
-          value_ptr = Crython::LibPython::PyObject.null
-          pos = 0_i64
-
-          hash = Hash(K, V).new
-          while Crython::LibPython.dict_next(pyobject, pointerof(pos), pointerof(key_ptr), pointerof(value_ptr)) != 0
-            Crython::LibPython.incref(key_ptr)
-            Crython::LibPython.incref(value_ptr)
-            py_key = Crython::PyObject.from_owned(key_ptr)
-            py_value = Crython::PyObject.from_owned(value_ptr)
-
-            # Convert key and value to types K and V
-            key = K.new(py_key)
-            value = V.new(py_value)
-
-            hash[key] = value
-          end
-          hash
-        else
-          # Try to convert to hash using to_cr
-          py_hash = pyobject.to_cr
-          if py_hash.is_a?(Hash)
-            # Convert each key and value to types K and V
-            result_hash = Hash(K, V).new
-            py_hash.each do |k, v|
-              key = if k.is_a?(Crython::PyObject)
-                      K.new(k)
+            value = if v.is_a?(Crython::PyObject)
+                      V.new(v)
                     else
-                      k.as(K)
+                      v.as(V)
                     end
 
-              value = if v.is_a?(Crython::PyObject)
-                        V.new(v)
-                      else
-                        v.as(V)
-                      end
-
-              result_hash[key] = value
-            end
-            result_hash
-          else
-            raise "Cannot convert #{type_name} to Hash(#{K}, #{V})"
+            result_hash[key] = value
           end
+          result_hash
+        else
+          raise "Cannot convert #{pyobject.get_type_name} to Hash(#{K}, #{V})"
         end
-      ensure
-        Crython::LibPython.decref(type_obj) unless type_obj.nil?
       end
     end
   end

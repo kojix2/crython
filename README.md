@@ -13,8 +13,8 @@ Crython is a tool that lets you use [Python](https://github.com/python/cpython) 
 
 ## Installation
 
-- You need Python3. Python3.14 or later is recommended.
-- Make sure `python3-config --embed --ldflags` works.
+- You need CPython 3.12 or later. CPython 3.14 is the primary test target.
+- Make sure `python3-config --cflags --embed --ldflags` works.
 
 Add this to your dependencies:
 
@@ -31,7 +31,7 @@ Use this when integrating Crython into your own Crystal app
 1. Verify your Python toolchain:
 
 ```bash
-python3-config --embed --ldflags
+python3-config --cflags --embed --ldflags
 ```
 
 2. Create your minimal app:
@@ -49,7 +49,7 @@ Crython.init
 ```bash
 shards install
 crystal build src/main.cr -o app \
-  --link-flags "$(python3-config --embed --ldflags) -lm"
+  --link-flags "$(python3-config --cflags --embed --ldflags) -lm"
 ```
 
 4. Run your app (set runtime library path if needed):
@@ -101,7 +101,7 @@ require "complex"
 ### Runtime Lifecycle
 
 - Crython initializes one embedded Python runtime per process and reuses it until process exit.
-- Call `Crython.init` once before using the library.
+- Call `Crython.init` once before using the library. Pass `python_executable: "/path/to/python"` only when you need to select a specific environment.
 - Python globals, imported modules, and definitions persist across calls. Crython does not support interpreter finalization or reinitialization.
 
 `session` was deliberately removed. CPython exposes finalization APIs, but an embedding library cannot safely promise that `Py_Finalize*` followed by reinitialization will reset every extension module, Python-owned resource, or live `PyObject` wrapper. A per-block `session` would therefore either falsely imply that it resets Python or leave state alive across its boundary. Crython instead exposes the honest lifecycle: initialize once, reuse one interpreter for the process, and treat Python globals as process-lifetime state.
@@ -262,7 +262,7 @@ plt.plot([1, 2, 3], [4, 5, 6], color: "red", marker: "o")
 - Keep `obj.method_name(...)` for simple lowercase methods like `math.sqrt(16.0)`.
 - Use `"-".to_py.attr("join")` to get a function attribute.
 - Use `Crython.slice_full` instead of `:`.
-- Use `import?`, `attr?`, `call?` when you want `nil` instead of exceptions on failure.
+- Use `import?`, `attr?`, `call?` when a requested module or attribute may be absent. They return `nil` only for that absence; errors raised inside imports, properties, or callables still propagate.
 
 ```cr
 math = Crython.import?("math")
@@ -281,6 +281,18 @@ counter = collections.call("Counter", [1, 2, 1, 3].to_py)
 - `Crython.exec("...")`: executes Python statements and returns `Nil`.
 
 If you pass statements to `eval`, Crython raises an error with guidance to use `exec`.
+Python-originated failures expose `CrythonError#python_error`, including the Python exception type, message, and formatted traceback.
+
+```cr
+begin
+  Crython.eval("1 / 0")
+rescue error : Crython::CrythonError
+  if details = error.python_error
+    puts details.type_name # ZeroDivisionError
+    puts details.traceback
+  end
+end
+```
 
 ```cr
 Crython.init
@@ -320,7 +332,7 @@ You can run tests either directly or via `make`.
 Direct execution (explicit link flags):
 
 ```bash
-crystal spec --link-flags "$(python3-config --embed --ldflags) -lpython$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")') -lm"
+crystal spec --link-flags "$(python3-config --cflags --embed --ldflags) -lpython$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")') -lm"
 ```
 
 Or use `make` as a shortcut:
@@ -421,7 +433,7 @@ export LD_LIBRARY_PATH=$(python3 -c "import sysconfig; print(sysconfig.get_confi
 
 ### Linking Errors
 
-If you encounter linking errors during compilation, check that `python3-config --embed --ldflags` returns the correct flags for your Python installation.
+If you encounter linking errors during compilation, check that `python3-config --cflags --embed --ldflags` returns the correct flags for your Python installation.
 
 ## Contributing
 
