@@ -294,8 +294,9 @@ puts <span class="t">Crython</span>.eval(<span class="s">&quot;x&quot;</span>).t
 <li>Install dependencies and build:</li>
 </ol>
 <pre><code class="language-bash">shards install
+PYTHON_CFLAGS=&quot;$(python3-config --cflags | sed -E 's/(^|[[:space:]])-arch[[:space:]]+(arm64|x86_64)/\1/g')&quot;
 crystal build src/main.cr -o app \
-  --link-flags &quot;$(python3-config --cflags --embed --ldflags) -lm&quot;</code></pre>
+  --link-flags &quot;$PYTHON_CFLAGS $(python3-config --embed --ldflags) -lm&quot;</code></pre>
 <ol start="4">
 <li>Run your app (set runtime library path if needed):</li>
 </ol>
@@ -519,7 +520,8 @@ puts answer.to_cr  <span class="c"># 42</span></code></pre>
 </a>Testing</h2>
 <p>You can run tests either directly or via <code>make</code>.</p>
 <p>Direct execution (explicit link flags):</p>
-<pre><code class="language-bash">crystal spec --link-flags &quot;$(python3-config --cflags --embed --ldflags) -lpython$(python3 -c 'import sys; print(f&quot;{sys.version_info.major}.{sys.version_info.minor}&quot;)') -lm&quot;</code></pre>
+<pre><code class="language-bash">PYTHON_CFLAGS=&quot;$(python3-config --cflags | sed -E 's/(^|[[:space:]])-arch[[:space:]]+(arm64|x86_64)/\1/g')&quot;
+crystal spec --link-flags &quot;$PYTHON_CFLAGS $(python3-config --embed --ldflags) -lm&quot;</code></pre>
 <p>Or use <code>make</code> as a shortcut:</p>
 <pre><code class="language-bash">make test</code></pre>
 <p>Or with uv:</p>
