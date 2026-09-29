@@ -316,8 +316,10 @@ module Crython
       Crython.with_gil do
         s = LibPython.object_str(@raw)
         begin
-          ptr = LibPython.unicode_as_utf8(s)
-          io.print String.new(ptr)
+          bytesize = uninitialized LibC::SSizeT
+          ptr = LibPython.unicode_as_utf8_and_size(s, pointerof(bytesize))
+          raise ValueError.new("Failed to convert Python string to UTF-8") if ptr.null?
+          io.print String.new(ptr, bytesize.to_i)
         ensure
           LibPython.decref(s)
         end
@@ -328,8 +330,10 @@ module Crython
       Crython.with_gil do
         s = LibPython.object_repr(@raw)
         begin
-          ptr = LibPython.unicode_as_utf8(s)
-          io.print String.new(ptr)
+          bytesize = uninitialized LibC::SSizeT
+          ptr = LibPython.unicode_as_utf8_and_size(s, pointerof(bytesize))
+          raise ValueError.new("Failed to convert Python string to UTF-8") if ptr.null?
+          io.print String.new(ptr, bytesize.to_i)
         ensure
           LibPython.decref(s)
         end

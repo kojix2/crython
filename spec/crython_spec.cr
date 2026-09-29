@@ -120,6 +120,14 @@ describe Crython do
     end
   end
 
+  it "preserves embedded NUL bytes in strings" do
+    with_crython do
+      value = "before\0after"
+      value.to_py.to_cr.should eq(value)
+      String.new(value.to_py).should eq(value)
+    end
+  end
+
   it "invokes a callable object directly" do
     with_crython do
       Crython.exec("def __crython_add(a, b):\n    return a + b")

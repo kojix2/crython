@@ -11,5 +11,6 @@ module Crython
     fun unicode_from_encoded_object = PyUnicode_FromEncodedObject(o : PyObject, encoding : Char*, errors : Char*) : PyObject
     fun unicode_get_length = PyUnicode_GetLength(o : PyObject) : Int
     fun unicode_as_utf8 = PyUnicode_AsUTF8(str : PyObject) : Char*
+    fun unicode_as_utf8_and_size = PyUnicode_AsUTF8AndSize(str : PyObject, size : LibC::SSizeT*) : Char*
   end
 end
