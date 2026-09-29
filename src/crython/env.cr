@@ -1,7 +1,7 @@
 module Crython
   PY_SINGLE_INPUT = 256
-  PY_FILE_INPUT = 257
-  PY_EVAL_INPUT = 258
+  PY_FILE_INPUT   = 257
+  PY_EVAL_INPUT   = 258
 
   def self.debug_enabled? : Bool
     ENV["CRYTHON_DEBUG"]? == "1"
@@ -12,14 +12,17 @@ module Crython
 
   @@initialized = false
   @@owner_thread : Thread? = nil
+  @@python_executable : String? = nil
 
   # Crython currently supports only the OS thread that initialized CPython.
   def self.with_gil(&)
     ensure_initialized!
     state = LibPython.gil_state_ensure
     begin
+      LibCrythonRuntime.release_node_drain
       yield
     ensure
+      LibCrythonRuntime.release_node_drain
       LibPython.gil_state_release(state)
     end
   end
@@ -30,20 +33,28 @@ module Crython
 
   # Initialize CPython once for this process. Attaching to an interpreter
   # initialized by another library is deliberately unsupported.
-  def self.init : Nil
-    return if @@initialized
+  def self.init(python_executable : String? = nil) : Nil
+    if @@initialized
+      return if @@python_executable == python_executable
+      raise InitializationError.new("Crython is already initialized with a different python_executable")
+    end
 
     if LibPython.is_initialized != 0
       raise InitializationError.new("Python was initialized outside Crython; attaching to it is unsupported")
     end
 
-    LibPython.init
-    if LibPython.is_initialized == 0
-      raise InitializationError.new("Py_Initialize did not initialize Python")
+    error_message = Pointer(LibC::Char).null
+    executable_ptr = python_executable ? python_executable.not_nil!.to_unsafe : Pointer(LibC::Char).null
+    if LibCrythonRuntime.initialize(executable_ptr, pointerof(error_message)) != 0
+      message = error_message.null? ? "unknown PyConfig initialization failure" : String.new(error_message)
+      LibCrythonRuntime.free_string(error_message) unless error_message.null?
+      raise InitializationError.new("Python initialization failed: #{message}")
     end
 
     @@owner_thread = Thread.current
+    @@python_executable = python_executable
     @@initialized = true
+    LibPython.eval_save_thread
     debug_log("init:python runtime initialized")
   end
 

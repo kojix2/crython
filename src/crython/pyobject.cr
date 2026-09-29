@@ -8,7 +8,7 @@ module Crython
     # A wrapper always owns exactly one strong Python reference.
     getter raw : LibPython::PyObject
 
-    private def initialize(@raw : LibPython::PyObject)
+    private def initialize(@raw : LibPython::PyObject, @release_node : Void*)
     end
 
     # Adopt a new reference returned by a CPython API.
@@ -16,7 +16,12 @@ module Crython
       if raw.null?
         raise CrythonError.new("cannot wrap a null Python object")
       end
-      new(raw)
+      node = LibCrythonRuntime.release_node_new(raw)
+      if node.null?
+        Crython.with_gil { LibPython.decref(raw) }
+        raise CrythonError.new("cannot allocate Python reference release node")
+      end
+      new(raw, node)
     end
 
     # Promote a borrowed reference before its owner can be released.
@@ -25,18 +30,11 @@ module Crython
         raise CrythonError.new("cannot wrap a null Python object")
       end
       Crython.with_gil { LibPython.incref(raw) }
-      new(raw)
+      from_owned(raw)
     end
 
     def finalize
-      if Crython.initialized?
-        state = LibPython.gil_state_ensure
-        begin
-          LibPython.decref(@raw)
-        ensure
-          LibPython.gil_state_release(state)
-        end
-      end
+      LibCrythonRuntime.release_node_enqueue(@release_node)
     end
 
     # Convenience syntax for simple Python method calls.

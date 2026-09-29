@@ -42,7 +42,7 @@ $(foreach goal,$(EXTRA_GOALS),$(eval $(goal):;@:))
 endif
 
 CFLAGS += $(PYTHON_CFLAGS)
-LDFLAGS += $(PYTHON_LDFLAGS) -lm
+LDFLAGS += $(PYTHON_CFLAGS) $(PYTHON_LDFLAGS) -lm
 
 .PHONY: all deps test examples run doc clean help doctor print-link-flags print-python-libdir
 

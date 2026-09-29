@@ -47,7 +47,7 @@ describe Crython do
     with_crython do
       Crython.err_occurred?.should be_false
       math = Crython.import("math")
-      Crython::LibPython.object_get_attr_string(math.to_unsafe, "non_existent_attribute".to_unsafe)
+      Crython.with_gil { Crython::LibPython.object_get_attr_string(math.to_unsafe, "non_existent_attribute".to_unsafe) }
       Crython.err_occurred?.should be_true
       Crython.clear_error
       Crython.err_occurred?.should be_false
