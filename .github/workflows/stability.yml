@@ -36,6 +36,8 @@ jobs:
           } > ci-logs/core-config.log
       - name: Install dependencies
         run: shards install --without-development --release
+      - name: Show Python embedding configuration
+        run: make doctor
       - name: Build spec binary
         run: |
           set -euo pipefail
@@ -48,8 +50,7 @@ jobs:
             done
           } > spec/_ci_spec_runner.cr
 
-          PYTHON_VERSION="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
-          LINK_FLAGS="$(python3-config --ldflags) -lpython${PYTHON_VERSION} -lm"
+          LINK_FLAGS="$(make --no-print-directory print-link-flags)"
           crystal build spec/_ci_spec_runner.cr --error-trace --link-flags "${LINK_FLAGS}" -o ci-logs/spec-bin
           cp -f spec/_ci_spec_runner.cr ci-logs/spec_runner.cr
       - name: Run tests repeatedly
@@ -59,7 +60,7 @@ jobs:
           : > ci-logs/started.log
 
           ITERATIONS=100
-          PYTHON_LIBDIR="$(python3 -c 'import sysconfig; print(sysconfig.get_config_var("LIBDIR") or "")')"
+          PYTHON_LIBDIR="$(make --no-print-directory print-python-libdir)"
           echo "Command: env CRYTHON_DEBUG=1 PYTHONFAULTHANDLER=1 PYTHONMALLOC=debug LD_LIBRARY_PATH=${PYTHON_LIBDIR}:\${LD_LIBRARY_PATH} ./ci-logs/spec-bin -v" > ci-logs/config.log
           echo "Iterations: ${ITERATIONS}" >> ci-logs/config.log
           ulimit -c unlimited || true

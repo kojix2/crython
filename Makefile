@@ -44,13 +44,19 @@ endif
 CFLAGS += $(PYTHON_CFLAGS)
 LDFLAGS += $(PYTHON_LDFLAGS) -lm
 
-.PHONY: all deps test examples run doc clean help doctor
+.PHONY: all deps test examples run doc clean help doctor print-link-flags print-python-libdir
 
 help:
 	@echo "Available targets:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 all: deps
+
+print-link-flags:
+	@printf "%s\n" "$(LDFLAGS)"
+
+print-python-libdir:
+	@printf "%s\n" "$(PYTHON_LIBDIR)"
 
 doctor: ## Show detected Python/linker/runtime settings
 	@echo "PYTHON=$(PYTHON)"
