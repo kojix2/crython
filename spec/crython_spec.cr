@@ -102,6 +102,24 @@ describe Crython do
     end
   end
 
+  it "keeps source wrappers valid after container conversion" do
+    with_crython do
+      value = "still alive".to_py
+      key = "key".to_py
+
+      begin
+        [value, value].to_py
+        {value, value}.to_py
+        {key => value}.to_py
+        NamedTuple.new(value: value).to_py
+      end
+      GC.collect
+
+      value.to_cr.should eq("still alive")
+      key.to_cr.should eq("key")
+    end
+  end
+
   it "invokes a callable object directly" do
     with_crython do
       Crython.exec("def __crython_add(a, b):\n    return a + b")
