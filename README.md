@@ -40,8 +40,8 @@ python3-config --cflags --embed --ldflags
 require "crython"
 
 Crython.init
-  Crython.exec("x = 40 + 2")
-  puts Crython.eval("x").to_cr  # 42
+Crython.exec("x = 40 + 2")
+puts Crython.eval("x").to_cr  # 42
 ```
 
 3. Install dependencies and build:
@@ -126,22 +126,22 @@ puts result  # [2 4 6]
 
 ```cr
 Crython.init
-  # Execute Python statements
-  Crython.exec("print('Hello from Python!')")
+# Execute Python statements
+Crython.exec("print('Hello from Python!')")
 
-  # Multiple lines of Python statements
-  Crython.exec(<<-PYTHON)
-    print('Hello from Python!')
-  PYTHON
+# Multiple lines of Python statements
+Crython.exec(<<-PYTHON)
+  print('Hello from Python!')
+PYTHON
 
-  # Evaluate a Python expression and get a PyObject back
-  value = Crython.eval("1 + 2")
-  puts value.to_cr # 3
+# Evaluate a Python expression and get a PyObject back
+value = Crython.eval("1 + 2")
+puts value.to_cr # 3
 
-  # Import modules and use them
-  np = Crython.import("numpy")
-  array = np.array([1, 2, 3])
-  puts array
+# Import modules and use them
+np = Crython.import("numpy")
+array = np.array([1, 2, 3])
+puts array
 ```
 
 Crython does not expose session finalization or reset.
@@ -283,6 +283,8 @@ counter = collections.call("Counter", [1, 2, 1, 3].to_py)
 If you pass statements to `eval`, Crython raises an error with guidance to use `exec`.
 Python-originated failures expose `CrythonError#python_error`, including the Python exception type, message, and formatted traceback.
 
+The snippets below assume Crython has already been initialized.
+
 ```cr
 begin
   Crython.eval("1 / 0")
@@ -295,34 +297,31 @@ end
 ```
 
 ```cr
-Crython.init
-  begin
-    # Expression evaluation error
-    Crython.eval("1/0")
-  rescue ex
-    puts "Python error: #{ex.message}"
-  end
+begin
+  # Expression evaluation error
+  Crython.eval("1/0")
+rescue ex
+  puts "Python error: #{ex.message}"
+end
 ```
 
 ```cr
-Crython.init
-  # Statement execution
-  Crython.exec("x = 40 + 2")
+# Statement execution
+Crython.exec("x = 40 + 2")
 
-  # Expression evaluation (returns PyObject)
-  answer = Crython.eval("x")
-  puts answer.to_cr  # 42
+# Expression evaluation (returns PyObject)
+answer = Crython.eval("x")
+puts answer.to_cr  # 42
 ```
 
 ```cr
-Crython.init
-  begin
-    # This is a statement, so eval raises and suggests exec
-    Crython.eval("x = 10")
-  rescue ex
-    puts ex.message
-    # => ... Use Crython.exec for statements
-  end
+begin
+  # This is a statement, so eval raises and suggests exec
+  Crython.eval("x = 10")
+rescue ex
+  puts ex.message
+  # => ... Use Crython.exec for statements
+end
 ```
 
 ## Testing
@@ -377,33 +376,33 @@ Then run:
 
 ```cr
 Crython.init
-  np = Crython.import("numpy")
+np = Crython.import("numpy")
 
-  x1 = np.array([1, 2, 3])
-  x2 = np.array([4, 5, 6])
+x1 = np.array([1, 2, 3])
+x2 = np.array([4, 5, 6])
 
-  y = x1 + x2
-  puts "#{x1} + #{x2} = #{y}"  # [1 2 3] + [4 5 6] = [5 7 9]
+y = x1 + x2
+puts "#{x1} + #{x2} = #{y}"  # [1 2 3] + [4 5 6] = [5 7 9]
 ```
 
 ### Matplotlib Example
 
 ```cr
 Crython.init
-  plt = Crython.import("matplotlib.pyplot")
+plt = Crython.import("matplotlib.pyplot")
 
-  # Create data
-  x = [1, 2, 3, 4, 5]
-  y = [1, 4, 9, 16, 25]
+# Create data
+x = [1, 2, 3, 4, 5]
+y = [1, 4, 9, 16, 25]
 
-  # Create plot
-  plt.plot(x, y, marker: "o", linestyle: "--")
-  plt.title("Square Numbers")
-  plt.xlabel("Number")
-  plt.ylabel("Square")
+# Create plot
+plt.plot(x, y, marker: "o", linestyle: "--")
+plt.title("Square Numbers")
+plt.xlabel("Number")
+plt.ylabel("Square")
 
-  # Show plot
-  plt.show
+# Show plot
+plt.show
 ```
 
 ## Known Limitations
