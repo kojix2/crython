@@ -46,7 +46,7 @@ module Crython
     macro method_missing(call)
       {% if call.name.ends_with?("=") %}
         def {{ call.name }}(value)
-          __setattr__({{ call.name.stringify }}, value.to_py)
+          __setattr__({{ call.name.stringify }}[0...-1], value.to_py)
         end
       {% else %}
         {% if call.name.stringify =~ /^[A-Z]/ %}

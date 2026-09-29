@@ -32,6 +32,29 @@ describe Crython::PyObject do
     end
   end
 
+  describe "attribute mutation" do
+    it "sets and deletes Python attributes" do
+      with_crython do
+        namespace = Crython.import("types").call("SimpleNamespace")
+        namespace.answer = 42
+
+        namespace.attr("answer").to_i64.should eq(42)
+        namespace.del_attr("answer").should be_true
+        namespace.attr?("answer").should be_nil
+      end
+    end
+
+    it "reports a Python error when deleting a missing attribute" do
+      with_crython do
+        namespace = Crython.import("types").call("SimpleNamespace")
+        expect_raises(Crython::AttributeError, /AttributeError/) do
+          namespace.del_attr("missing")
+        end
+        Crython.err_occurred?.should be_false
+      end
+    end
+  end
+
   describe "attr?" do
     it "returns attribute when present" do
       with_crython do

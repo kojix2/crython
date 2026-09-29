@@ -47,7 +47,12 @@ module Crython
 
     def del_attr(attr : String) : Bool
       Crython.with_gil do
-        LibPython.object_del_attr_string(@raw, attr.to_unsafe) != 0
+        result = LibPython.object_del_attr_string(@raw, attr.to_unsafe)
+        if result < 0
+          error_info = Crython.extract_python_error
+          raise AttributeError.new("object", attr, error_info)
+        end
+        true
       end
     end
 
