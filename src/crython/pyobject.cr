@@ -63,148 +63,118 @@ module Crython
     # method name, such as class constructors like `Counter`.
     def call(call : (String | Symbol), *args, **kwargs) : PyObject
       Crython.with_gil do
-        # Get object type for better error messages
-        type_ptr = LibPython.object_get_attr_string(@raw, "__class__".to_unsafe)
-        type_name_ptr = LibPython.object_get_attr_string(type_ptr, "__name__".to_unsafe)
-        type_name = String.new(LibPython.unicode_as_utf8(type_name_ptr))
-        LibPython.decref(type_name_ptr)
-        LibPython.decref(type_ptr)
-
-        # Get attribute
         attr = LibPython.object_get_attr_string(@raw, call.to_s.to_unsafe)
         if attr.null?
           error_info = Crython.extract_python_error
-          raise AttributeError.new(type_name, call.to_s, error_info)
+          raise AttributeError.new("object", call.to_s, error_info)
         end
 
-        # Call with kwargs
-        if kwargs.size > 0
-          args_tuple = LibPython.tuple_new(args.size)
-          args.each_with_index do |arg, index|
-            value_raw = Pointer(Void).null.as(LibPython::PyObject)
-            if arg.is_a?(PyObject)
-              value_raw = arg.as(PyObject).to_unsafe
-              LibPython.incref(value_raw)
-            else
-              value_py = arg.to_py
-              value_raw = value_py.to_unsafe
-
-              LibPython.incref(value_raw)
-            end
-
-            if LibPython.tuple_set_item(args_tuple, index, value_raw) < 0
-              LibPython.decref(value_raw)
-              LibPython.decref(args_tuple)
-              LibPython.decref(attr)
-              error_info = Crython.extract_python_error
-              raise CallError.new(call.to_s, "Error building args tuple - #{error_info}")
-            end
-          end
-
-          kwargs_dict = LibPython.dict_new
-          kwargs.each do |k, v|
-            str = k.to_s
-            cstr = str.to_unsafe
-            key = LibPython.unicode_from_string_and_size(cstr, str.size)
-            # unicode_from_string_and_size and v.to_py both return new
-            # references. PyDict_SetItem does not steal references; it
-            # increments the reference counts internally. We must decref the
-            # temporaries we own after the call.
-            value_py = nil
-            value_raw = Pointer(Void).null.as(LibPython::PyObject)
-            if v.is_a?(PyObject)
-              value_raw = v.as(PyObject).to_unsafe
-            else
-              value_py = v.to_py
-              value_raw = value_py.to_unsafe
-            end
-            if LibPython.dict_set_item(kwargs_dict, key, value_raw) < 0
-              LibPython.decref(key)
-              LibPython.decref(kwargs_dict)
-              LibPython.decref(args_tuple)
-              LibPython.decref(attr)
-              error_info = Crython.extract_python_error
-              raise CallError.new(call.to_s, "Error building kwargs dict - #{error_info}")
-            end
-            LibPython.decref(key)
-          end
-          ret = LibPython.object_call(attr, args_tuple, kwargs_dict)
-          LibPython.decref(args_tuple)
-          LibPython.decref(kwargs_dict)
-          LibPython.decref(attr)
-          if ret.null?
-            error_info = Crython.extract_python_error
-            raise CallError.new(call.to_s, "Error with kwargs - #{error_info}")
-          end
-        else
-          # Call with args only
-          if args.size > 0
-            args_tuple = LibPython.tuple_new(args.size)
-            args.each_with_index do |arg, index|
-              value_raw = Pointer(Void).null.as(LibPython::PyObject)
-              if arg.is_a?(PyObject)
-                value_raw = arg.as(PyObject).to_unsafe
-                LibPython.incref(value_raw)
-              else
-                value_py = arg.to_py
-                value_raw = value_py.to_unsafe
-
-                LibPython.incref(value_raw)
-              end
-
-              if LibPython.tuple_set_item(args_tuple, index, value_raw) < 0
-                LibPython.decref(value_raw)
-                LibPython.decref(args_tuple)
-                LibPython.decref(attr)
-                error_info = Crython.extract_python_error
-                raise CallError.new(call.to_s, "Error building args tuple - #{error_info}")
-              end
-            end
-
-            ret = LibPython.object_call(attr, args_tuple, Pointer(Void).null.as(LibPython::PyObject))
-            LibPython.decref(args_tuple)
-            if ret.null?
-              error_info = Crython.extract_python_error
-              LibPython.decref(attr)
-              raise CallError.new(call.to_s, "Error with args - #{error_info}")
-            end
-            LibPython.decref(attr)
-          else
-            # No args - either call as function or return attribute
-            if LibPython.object_is_callable(attr) != 0
-              # Use PyObject_Call with an explicit empty tuple to avoid
-              # varargs ABI issues from PyObject_CallFunctionObjArgs.
-              empty_args = LibPython.tuple_new(0)
-              ret = LibPython.object_call(attr, empty_args, Pointer(Void).null.as(LibPython::PyObject))
-              LibPython.decref(empty_args)
-              # User should call attr if they want to get the attribute
-              # "-".to_py.attr("join")
-              LibPython.decref(attr)
-            else
-              ret = attr
-            end
-          end
+        begin
+          # Keep the historical zero-argument behaviour: a non-callable
+          # attribute is returned rather than invoked.
+          result = if args.empty? && kwargs.empty? && LibPython.object_is_callable(attr) == 0
+                     attr
+                   else
+                     invoke_raw(attr, call.to_s, args, kwargs)
+                   end
+          attr = Pointer(Void).null.as(LibPython::PyObject) if result == attr
+          PyObject.from_owned(result)
+        ensure
+          LibPython.decref(attr) unless attr.null?
         end
-
-        # Check for errors
-        if LibPython.err_occurred
-          error_info = Crython.extract_python_error
-          raise CallError.new(call.to_s, error_info)
-        end
-
-        PyObject.from_owned(ret.not_nil!)
       end
     end
 
     # Invoke this object itself when it is callable.
     def invoke(*args, **kwargs) : PyObject
-      call("__call__", *args, **kwargs)
+      Crython.with_gil do
+        PyObject.from_owned(invoke_raw(@raw, "callable", args, kwargs))
+      end
     end
 
     def call?(call : (String | Symbol), *args, **kwargs) : PyObject?
       call(call, *args, **kwargs)
     rescue AttributeError | CallError
       nil
+    end
+
+    private def invoke_raw(callable : LibPython::PyObject, name : String, args, kwargs) : LibPython::PyObject
+      args_tuple = build_args_tuple(args, name)
+      kwargs_dict = build_kwargs_dict(kwargs, name)
+      begin
+        result = LibPython.object_call(callable, args_tuple, kwargs_dict)
+        if result.null?
+          error_info = Crython.extract_python_error
+          raise CallError.new(name, error_info)
+        end
+        result
+      ensure
+        LibPython.decref(args_tuple)
+        LibPython.decref(kwargs_dict) unless kwargs_dict.null?
+      end
+    end
+
+    private def build_args_tuple(args, name : String) : LibPython::PyObject
+      tuple = LibPython.tuple_new(args.size)
+      if tuple.null?
+        error_info = Crython.extract_python_error
+        raise CallError.new(name, "Error building args tuple - #{error_info}")
+      end
+
+      complete = false
+      begin
+        args.each_with_index do |arg, index|
+          value_py = arg.is_a?(PyObject) ? arg.as(PyObject) : arg.to_py
+          value_raw = value_py.to_unsafe
+          LibPython.incref(value_raw)
+
+          # PyTuple_SetItem steals this reference even when it fails.
+          if LibPython.tuple_set_item(tuple, index, value_raw) < 0
+            error_info = Crython.extract_python_error
+            raise CallError.new(name, "Error building args tuple - #{error_info}")
+          end
+        end
+        complete = true
+        tuple
+      ensure
+        LibPython.decref(tuple) unless complete
+      end
+    end
+
+    private def build_kwargs_dict(kwargs, name : String) : LibPython::PyObject
+      return Pointer(Void).null.as(LibPython::PyObject) if kwargs.empty?
+
+      dict = LibPython.dict_new
+      if dict.null?
+        error_info = Crython.extract_python_error
+        raise CallError.new(name, "Error building kwargs dict - #{error_info}")
+      end
+
+      complete = false
+      begin
+        kwargs.each do |key_name, value|
+          key_string = key_name.to_s
+          key = LibPython.unicode_from_string_and_size(key_string.to_unsafe, key_string.bytesize)
+          if key.null?
+            error_info = Crython.extract_python_error
+            raise CallError.new(name, "Error building kwargs dict - #{error_info}")
+          end
+
+          begin
+            value_py = value.is_a?(PyObject) ? value.as(PyObject) : value.to_py
+            if LibPython.dict_set_item(dict, key, value_py.to_unsafe) < 0
+              error_info = Crython.extract_python_error
+              raise CallError.new(name, "Error building kwargs dict - #{error_info}")
+            end
+          ensure
+            LibPython.decref(key)
+          end
+        end
+        complete = true
+        dict
+      ensure
+        LibPython.decref(dict) unless complete
+      end
     end
 
     def [](*key) : PyObject
@@ -236,9 +206,8 @@ module Crython
             end
 
             if LibPython.tuple_set_item(key_tuple, index, py_item_raw) < 0
-              LibPython.decref(py_item_raw)
-              LibPython.decref(key_tuple)
               error_info = Crython.extract_python_error
+              LibPython.decref(key_tuple)
               raise ItemError.new("Error building key tuple - #{error_info}")
             end
           end

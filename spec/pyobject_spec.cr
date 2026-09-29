@@ -100,6 +100,15 @@ describe Crython::PyObject do
       end
     end
 
+    it "returns a non-callable attribute without invalidating it" do
+      with_crython do
+        math = Crython.import("math")
+        pi = math.call("pi")
+
+        pi.to_cr.should eq(Math::PI)
+      end
+    end
+
     it "shows actionable guidance for uppercase method syntax" do
       code = <<-CR
         require "./src/crython"
